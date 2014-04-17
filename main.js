@@ -142,10 +142,12 @@ var root = JSON.parse('{"id":"1","name":"Structure","children":[{"id":"2","name"
     var bubbleFill = bubble
                   .append("div")
                   .attr("class",function(d, i) { return "bubbleFill "+ d.image.tags})
-                  //.style("background-image", function(d, i) { return "url("+d.image.url_full+")"})
+                  .style("background-image", function(d, i) {return 'url(http://api.thumbalizr.com/?url='+d.image.url+'&width=250)'})
+                  //http://immediatenet.com/t/m?Size=1024x768&URL=http://immediatenet.com/"/
+                    //{ return "url("+d.image.url_full+")"})
                   .style("width",radius+"px")
                   .style("height",radius+"px")
-                  .style("background-color",function(d,i){ return color(i)})
+                  //.style("background-color",function(d,i){ return color(i)})
                   .on("mouseover", mouseover)
                   .on("mouseout", mouseout)
                   .on("click",function(d) {return (d.image.url=="")? "" : window.open(d.image.url); });
