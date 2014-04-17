@@ -1,0 +1,22 @@
+ {
+  "manifest_version": 2,
+  "version": "1",
+  "name": "Buubles as extesnion",
+  "description": "Bubbles are extended now",
+  "background":{
+  "scripts": ["background.js"]
+   },
+  "browser_action": {
+    "name": "Manipulate DOM",
+    "icons": ["icon.png"],
+    "default_icon": "icon.png"
+  },
+  "content_scripts": [ {
+    "js": [ "sources/jquery-2.1.0.min.js","sources/d3.v3.min.js","main.js"],
+    "matches": [ "http://*/*", "https://*/*"]
+  }],
+  "permissions": [
+          "bookmarks"
+        ]
+
+}

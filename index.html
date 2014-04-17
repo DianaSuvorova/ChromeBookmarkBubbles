@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html manifest="demo.appcache">
+<meta http-equiv="Cache-control" content="Private">
+<meta charset="utf-8">
+<style type="text/css">
+  
+
+body{
+  background-color:rgb(227,226,225);
+}
+
+  
+  .categories{
+    display:inline-block;
+    padding: 20px 0;
+    float:left;
+/*    width:20%;
+*/    overflow:hidden;
+    text-overflow:ellipsis;
+    text-align:center;
+    font-family: Typo Slab Serif Light;
+    font-size:10px ;
+    color: rgb(152,151,150);
+    border: solid 2px transparent;
+   }
+
+
+  .categories:hover, .categories.selected  {
+    cursor: pointer;
+    color: rgb(29,112,184);
+
+  }
+  
+
+.categories.selected{
+    border: solid 2px rgb(29,112,184);
+    -webkit-border-radius: 240px;
+    -moz-border-radius: 240px;
+    border-radius: 240px;
+    -moz-box-shadow: 0 0 10px #bdbdbd;
+    -webkit-box-shadow: 0 0 10px #bdbdbd;
+    box-shadow: 0 0 10px #bdbdbd;
+}
+
+  .center{
+    margin-left:auto;
+    margin-right:auto;
+    width:80%;
+  }
+
+  #canvas{
+    margin-top:10px; 
+    border-top:1px solid rgb(206,205,203);
+  }
+
+  #navigation{
+/*    height:100px;
+*/    font-family: Typo Slab Serif Light;
+    font-size:30px ;
+    color: rgb(38,38,38);
+    align: center;
+    padding: 20px;
+
+
+  }
+
+  .bubble {
+    display: block;
+    position: absolute;
+
+    }
+
+    .bubbleFill {
+    position: absolute;
+    display: block;
+    border: solid 3px rgb(179,179,179);
+    -webkit-border-radius: 240px;
+    -moz-border-radius: 240px;
+     border-radius: 240px;
+/*    background-image: url(CollapsableTreeJS/Images/TimeOfDay.jpeg);
+*/    background-position :center;
+/*    background-repeat: no-repeat;*/
+    background-size: 130%;
+
+    }
+
+.bubbleFill:hover {cursor: pointer;}
+
+.bubbleFill.highlighted{
+      border: solid 3px rgb(29,112,184);
+}
+
+  .tooltip{
+      pointer-events:none;
+       position: relative;
+       z-index: 2;
+       width:240px; 
+    /* width has to be 70% of height */
+    /* could use width:70%; in a square container */
+       height:180px;
+       opacity:0;
+
+       background-color:rgb(29,112,184);
+    /* beware that Safari needs actual
+     px for border radius (bug) */
+       -webkit-border-radius:50% 50% 50% 50%/40% 40% 60% 60% ;
+       /* fails in Safari, but overwrites in Chrome */
+       border-radius:50% 50% 50% 50%/ 40% 40% 60% 60%;
+
+     }
+
+     .tooltip span{
+        width: 220px;
+       position: absolute;
+       align: center;
+       padding: 50px 10px;
+/*       bottom: 0;
+       right: 0;*/
+       color:#ffffff;
+       font-family: Caviar Dreams, Bebas Neue;
+       overflow:hidden;
+       text-overflow:ellipsis;
+       vertical-align:middle;
+       text-align:center;
+     }
+
+  .clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+    }
+
+
+</style>
+<script src="sources/jquery-2.1.0.min.js"></script>
+<script src="sources/d3.v3.min.js"></script>
+<script src="main.js"></script>
+
+<body>
+
+<div id="wrapper" class="center">
+<div id="navigation">
+  <div id="bookmark" style="width:99%; float:left; display:inline-block;">
+    Bookmarks
+    <div class="clearfix"> </div>
+  </div>
+</div> 
+<div class="clearfix"> </div>
+<!-- 
+  <div id="AddNewWrapper">
+    <div id="enter" style= "cursor: pointer;>">ADD YOUR INSPIRATION</div>
+  <div class="inputfield">
+    URL: <input class="inputnewurl" type="text" name="URL" value="work in progress"><br>
+  </div>
+  </div> -->
+
+
+ <div id="canvas" style="width: 100%; height: 400px; position: relative;"></div>
+</div>
+
+
+</body>
+
+</html>
+
+
+
+
