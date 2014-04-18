@@ -1,8 +1,8 @@
  {
   "manifest_version": 2,
-  "version": "1",
-  "name": "Buubles as extesnion",
-  "description": "Bubbles are extended now",
+  "version": "1.1",
+  "name": "Bubbles as extesnion",
+  "description": "My Bubbles are extensions",
   "background":{
   "scripts": ["background.js"]
    },
@@ -18,5 +18,4 @@
   "permissions": [
           "bookmarks"
         ]
-
 }
