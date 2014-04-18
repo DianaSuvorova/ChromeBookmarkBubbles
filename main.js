@@ -13,55 +13,53 @@ var node_items=[];
 //var node_items=JSON.parse('[{"url":"images/tn_123.jpeg","url_full":"images/123.jpeg","subject":"Art","media":"picture","source":""},{"url":"images/tn_layers.jpeg","url_full":"images/layers.jpeg","subject":"Philosophy","media":"picture","source":""},{"url":"images/tn_crocodile.jpeg","url_full":"images/crocodile.jpeg","subject":"Art","media":"picture","source":""},{"url":"images/tn_perceivedProbability.jpeg","url_full":"images/perceivedProbability.jpeg","subject":"Psychology","media":"picture","source":""},{"url":"images/tn_worldWithoutUs.jpeg","url_full":"images/worldWithoutUs.jpeg","subject":"Art","media":"picture","source":""},{"url":"images/tn_historyOfArt.jpeg","url_full":"images/historyOfArt.jpeg","subject":"Art","media":"picture","source":""},{"url":"images/tn_TimeOfDay.jpeg","url_full":"images/TimeOfDay.jpeg","subject":"Art","media":"D3","source":"http://bl.ocks.org/clayzermk1/raw/9142407/"}]');
 
 
-console.log(node_items);
+// console.log(node_items);
 
-navigation_items=["NEURONS","YOGA","INFO","VISD3JS","BOOKMARKS BAR","OTHER BOOKMARKS","MOBILE BOOKMARKS"];
-node_items=[ {tags: "NEURONS",
-            title: "Figure 1 : Pyramidal neurons: dendritic structure and synaptic integration : Nature Reviews Neuroscience",
-            url: "http://www.nature.com/nrn/journal/v9/n3/fig_tab/nrn2286_F1.html"},
-            {tags: "NEURONS",
-              title: "Software Engineer at Chartio - Python - Stack Overflow Careers 2.0",
-              url: "http://careers.stackoverflow.com/jobs/48832/software-engineer-chartio?a=XyrH9zCU&searchTerm=%22data%20visualization%22"
-            },{
-              tags: "YOGA",
-              title: "Butterfly Yoga > Login Or Sign Up",
-              url: "https://www.secure-booker.com/butterflyyoga/LoginOrSignUp/LoginOrSignUp.aspx"}];
+// navigation_items=["NEURONS","YOGA","INFO","VISD3JS","BOOKMARKS BAR","OTHER BOOKMARKS","MOBILE BOOKMARKS"];
+// node_items=[ {tags: "NEURONS",
+//             title: "Figure 1 : Pyramidal neurons: dendritic structure and synaptic integration : Nature Reviews Neuroscience",
+//             url: "http://www.nature.com/nrn/journal/v9/n3/fig_tab/nrn2286_F1.html"},
+//             {tags: "NEURONS",
+//               title: "Software Engineer at Chartio - Python - Stack Overflow Careers 2.0",
+//               url: "http://careers.stackoverflow.com/jobs/48832/software-engineer-chartio?a=XyrH9zCU&searchTerm=%22data%20visualization%22"
+//             },{
+//               tags: "YOGA",
+//               title: "Butterfly Yoga > Login Or Sign Up",
+//               url: "https://www.secure-booker.com/butterflyyoga/LoginOrSignUp/LoginOrSignUp.aspx"}];
 
 
 $(document).ready(function(){  
 
-// chrome.bookmarks.getTree(function(itemTree){
-//     itemTree.forEach(function(item){
-//         processNode(item,'');
-//     });
+chrome.bookmarks.getTree(function(itemTree){
+    itemTree.forEach(function(item){
+        processNode(item,'');
+    });
 
-//     renderUI();
-// });
+    renderUI();
+  });
+})
 
-// })
-
-renderUI(); })
+// renderUI(); })
 
 //Ithink it's ugly
   var local_tags='';
 
 function processNode(node,tags) {
 
-
-
     // recursively process child nodes
     //all it's parents folder names
     if(node.children) {
         node.children.forEach(function(child) { 
-           node.title ? local_tags=local_tags+" "+ node.title.replace(/ /g,'').toUpperCase() : local_tags ;
+           //node.title ? local_tags=local_tags+" "+ node.title.replace(/ /g,'').toUpperCase() : local_tags ;
+          local_tags = node.title.replace(/ /g,'').toUpperCase();
           processNode(child,local_tags);
 
         });
     }
 
 
-    // navigation
-    if(!node.url) { 
+    // it's a folder and it has a content
+    if(!node.url && node.children.length>0 ) { 
       navigation_items.push(node.title.toUpperCase()); }
 
     if(node.url) { 
@@ -76,8 +74,8 @@ function processNode(node,tags) {
 
 }
 
-console.log(node_items);
-console.log(navigation_items);
+// console.log(node_items);
+// console.log(navigation_items);
 
 function renderUI(){
 
@@ -120,7 +118,7 @@ var root = JSON.parse('{"id":"1","name":"Structure","children":[{"id":"2","name"
     // var padding=7.5;   
      var radius= 75; 
      var expanded_radius=240;
-     var padding=5;   
+     var padding=10;   
 
 
     //Get the size from HTML
@@ -131,7 +129,7 @@ var root = JSON.parse('{"id":"1","name":"Structure","children":[{"id":"2","name"
     
     //the detecting color index part coule be done on creating items step instead of traversing array over.
 
-    var nodes = d3.range(node_items.length).map(function(i) { return { radius:radius+padding/2 , image : node_items[i] , color : color(navigation_items.indexOf(node_items[i].tags)) }});
+    var nodes = d3.range(node_items.length).map(function(i) { return { radius:radius/2+padding , image : node_items[i] , color : color(navigation_items.indexOf(node_items[i].tags)) }});
 
 
 
@@ -256,7 +254,7 @@ var root = JSON.parse('{"id":"1","name":"Structure","children":[{"id":"2","name"
     }
 
     function collide(node) {
-      var r = node.radius+padding*2,
+      var r = node.radius,
           nx1 = node.x - r,
           nx2 = node.x + r,
           ny1 = node.y - r,
