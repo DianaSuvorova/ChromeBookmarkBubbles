@@ -2,7 +2,9 @@
 ///some global vars
 var navigation_items = [];
 var node_items=[];
-
+//this is just for finding color
+var color_tags=[];
+var clusters=[];
 
 // these are bookmark items
 //node items will be an arry of items
@@ -60,7 +62,9 @@ function processNode(node,tags) {
 
     // it's a folder and it has a content
     if(!node.url && node.children.length>0 ) { 
-      navigation_items.push(node.title.toUpperCase()); }
+      navigation_items.push(node.title.toUpperCase()); 
+      color_tags.push(node.title.replace(/ /g,'').toUpperCase());
+      }
 
     if(node.url) { 
     // console.log(node)
@@ -74,8 +78,14 @@ function processNode(node,tags) {
 
 }
 
-// console.log(node_items);
-// console.log(navigation_items);
+// var clusters = new Array(color_tags.length);
+
+// for (i=0;i<color_tags;length,i++){
+
+// }
+
+ console.log(color_tags);
+ console.log(navigation_items);
 
 function renderUI(){
 
@@ -102,7 +112,9 @@ var root = JSON.parse('{"id":"1","name":"Structure","children":[{"id":"2","name"
     var bookmarks = bookmark.selectAll(".categories").data(categories)
                   .enter().append("div")
                   .attr("class","categories")
-                  .attr("id",function(d){return d.title.replace(/ /g,'')})
+                  .attr("id",function(d){
+                     clusters.push({x :this.x,y:this.y});  
+                    return d.title.replace(/ /g,'')})
                   .style("width", bookmark_width)
                   .on("mouseover",function(d){d3.select(this).style('color',d.color)})
                   .on("mouseout",function(d){ if  (d3.select(this).attr("class")=='categories') d3.select(this).style('color','rgb(152,151,150)')})
@@ -128,8 +140,12 @@ var root = JSON.parse('{"id":"1","name":"Structure","children":[{"id":"2","name"
 
     
     //the detecting color index part coule be done on creating items step instead of traversing array over.
+    // var tags = d3.range(categories.length).map(function(i) {return categories[i].replace(/ /g,'').toUpperCase();});
+    // console.log('tags:'+tags);
 
-    var nodes = d3.range(node_items.length).map(function(i) { return { radius:radius/2+padding , image : node_items[i] , color : color(navigation_items.indexOf(node_items[i].tags)) }});
+    var nodes = d3.range(node_items.length).map(function(i) { return { center : getRandomInt(0,2) , radius:radius/2+padding , image : node_items[i] ,cluster : color_tags.indexOf(node_items[i].tags)  ,color : color(color_tags.indexOf(node_items[i].tags)) }});
+console.log(nodes);
+
 
 
 
@@ -144,6 +160,11 @@ var root = JSON.parse('{"id":"1","name":"Structure","children":[{"id":"2","name"
                   .append("div")
                   .attr("class",function(d, i) { return "bubbleFill "+ d.image.tags})
                   .style("background-image", function(d, i) {return 'url(http://api.thumbalizr.com/?url='+d.image.url+'&width=250)'})
+
+                    //'url(http://api.page2images.com/directlink?p2i_url='+d.image.url+'&p2i_key=c022422933354341&&p2i_size=300x300)'})
+
+                   
+                   // 
                   //http://immediatenet.com/t/m?Size=1024x768&URL=http://immediatenet.com/"/
                     //{ return "url("+d.image.url_full+")"})
                   .style("width",radius+"px")
@@ -153,18 +174,20 @@ var root = JSON.parse('{"id":"1","name":"Structure","children":[{"id":"2","name"
                   .on("mouseout", mouseout)
                   .on("click",function(d) {return (d.image.url=="")? "" : window.open(d.image.url); });
                
+
     var force = d3.layout.force()
         .nodes(nodes)
         .size([width, height])
-        .gravity(.02)
-        .charge(0)
+        .charge(-Math.pow(radius/2+padding,1)*20 )
+        .gravity(0)
+        //.friction(0.87)
         .on("tick", tick)
         .start();
 
 
     function mouseover(d, i) {
 
-       force.stop();
+    //   force.stop();
 
        d3.selectAll(".bubbleFill").transition().duration(250).ease("linear")
         .style("opacity", 0.5);
@@ -177,10 +200,10 @@ var root = JSON.parse('{"id":"1","name":"Structure","children":[{"id":"2","name"
 
          d3.select(this).append('div')
                   .attr('class','tooltip')
+                  .style("background-color",function(){console.log(d.color);return d.color})  
                   .transition().delay(250).duration(25).ease("linear")
                   .style("top",expanded_radius/4+3+"px")
-                  .style("left",3+"px")
-                  .style("background-color",d.color)         
+                  .style("left",3+"px")       
                   .style("opacity",0.7)
                   .style("z-index",2); 
 
@@ -212,7 +235,7 @@ var root = JSON.parse('{"id":"1","name":"Structure","children":[{"id":"2","name"
 
 
 
-      force.resume();
+   //   force.resume();
 
     }
 
@@ -239,43 +262,58 @@ var root = JSON.parse('{"id":"1","name":"Structure","children":[{"id":"2","name"
     }
 
 
-     function tick() {
+var centers = [
+  {x: width/2, y: height/2},
+  {x: width/2, y: height/2},
+  {x: width/2, y: height/2}
+  ];
 
-          var q = d3.geom.quadtree(nodes),
-              i = 0,
-              n = nodes.length;
+function getRandomInt (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}  
+     function tick(e) {
 
-          while (++i < n) q.visit(collide(nodes[i]));
+     //      var q = d3.geom.quadtree(nodes),
+     //          i = 0,
+     //          n = nodes.length;
 
-          canvas.selectAll(".bubble")
-              .style("left", function(d) { return d.x+ "px"; })
-              .style("top", function(d) { return d.y+"px"; });
+     // //     while (++i < n) q.visit(collide(nodes[i]));
+            var k = 0.2 * e.alpha;
+           nodes.forEach(function(o, i) {
+              o.y += (centers[o.center].y- o.y) * k;
+              o.x += (centers[o.center].x - o.x) * k;
+            });
+
+
+
+          bubble
+
+//          bubble.y + (center.y - bubble.y) * (0.115) * alpha;
+              .style("left", function(d,i) { //return centers[d.center].x
+                return  d.x +"px";
+              })
+              .style("top", function(d,i) { //return centers[d.center].y
+                return d.y + "px"; 
+              });
 
     }
 
-    function collide(node) {
-      var r = node.radius,
-          nx1 = node.x - r,
-          nx2 = node.x + r,
-          ny1 = node.y - r,
-          ny2 = node.y + r;
-      return function(quad, x1, y1, x2, y2) {
-        if (quad.point && (quad.point !== node)) {
-          var x = node.x - quad.point.x,
-              y = node.y - quad.point.y,
-              l = Math.sqrt(x * x + y * y),
-              r = node.radius + quad.point.radius;
-          if (l < r) {
-            l = (l - r) / l * .5;
-            node.x -= x *= l;
-            node.y -= y *= l;
-            quad.point.x += x;
-            quad.point.y += y;
-          }
-        }
-        return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-      };
-     }
+
+$("#move").on("click", function(e) {
+ console.log(centers);
+
+ centers = [
+  {x: 100, y:200},
+  {x: 400, y:200},
+  {x: 800, y:200}];
+
+    nodes.forEach(function(o, i) {
+      o.center=getRandomInt(0,2);
+    })
+
+      force.resume();
+    return false;
+  });
 
 }
 
