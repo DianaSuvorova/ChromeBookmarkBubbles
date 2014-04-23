@@ -1,6 +1,8 @@
 
-var isbookmarks=1
-var isdebugmode=0;
+
+
+var isbookmarks=0;
+var isdebugmode=1;
 
 
 ///some global vars
@@ -145,12 +147,13 @@ if(isdebugmode) console.log(color_tags);
   var bubble = canvas.selectAll(".bubble").data(nodes)
                   .enter().append("div")
                   .attr("class","bubble")
-                  .on("mousemove", mousemove)
                   .attr("id",function(d, i){ return "bubble-"+i});
-                //  .call(node_drag);   
+                  //.call(drag);
+                  
 
   var bubbleFill = bubble
                 .append("div")
+                .attr("id",function(d, i){ return "bubbleFill-"+i})
                 .attr("class",function(d, i) { return "bubbleFill "+ d.image.tags})
                 .style("background-image", function(d, i) {return 'url(http://api.thumbalizr.com/?url='+d.image.url+'&width=250)'})
                   //'url(http://api.page2images.com/directlink?p2i_url='+d.image.url+'&p2i_key=c022422933354341&&p2i_size=300x300)'})
@@ -158,10 +161,18 @@ if(isdebugmode) console.log(color_tags);
                   //{ return "url("+d.image.url_full+")"})
                 .style("width",radius+"px")
                 .style("height",radius+"px")
+                .attr("draggable","true")
                 //.style("background-color",function(d,i){ return color(i)})
-                .on("mouseover", mouseover)
-                .on("mouseout", mouseout)
-                .on("click",function(d) {return (d.image.url=="")? "" : window.open(d.image.url); });
+                // .on("contextmenu",node_drag)
+                //.on("mouseover", mouseover)
+                //.on("mouseout", mouseout)
+                
+                .on("click",function(d) {
+                //either click or drag
+                   if (d3.event.defaultPrevented) return;
+                  return (d.image.url=="")? "" : window.open(d.image.url); 
+                })
+            ;
                
 
     var force = d3.layout.force()
@@ -174,13 +185,6 @@ if(isdebugmode) console.log(color_tags);
         .start();
 
 
-function mousemove(){
-    var p1 = d3.mouse(this);
- //   if(isdebugmode) console.log('p1[0] '+p1[0]);
-//    if(isdebugmode) console.log('p1[1] '+p1[1]);
-
-
-  }
 
 
 
@@ -193,50 +197,83 @@ function mousemove(){
      mouseY = e.pageY-offset.top;
 });
 
+
+var bubbletop;
+var bubbleleft;
+
+//var transitionE = transition().duration(7500).ease("circle");
+
+
     function mouseover(d, i) {
 
-       force.stop();
+
+
+     //  force.stop();
 
 
        //center of an expanded div is at the mouse
-       d3.selectAll("#bubble-"+i).transition().duration(250).ease("linear")
-         .style("top", (mouseY- 120 )+"px" ) 
-         .style("left", (mouseX- 120)+"px" );
+       // d3.selectAll("#bubble-"+i).transition().duration(250).ease("linear")
+       //   .style("top", (mouseY- 120 )+"px" ) 
+       //   .style("left", (mouseX- 120)+"px" );
 
+       
+       //keep center in the center
 
-        d3.selectAll(".bubbleFill").transition().delay(50).duration(250).ease("linear")
-            .style("opacity", 0.5);
+        console.log("onmouseover")
 
-        d3.select(this).transition().duration(250).ease("linear")
-                  .style('width', expanded_radius+'px')
-                  .style('height', expanded_radius+'px')
-                  .style("border-color",d.color)
-                  .style("z-index",1); 
+         bubbletop=parseFloat(d3.select("#bubble-"+i).style("top"));
+         bubbleleft=parseFloat(d3.select("#bubble-"+i).style("left"));
 
-         d3.select(this).append('div')
+         // d3.selectAll("#bubble-"+i).transition().duration(750).ease("linear")
+         //    .style("top", bubbletop-(expanded_radius-radius)/4 + "px" ) 
+         //    .style("left", bubbleleft-(expanded_radius-radius)/4 + "px"); 
+
+        d3.selectAll(".bubbleFill")
+              .style("opacity", 0.5);
+
+        d3.select(this).transition().duration(500).ease("circle")
+            .style('width', expanded_radius+'px')
+            .style('height', expanded_radius+'px')
+            .style("border-color",d.color)
+            .style("z-index",1)
+            .each("end",function() { 
+                 d3.select(this).append('div')
                   .attr('class','tooltip')
                   .style("background-color",function(){console.log(d.color);return d.color})  
-                  .transition().delay(250).duration(25).ease("linear")
+    //                    .transition()
                   .style("top",expanded_radius/4+3+"px")
                   .style("left",3+"px")       
                   .style("opacity",0.7)
-                  .style("z-index",2); 
-
-         d3.select(this).select('div.tooltip')
-                  .append("span")
-                  .transition().delay(250).duration(25).ease("linear")
+                  .style("z-index",2) 
+                .append("span")
                   .text(function(d, i) { return ((d.image.url =="" ) ? "no link " : d.image.title )});
-    
-        //highlight category         
+            });
 
-        d3.selectAll("#"+d.image.tags).style('color',d.color);
+           // d3.select(this).select('div.tooltip')
+           //          .append("span")
+           //          .transition().delay(250).duration(25).ease("linear")
+                    
+      
+          //highlight category         
 
-
+          d3.selectAll("#"+d.image.tags).style('color',d.color);
 
     }
 
     function mouseout(d, i) {
       //force.gravity(0.05);
+
+    //  if (d3.event.defaultPrevented) return;
+
+      //bring bubble's center where it was before expanding
+
+
+              console.log("onmouseout")
+
+       // d3.selectAll("#bubble-"+i).transition().duration(5750).ease("linear")
+       //   .style("top", bubbletop + "px" ) 
+       //   .style("left", bubbleleft + "px" ); 
+
 
       var category=d3.selectAll("#"+d.image.tags);
 
@@ -258,16 +295,9 @@ function mousemove(){
 
 
 
-      force.resume();
+//      force.resume();
 
     }
-
-
-    canvas.on("mousemove", function() {
-
-  });
-
-
 
     function categories_clicked(d,i){
 
@@ -301,11 +331,11 @@ function mousemove(){
 
 
           bubble
-               // .style("left", function(d,i) {  if (d.x > 0) return  d.x +"px";})
-               // .style("top", function(d,i) {  if (d.y > 0) return d.y + "px"; });
+            //    .style("left", function(d,i) {  if (d.x < 0) d.x=-d.x; return  d.x +"px";})
+            //    .style("top", function(d,i) {  if (d.y < 0) d.y=-d.y;return d.y + "px"; });
 
-               .style("left", function(d,i) { return  d.x +"px";})
-               .style("top", function(d,i) { return d.y + "px"; });
+                .style("left", function(d,i) { return  d.x +"px";})
+                .style("top", function(d,i) { return d.y + "px"; });
   
     }
 
@@ -313,6 +343,7 @@ function mousemove(){
 $("#categorize").on("click", function(e) {
     nodes.forEach(function(o, i) {
       o.center=o.cluster;
+      o.fixed=false;
     })
 
       force.resume();
@@ -323,6 +354,7 @@ $("#categorize").on("click", function(e) {
 $("#reset").on("click", function(e) {
     nodes.forEach(function(o, i) {
       o.center=Math.floor(color_tags.length/2-1) ;
+      o.fixed=false;
     })
 
       force.resume();
@@ -340,38 +372,154 @@ $("#timeline").on("click", function(e) {
     return false;
   });
 
+
+//end render ui
+//Drag-and-drop nodes. Maybe not needed.
+
+
+
+
+
+  var node_drag = d3.behavior.drag()
+      //  .on("dragstart", dragstart)
+        .on("drag", dragmove)
+        .on("dragend", dragend);
+
+    function dragstart(d, i) {
+     force.stop() // stops the force auto positioning before you start dragging
+    //d.fixed = true;
+    //d3.event.sourceEvent.stopPropagation();
+    //d3.event.sourceEvent.preventDefault();
+    }
+
+    function dragmove(d, i) {
+
+      console.log(d);
+      console.log(d3.event);
+        d.px += d3.event.dx;
+        d.py += d3.event.dy;
+
+      
+
+      //  d.x = Math.max(d.radius, Math.min(width - d.radius, d3.event.x));
+      //   d.y = Math.max(d.radius, Math.min(height - d.radius, d3.event.y)); 
+
+               console.log(d);
+
+
+        force.tick(); // this is the key to make it work together with updating both px,py,x,y on d !
+    }
+
+    function dragend(d, i) {
+        d.fixed = true; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
+       // force.tick();
+         force.resume();
+         console.log(d3.select(this).select('.bubbleFill'));
+      //  d3.select(this).on("click",function(d) {return (d.image.url=="")? "" : window.open(d.image.url); })
+    }
+
+
+  //bubble.call(node_drag);  
+
+
+  var dragSrcEl = null;
+
+
+function handleDragStart(e) {
+  this.style.opacity = '0.4';  // this / e.target is the source node.
+  dragSrcEl = this;
+  e.dataTransfer.effectAllowed = 'move';
+
+
+  e.dataTransfer.setData('text/plain',this.id);
+
+  console.log(this.id);
+}
+
+var cols = document.querySelectorAll('.bubbleFill');
+[].forEach.call(cols, function(col) {
+  col.addEventListener('dragstart', handleDragStart, false);
+  col.addEventListener('dragend', handleDragEnd, false);
+});
+
+
+function handleDragOver(e) {
+  if (e.preventDefault) {
+    e.preventDefault(); // Necessary. Allows us to drop.
+  }
+
+  e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+
+  return false;
+}
+
+function handleDragEnter(e) {
+  // this / e.target is the current hover target.
+  this.classList.add('selected');
+  this.classList.add('over');
+}
+
+
+function handleDragLeave(e) {
+  this.classList.remove('over');
+   this.classList.remove('selected');  // this / e.target is previous target element.
+}
+
+
+function handleDrop(e) {
+  // this / e.target is current target element.
+
+  if (e.stopPropagation) {
+    e.stopPropagation(); // stops the browser from redirecting.
+  }
+
+  // See the section on the DataTransfer object.
+  console.log(this.id);
+
+  var droppedElID=e.dataTransfer.getData('text/plain');
+
+  $("#"+droppedElID).removeClass();
+  $("#"+droppedElID).addClass('bubbleFill');
+  $("#"+droppedElID).addClass(this.id);
+
+
+  //++ modify bookmarks as well/
+
+  return false;
+}
+
+function handleDragEnd(e) {
+  // this/e.target is the source node.
+
+   //  his.classList.remove('over');
+   // this.classList.remove('selected');
+
+
+   this.style.opacity = '1';  
+
+  // [].forEach.call(cats, function (cat) {
+  //   cat.classList.remove('selected');
+  //   cat.classList.remove('over');
+  // });
+}
+
+
+var cats = document.querySelectorAll('.categories');
+[].forEach.call(cats, function(cat) {
+  cat.addEventListener('dragenter', handleDragEnter, false);
+  cat.addEventListener('dragover', handleDragOver, false);
+  cat.addEventListener('dragleave', handleDragLeave, false);
+  cat.addEventListener('drop', handleDrop, false);
+
+});
+
+
 }
 
 
 
 
 
-
-//end render ui
-//Drag-and-drop nodes. Maybe not needed.
-
-  var node_drag = d3.behavior.drag()
-        .on("dragstart", dragstart)
-        .on("drag", dragmove)
-        .on("dragend", dragend);
-
-    function dragstart(d, i) {
-        force.stop() // stops the force auto positioning before you start dragging
-    }
-
-    function dragmove(d, i) {
-        d.px += d3.event.dx;
-        d.py += d3.event.dy;
-        d.x = Math.max(d.radius, Math.min(width - d.radius, d3.event.x));
-        d.y = Math.max(d.radius, Math.min(height - d.radius, d3.event.y)); 
-        tick(); // this is the key to make it work together with updating both px,py,x,y on d !
-    }
-
-    function dragend(d, i) {
-        d.fixed = true; // of course set the node to fixed so the force doesn't include the node in its auto positioning stuff
-        tick();
-        force.resume();
-    }
 
 //end drag-and-drop
 

@@ -9,6 +9,15 @@ body{
   background-color:rgb(227,226,225);
 }
 
+[draggable] {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* Required to make elements draggable in old WebKit */
+  -khtml-user-drag: element;
+  -webkit-user-drag: element;
+}
   
   .categories{
     display:inline-block;
@@ -29,6 +38,10 @@ body{
     cursor: pointer;
   }
   
+
+  .over {
+  border: dashed 2px;
+}
 
 .categories.selected{ 
     -webkit-border-radius: 240px;
@@ -78,11 +91,12 @@ body{
 */    background-position :center;
 /*    background-repeat: no-repeat;*/
     background-size: 130%;
+    draggable: "true";
 
     }
 
-.bubbleFill:hover {cursor: pointer;}
-
+/*.bubbleFill:hover {cursor: pointer;}
+*/
 .bubbleFill.highlighted{
       border: solid 3px rgb(29,112,184);
 }
