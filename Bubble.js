@@ -1,14 +1,12 @@
 
 
 
-var isbookmarks=1;
+var isbookmarks=0;
 var isdebugmode=1;
 
 
 ///some global vars
-var navigation_items = [];
-var node_items=[];
-var color_tags=[];
+
 
 function getRandomInt (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -27,77 +25,21 @@ function getRandomInt (min, max) {
 
 // console.log(node_items);
 
-function initialisetest(){
 
-navigation_items=["NEURONS","YOGA","INFO","VISD3JS","BOOKMARKS BAR","OTHER BOOKMARKS","MOBILE BOOKMARKS","+"];
-node_items=[ {tags: "NEURONS",
-            title: "Figure 1 : Pyramidal neurons: dendritic structure and synaptic integration : Nature Reviews Neuroscience",
-            url: "http://www.nature.com/nrn/journal/v9/n3/fig_tab/nrn2286_F1.html"},
-            {tags: "NEURONS",
-              title: "Software Engineer at Chartio - Python - Stack Overflow Careers 2.0",
-              url: "http://careers.stackoverflow.com/jobs/48832/software-engineer-chartio?a=XyrH9zCU&searchTerm=%22data%20visualization%22"
-            },{
-              tags: "YOGA",
-              title: "Butterfly Yoga > Login Or Sign Up",
-              url: "https://www.secure-booker.com/butterflyyoga/LoginOrSignUp/LoginOrSignUp.aspx"}];
-color_tags=["NEURONS","YOGA","INFO","VISD3JS","BOOKMARKSBAR","OTHERBOOKMARKS","MOBILEBOOKMARKS","+"];
-}
+var Model = BookmarkDataSingleton.getInstance();
 
 $(document).ready(function(){  
-
-  if (isbookmarks){
-  chrome.bookmarks.getTree(function(itemTree){
-      itemTree.forEach(function(item){processNode(item,'');});
-
-      renderUI();
-    });}
-  else 
-  {
-    initialisetest();
-    renderUI();
-  }
+  Model.fetchData();
+  console.log(Model.getBubbleNodeItems())
 
 })
-
 
 // renderUI(); })
 
 //Ithink it's ugly
-  var local_tags='';
-
-function processNode(node,tags) {
-
-    // recursively process child nodes
-    //all it's parents folder names
-    if(node.children) {
-        node.children.forEach(function(child) { 
-           //node.title ? local_tags=local_tags+" "+ node.title.replace(/ /g,'').toUpperCase() : local_tags ;
-          local_tags = node.title.replace(/ /g,'').toUpperCase();
-          processNode(child,local_tags);
-
-        });
-    }
 
 
-    // it's a folder and it has a content
-    if(!node.url && node.children.length>0 ) { 
-      navigation_items.push(node.title.toUpperCase()); 
-      color_tags.push(node.title.replace(/ /g,'').toUpperCase());
-      }
 
-
-    if(node.url) { 
-      node_items.push({
-        url :node.url,
-        title: node.title,
-        tags: tags,
-        date: node.dateAdded
-      });
-    }
-    local_tags='';
-     
-
-}
 
 
 function renderUI(){
