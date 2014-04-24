@@ -81,7 +81,8 @@ var BookmarkDataSingleton = (function(){
 	   d3.range(navigation_items.length).map(function(i){
 	    categories.push({
 	      item: navigation_items[i],
-	      width: null 
+	      width: null ,
+	      selected : false
 	    }); 
 	    
 	    });
@@ -99,7 +100,6 @@ var BookmarkDataSingleton = (function(){
 		      radius:null, 
 		      item : node_items[i] ,
 		      cat_id : lookupCategoryID( navigation_items,node_items[i]) ,
-		      on_selected : false
 		      })
 		  });
 
