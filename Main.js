@@ -162,6 +162,9 @@ function renderUI() {
 
     function bubble_mouseover(d, i) {
 
+
+            d3.selectAll("#bubble-" + i).select('.tooltip').remove();
+
       d3.event.preventDefault();
       //  force.stop();
 
@@ -203,6 +206,7 @@ function renderUI() {
             .style("opacity", 0.9)
             .style("z-index", 2)
             .append("span")
+           // .on ("click", window.open(d.item.url))
             .text(function(d, i) {
               return ((d.item.url == "") ? "no link " : d.item.title)
             });
