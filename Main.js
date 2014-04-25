@@ -3,15 +3,15 @@ function getRandomInt(min, max) {
 }
 
 
-    function lookupCategoryID(categories, itemid) {
-      for (var i = 0; i < categories.length; i++) {
-        if (categories[i].item.id === itemid) {
-          return i;
-        }
-      }
-      return -1;
-
+function lookupCategoryID(categories, itemid) {
+  for (var i = 0; i < categories.length; i++) {
+    if (categories[i].item.id === itemid) {
+      return i;
     }
+  }
+  return -1;
+
+}
 
 
 function getUICategoryCenters(categoriesUIElements, width, height) {
@@ -52,8 +52,6 @@ function renderUI() {
   var categories = Model.getCategories();
   var nodes = Model.getNodes();
 
-  console.log(categories);
-    console.log(nodes);
 
   var bookmark = d3.select("#bookmark");
   var cat_width_pct = Math.floor((bookmark.style("width").slice(0, -2) / categories.length - 2 * 2) / bookmark.style("width").slice(0, -2) * 100) + '%';
@@ -64,12 +62,18 @@ function renderUI() {
   var bookmarks = bookmark.selectAll(".categories").data(categories)
     .enter().append("div")
     .attr("class", "categories")
-    .attr("id", function(d, i) {return "category-" + i})
-    .style("width", function(d, i) {return cat_width_pct})
+    .attr("id", function(d, i) {
+      return "category-" + i
+    })
+    .style("width", function(d, i) {
+      return cat_width_pct
+    })
     .on("mouseover", category_mouseover)
     .on("mouseout", category_mouseout)
     .on("click", category_clicked)
-    .text(function(d) {return d.item.title;});
+    .text(function(d) {
+      return d.item.title.toUpperCase();
+    });
 
   var centers = getUICategoryCenters(bookmarks, width, height);
 
@@ -84,7 +88,9 @@ function renderUI() {
 
 
   var bubbleFill = bubble.append("div")
-    .attr("id", function(d, i) {  return "bubbleFill-" + i })
+    .attr("id", function(d, i) {
+      return "bubbleFill-" + i
+    })
     .attr("class", bubblefill_get_class)
     .style("background-image", function(d, i) {
       return 'url(http://api.thumbalizr.com/?url=' + d.item.url + '&width=250)'
@@ -97,214 +103,232 @@ function renderUI() {
     .attr("draggable", "true")
   //.style("background-color",function(d,i){ return color(i)})
   // .on("contextmenu",node_drag)
-  //.on("mouseover", bubble_mouseover)
-  //.on("mouseout", bubble_mouseout)
+  .on("click", bubble_mouseover)
+    .on("mouseout", bubble_mouseout)
 
-  .on("click", function(d) {
-    //either click or drag
-    if (d3.event.defaultPrevented) return;
-    return (d.item.url == "") ? "" : window.open(d.item.url);
-  });
-
-  //--------End Main UI Object rendering--------------------------------------------------        
-
-  //--------D3 Force Layout---------------------------------------------------------------  
-  var force = d3.layout.force()
-    .nodes(nodes)
-    .size([width, height])
-    .charge(-Math.pow(radius / 2 + padding, 1) * 20)
-    .gravity(0)
-  //.friction(0.87)
-  .on("tick", tick)
-    .start();
-
-  function tick(e) {
-    var k = 0.2 * e.alpha;
-    nodes.forEach(function(o, i) {
-      o.y += (centers[o.default_center].y - o.y) * k;
-      o.x += (centers[o.default_center].x - o.x) * k;
-    });
-
-    bubble
-       .style("left", function(d,i) {  if (d.x < 0) d.x=-d.x; return  d.x +"px";})
-       .style("top", function(d,i) {  if (d.y < 0) d.y=-d.y;return d.y + "px"; });
-
-    // .style("left", function(d, i) {
-    //   return d.x + "px";
-    // })
-    //   .style("top", function(d, i) {
-    //     return d.y + "px";
-    //   });
-  }
-
-  //--------End D3 Force Layout----------------------------------------------------------------  
-  //--------bubble Interaction Functions: Mouseover,MouseOut ------------------------------- 
-  function bubble_mouseover(d, i) {
+  .on("dblclick", bubble_click);
+      //either click or drag
 
 
 
-    //  force.stop();
 
+      //--------End Main UI Object rendering--------------------------------------------------        
 
-    //center of an expanded div is at the mouse
-    // d3.selectAll("#bubble-"+i).transition().duration(250).ease("linear")
-    //   .style("top", (mouseY- 120 )+"px" ) 
-    //   .style("left", (mouseX- 120)+"px" );
+      //--------D3 Force Layout---------------------------------------------------------------  
+      var force = d3.layout.force()
+        .nodes(nodes)
+        .size([width, height])
+        .charge(-Math.pow(radius / 2 + padding, 1) * 20)
+        .gravity(0)
+      //.friction(0.87)
+      .on("tick", tick)
+        .start();
 
+      function tick(e) {
+        var k = 0.2 * e.alpha;
+        nodes.forEach(function(o, i) {
+          o.y += (centers[o.center].y - o.y) * k;
+          o.x += (centers[o.center].x - o.x) * k;
+        });
 
-    //keep center in the center
-
-    console.log("onmouseover")
-
-    bubbletop = parseFloat(d3.select("#bubble-" + i).style("top"));
-    bubbleleft = parseFloat(d3.select("#bubble-" + i).style("left"));
-
-    // d3.selectAll("#bubble-"+i).transition().duration(750).ease("linear")
-    //    .style("top", bubbletop-(expanded_radius-radius)/4 + "px" ) 
-    //    .style("left", bubbleleft-(expanded_radius-radius)/4 + "px"); 
-
-    d3.selectAll(".bubbleFill")
-      .style("opacity", 0.5);
-
-    d3.select(this).transition().duration(500).ease("circle")
-      .style('width', expanded_radius + 'px')
-      .style('height', expanded_radius + 'px')
-      .style("border-color", d.color)
-      .style("z-index", 1)
-      .each("end", function() {
-        d3.select(this).append('div')
-          .attr('class', 'tooltip')
-          .style("background-color", function() {
-            console.log(d.color);
-            return d.color
+        bubble
+          .style("left", function(d, i) {
+            if (d.x < 0) d.x = -d.x;
+            return d.x + "px";
           })
-          .style("top", expanded_radius / 4 + 3 + "px")
-          .style("left", 3 + "px")
-          .style("opacity", 0.7)
-          .style("z-index", 2)
-          .append("span")
-          .text(function(d, i) {
-            return ((d.image.url == "") ? "no link " : d.image.title)
+          .style("top", function(d, i) {
+            if (d.y < 0) d.y = -d.y;
+            return d.y + "px";
           });
+
+        // .style("left", function(d, i) {
+        //   return d.x + "px";
+        // })
+        //   .style("top", function(d, i) {
+        //     return d.y + "px";
+        //   });
+      }
+
+      //--------End D3 Force Layout----------------------------------------------------------------  
+      //--------bubble Interaction Functions: Mouseover,MouseOut ------------------------------- 
+
+      function bubble_click(d, i) {
+
+        if (d3.event.defaultPrevented) return;
+        return (d.item.url == "") ? "" : window.open(d.item.url);
+      }
+
+
+
+    function bubble_mouseover(d, i) {
+
+      d3.event.preventDefault();
+      //  force.stop();
+
+
+      //center of an expanded div is at the mouse
+      // d3.selectAll("#bubble-"+i).transition().duration(250).ease("linear")
+      //   .style("top", (mouseY- 120 )+"px" ) 
+      //   .style("left", (mouseX- 120)+"px" );
+
+
+      //keep center in the center
+
+      // console.log("onmouseover")
+
+      bubbletop = parseFloat(d3.select("#bubble-" + i).style("top"));
+      bubbleleft = parseFloat(d3.select("#bubble-" + i).style("left"));
+
+      // d3.selectAll("#bubble-"+i).transition().duration(750).ease("linear")
+      //    .style("top", bubbletop-(expanded_radius-radius)/4 + "px" ) 
+      //    .style("left", bubbleleft-(expanded_radius-radius)/4 + "px"); 
+
+      var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
+
+      d3.selectAll(".bubbleFill").style("opacity", 0.5);
+
+      d3.select(this).transition().delay(200).duration(500).ease("circle")
+        .style('width', expanded_radius + 'px')
+        .style('height', expanded_radius + 'px')
+        .style("border-color", color_set(d.cat_id))
+        .style("opacity", 1)
+        .style("z-index", 1)
+        .each("end", function(d) {
+
+          d3.select(this).append('div')
+            .attr('class', 'tooltip')
+            .style("background-color", color_set(d.cat_id))
+            .style("top", expanded_radius / 4 + 3 + "px")
+            .style("left", 3 + "px")
+            .style("opacity", 0.9)
+            .style("z-index", 2)
+            .append("span")
+            .text(function(d, i) {
+              return ((d.item.url == "") ? "no link " : d.item.title)
+            });
+
+        });
+
+      d3.selectAll("#" + curr_class).style('color', color_set(d.cat_id));
+
+    }
+
+    function bubble_mouseout(d, i) {
+      //force.gravity(0.05);
+
+      //  if (d3.event.defaultPrevented) return;
+
+      //bring bubble's center where it was before expanding
+
+
+      //console.log("onmouseout")
+
+      // d3.selectAll("#bubble-"+i).transition().duration(5750).ease("linear")
+      //   .style("top", bubbletop + "px" ) 
+      //   .style("left", bubbleleft + "px" ); 
+
+      var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
+
+
+      var category = d3.selectAll("#" + curr_class);
+
+
+
+      d3.selectAll(".bubbleFill").transition().duration(50).ease("linear")
+        .style("opacity", 1)
+        .style('width', radius + 'px')
+        .style('height', radius + 'px')
+      //.style("border-color","rgb(179,179,179)")
+      //   .style('border-color','rgb(179,179,179)')
+      .style("z-index", 0);
+
+      d3.selectAll("#bubble-" + i).select('.tooltip').remove();
+      d3.selectAll("#bubble-" + i).selectAll(".bubbleFill").style("border-color", function() {
+        return (category.attr("class") == 'categories') ? 'rgb(152,151,150)' : d.color;
+      });
+      category.style('color', function() {
+        return (d3.select(this).attr("class") == 'categories') ? 'rgb(152,151,150)' : d.color;
       });
 
-    d3.selectAll("#" + d.image.tags).style('color', d.color);
-
-  }
-
-  function bubble_mouseout(d, i) {
-    //force.gravity(0.05);
-
-    //  if (d3.event.defaultPrevented) return;
-
-    //bring bubble's center where it was before expanding
-
-
-    console.log("onmouseout")
-
-    // d3.selectAll("#bubble-"+i).transition().duration(5750).ease("linear")
-    //   .style("top", bubbletop + "px" ) 
-    //   .style("left", bubbleleft + "px" ); 
-    var category = d3.selectAll("#" + d.image.tags);
-
-    d3.selectAll(".bubbleFill").transition().duration(50).ease("linear")
-      .style("opacity", 1)
-      .style('width', radius + 'px')
-      .style('height', radius + 'px')
-    //.style("border-color","rgb(179,179,179)")
-    //   .style('border-color','rgb(179,179,179)')
-    .style("z-index", 0);
-
-    d3.selectAll("#bubble-" + i).select('.tooltip').remove();
-    d3.selectAll("#bubble-" + i).selectAll(".bubbleFill").style("border-color", function() {
-      return (category.attr("class") == 'categories') ? 'rgb(152,151,150)' : d.color;
-    });
-    category.style('color', function() {
-      return (d3.select(this).attr("class") == 'categories') ? 'rgb(152,151,150)' : d.color;
-    });
-
-  }
-  //--------End bubble Interaction Functions: Mouseover,MouseOut ------------------------------- 
-
-  //   var mouseX;
-  //   var mouseY;
-  //   $('#canvas').mousemove( function(e) {
-  //      var offset = $(this).offset();
-  //     // get mouse position relative to the #canvas  as bubbles top and  left position is set relative to the dic
-  //      mouseX = e.pageX-offset.left; 
-  //      mouseY = e.pageY-offset.top;
-  // });
-
-
-  // var bubbletop;
-  // var bubbleleft;
-
-  //var transitionE = transition().duration(7500).ease("circle");
-
-
-
-  //--------Category Interaction Functions: Clicked -------------------------------   
-  function category_clicked(d, i) {
-
-
-    var cur_class = d3.select(this).attr("class");
-    console.log(cur_class);
-
-    if (!d.ui_click)
-
-    {
-      d.ui_click = true;
-
-      d3.select(this).attr("class", cur_class + ' selected')
-        .style("color", color_set(i))
-        .style("border-color", color_set(i));
-
-      console.log("category-" + i);
-
-
-      bubble.selectAll(".category-" + i).style("border-color", color_set(i));
-    } else {
-
-      d.ui_click = false;
-
-      d3.select(this).attr("class", cur_class.replace(" selected", ""))
-        .style("color", "rgb(152,151,150)")
-        .style("border-color", "transparent");
-
-      bubble.selectAll(".category-" + i).style("border-color", "rgb(179,179,179)");
-
     }
-  }
+    //--------End bubble Interaction Functions: Mouseover,MouseOut ------------------------------- 
 
-  function category_mouseover(d, i) {
+    //   var mouseX;
+    //   var mouseY;
+    //   $('#canvas').mousemove( function(e) {
+    //      var offset = $(this).offset();
+    //     // get mouse position relative to the #canvas  as bubbles top and  left position is set relative to the dic
+    //      mouseX = e.pageX-offset.left; 
+    //      mouseY = e.pageY-offset.top;
+    // });
 
-    d.ui_mouseover = true;
 
-    if (d.ui_click == false) {
-      d3.select(this).style('color', color_set(i));
+    // var bubbletop;
+    // var bubbleleft;
+
+    //var transitionE = transition().duration(7500).ease("circle");
+
+
+
+    //--------Category Interaction Functions: Clicked -------------------------------   
+    function category_clicked(d, i) {
+
+
+      var cur_class = d3.select(this).attr("class");
+
+      if (!d.ui_click)
+
+      {
+        d.ui_click = true;
+
+        d3.select(this).attr("class", cur_class + ' selected')
+          .style("color", color_set(i))
+          .style("border-color", color_set(i));
+
+
+        bubble.selectAll(".category-" + i).style("border-color", color_set(i));
+      } else {
+
+        d.ui_click = false;
+
+        d3.select(this).attr("class", cur_class.replace(" selected", ""))
+          .style("color", "rgb(152,151,150)")
+          .style("border-color", "transparent");
+
+        bubble.selectAll(".category-" + i).style("border-color", "rgb(179,179,179)");
+
+      }
     }
 
-  }
+    function category_mouseover(d, i) {
 
-  function category_mouseout(d, i) {
+      d.ui_mouseover = true;
 
-    d.ui_mouseover = false;
+      if (d.ui_click == false) {
+        d3.select(this).style('color', color_set(i));
+      }
 
-    if (d.ui_click == false) {
-      d3.select(this).style('color', 'rgb(179,179,179)');
     }
 
-  }
+    function category_mouseout(d, i) {
+
+      d.ui_mouseover = false;
+
+      if (d.ui_click == false) {
+        d3.select(this).style('color', 'rgb(179,179,179)');
+      }
+
+    }
 
 
-  //--------End Category Interaction Functions: Clicked -------------------------------   
+    //--------End Category Interaction Functions: Clicked -------------------------------   
 
 
 
 
   $("#categorize").on("click", function(e) {
     nodes.forEach(function(o, i) {
-      o.center = o.cluster;
+      o.center = o.cat_id;
       o.fixed = false;
     })
 
@@ -315,7 +339,7 @@ function renderUI() {
 
   $("#reset").on("click", function(e) {
     nodes.forEach(function(o, i) {
-      o.center = Math.floor(color_tags.length / 2 - 1);
+      o.center = o.default_center;
       o.fixed = false;
     })
 
@@ -339,13 +363,12 @@ function renderUI() {
   //Calculate bubble class
   function bubblefill_get_class(d) {
     var bubblefill_class = 'bubbleFill' + ' ';
-  
-     bubblefill_class += 'category-' + d.cat_id + ' ';
-     console.log(d.ui_drag);
-     if (d.ui_drag) {
-        console.log("dragged");
-       bubblefill_class += 'dragged' + ' '
-     }
+
+    bubblefill_class += 'category-' + d.cat_id + ' ';
+    if (d.ui_drag) {
+      console.log("dragged");
+      bubblefill_class += 'dragged' + ' '
+    }
     return bubblefill_class;
   }
 
@@ -355,7 +378,7 @@ function renderUI() {
 
 
 
- // var dragSrcEl = null;
+  // var dragSrcEl = null;
 
   //Binding Events
 
@@ -363,7 +386,7 @@ function renderUI() {
   [].forEach.call(jq_bubbleFill, function(bubbleFill) {
     bubbleFill.addEventListener('dragstart', bubble_handleDragStart, false);
     bubbleFill.addEventListener('dragend', bubble_handleDragEnd, false);
-  //  bubbleFill.addEventListener('drop', function(){console.log("drrrop")}, false);
+    //  bubbleFill.addEventListener('drop', function(){console.log("drrrop")}, false);
   });
 
 
@@ -372,7 +395,7 @@ function renderUI() {
     cat.addEventListener('dragenter', category_handleDragEnter, false);
     cat.addEventListener('dragover', category_handleDragOver, false);
     cat.addEventListener('dragleave', category_handleDragLeave, false);
-    cat.addEventListener('drop',category_handleDrop , false);
+    cat.addEventListener('drop', category_handleDrop, false);
 
   });
 
@@ -381,7 +404,6 @@ function renderUI() {
   function bubble_handleDragStart(e) {
 
 
-    console.log("start")
     this.classList.add('dragged');
     e.dataTransfer.setData('text/plain', this.id);
 
@@ -398,7 +420,7 @@ function renderUI() {
   function bubble_handleDragEnd(e) {
 
     this.classList.remove('dragged');
-        return false;
+    return false;
 
   }
 
@@ -416,14 +438,14 @@ function renderUI() {
   function category_handleDragEnter(e) {
 
     this.classList.add('over');
-        return false;
+    return false;
   }
 
 
   function category_handleDragLeave(e) {
 
 
-    this.classList.remove('over');// this / e.target is previous target element.
+    this.classList.remove('over'); // this / e.target is previous target element.
   }
 
 
@@ -445,31 +467,39 @@ function renderUI() {
 
     // See the section on the DataTransfer object.
     d3.selectAll("#" + this.id).forEach(function(d, i) {
-          parent_id=d[i].__data__.item.id
-          console.log(d[i].__data__)
+      parent_id = d[i].__data__.item.id
+      console.log(d[i].__data__)
     });
 
-        d3.selectAll("#" + droppedElID).forEach(function(d, i) {
-          node_id=d[i].__data__.item.id;
-          d[i].__data__.item.parent_id=parent_id;
-          d[i].__data__.cat_id=lookupCategoryID(categories,parent_id);
-          console.log(d[i].__data__);
+    d3.selectAll("#" + droppedElID).forEach(function(d, i) {
+      node_id = d[i].__data__.item.id;
+      d[i].__data__.item.parent_id = parent_id;
+      d[i].__data__.cat_id = lookupCategoryID(categories, parent_id);
+      d[i].__data__.center = lookupCategoryID(categories, parent_id);
+      console.log(d[i].__data__);
+    });
+
+    force.resume();
+
+
+    console.log(parent_id);
+    console.log(node_id);
+
+    Model.updateNodeAssigntoCategory(node_id, parent_id, function() {
+      console.log("in the model")
     });
 
 
-    
-        console.log(parent_id);    
-        console.log(node_id);
-
-        Model.updateNodeAssigntoCategory(node_id,parent_id,function(){console.log("in the model")});
-    
-
-        //update categories array  
+    //update categories array  
 
 
-      $("#" + droppedElID).removeClass();
-      $("#" + droppedElID).addClass('bubbleFill');
-      $("#" + droppedElID).addClass(this.id);
+    // color_set(lookupCategoryID(categories, parent_id))
+
+
+    $("#" + droppedElID).removeClass();
+    $("#" + droppedElID).addClass('bubbleFill');
+    $("#" + droppedElID).addClass(this.id);
+    //console.log($("#" + droppedElID).attr("color"));
 
 
     //++ modify bookmarks as well/

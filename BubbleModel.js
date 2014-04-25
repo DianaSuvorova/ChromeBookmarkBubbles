@@ -69,7 +69,6 @@ var BookmarkDataSingleton = (function() {
 			}
 
 			if (node.url) {
-				console.log(node);
 				node_items.push({
 					id: node.id,
 					parent_id: node.parentId,
@@ -81,21 +80,14 @@ var BookmarkDataSingleton = (function() {
 
 		};
 
-		function updateBookmarkParentForNode(node_id,parent_id,callBack){
+		function updateBookmarkParentForNode(node_id, parent_id, callBack) {
 
 
-			// var parent;
-			// chrome.bookmarks.get(parent_id,function(parent_node){
-			// 	console.log(parent_node[0]);
-			// 	chrome.bookmarks.move(node_id,parent_node[0],function(node){console.log("it moved")});
-			// });
-
-				chrome.bookmarks.move(node_id,{parentId : parent_id },function(node){console.log("it moved ");});
-
-	
-
-			 // 	console.log(nodes)
-			 // });
+			chrome.bookmarks.move(node_id, {
+				parentId: parent_id
+			}, function(node) {
+				console.log("it moved ");
+			});
 
 		}
 
@@ -133,6 +125,7 @@ var BookmarkDataSingleton = (function() {
 			d3.range(node_items.length).map(function(i) {
 				nodes.push({
 					default_center: Math.floor(navigation_items.length / 2),
+					center: Math.floor(navigation_items.length / 2),
 					radius: null,
 					item: node_items[i],
 					cat_id: lookupCategoryID(navigation_items, node_items[i]),
@@ -169,8 +162,8 @@ var BookmarkDataSingleton = (function() {
 				return UpdateNodes(node_items, navigation_items)
 			},
 
-			updateNodeAssigntoCategory: function (node_id,cat_id,callBackonBookmarksUpdated){
-				 updateBookmarkParentForNode(node_id,cat_id,callBackonBookmarksUpdated)
+			updateNodeAssigntoCategory: function(node_id, cat_id, callBackonBookmarksUpdated) {
+				updateBookmarkParentForNode(node_id, cat_id, callBackonBookmarksUpdated)
 
 			}
 
