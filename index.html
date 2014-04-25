@@ -40,6 +40,13 @@ body{
   
 
   .over {
+
+     -webkit-border-radius: 240px;
+    -moz-border-radius: 240px;
+    border-radius: 240px;
+    -moz-box-shadow: 0 0 10px #bdbdbd;
+    -webkit-box-shadow: 0 0 10px #bdbdbd;
+    box-shadow: 0 0 10px #bdbdbd;  
   border: dashed 2px;
 }
 
@@ -97,6 +104,10 @@ body{
 
 /*.bubbleFill:hover {cursor: pointer;}
 */
+
+.bubbleFill.dragged{
+  opacity: 0.4;
+}
 .bubbleFill.highlighted{
       border: solid 3px rgb(29,112,184);
 }
