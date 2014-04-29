@@ -26,31 +26,45 @@ function getUICategoryCenters(categoriesUIElements, width, height) {
 }
 
 
-var Model = BookmarkDataSingleton.getInstance();
+  var Model = BookmarkDataSingleton.getInstance();
+
+var radius = 75;
+var expanded_radius = 240;
+var padding = 10;
+
+
+  var color_set = d3.scale.category10();
+
+
+
 
 
 $(document).ready(function() {
+
+
   Model.getUIData(renderUI);
 
 })
 
 
 function renderUI() {
+  
+  var nodes = Model.getNodes();
 
-
-  var radius = 75;
-  var expanded_radius = 240;
-  var padding = 10;
-
-
-  var color_set = d3.scale.category10();
   var canvas = d3.select("#canvas");
   var width = canvas.style("width").slice(0, -2);
   var height = canvas.style("height").slice(0, -2);
 
 
   var categories = Model.getCategories();
-  var nodes = Model.getNodes();
+
+
+
+
+  console.log(categories);
+  console.log(nodes);
+  console.log(Model.getNavigationItems());
+
 
 
   var bookmark = d3.select("#bookmark");
@@ -124,6 +138,8 @@ function renderUI() {
       .on("tick", tick)
         .start();
 
+
+
       function tick(e) {
         var k = 0.2 * e.alpha;
         nodes.forEach(function(o, i) {
@@ -148,6 +164,8 @@ function renderUI() {
         //     return d.y + "px";
         //   });
       }
+
+}
 
       //--------End D3 Force Layout----------------------------------------------------------------  
       //--------bubble Interaction Functions: Mouseover,MouseOut ------------------------------- 
@@ -365,18 +383,24 @@ function renderUI() {
   //--------End UI Interaction Functions: Categorize,Reset ------------------------------- 
 
   //Calculate bubble class
+  function category_get_class(d) {
+    var category_class = 'categories' + ' ';
+    if (d.ui_dragover) {
+      category_class += "over ";
+    }
+    return category_class;
+  }
+
+
   function bubblefill_get_class(d) {
     var bubblefill_class = 'bubbleFill' + ' ';
 
     bubblefill_class += 'category-' + d.cat_id + ' ';
     if (d.ui_drag) {
-      console.log("dragged");
       bubblefill_class += 'dragged' + ' '
     }
     return bubblefill_class;
   }
-
-
 
   //--------Editting Functionality: Drag and Drop to edit ------------------------------- 
 
@@ -408,12 +432,11 @@ function renderUI() {
   function bubble_handleDragStart(e) {
 
 
-    this.classList.add('dragged');
     e.dataTransfer.setData('text/plain', this.id);
 
-    //d3 part not needed
-    canvas.selectAll("#" + this.id).forEach(function(d, i) {
-      d[i].__data__.ui_drag = true;
+    canvas.selectAll("#" + this.id).attr("class",function(d){
+      d.ui_drag=true;
+      return bubblefill_get_class(d)
     });
 
     e.dataTransfer.effectAllowed = 'move';
@@ -423,7 +446,11 @@ function renderUI() {
 
   function bubble_handleDragEnd(e) {
 
-    this.classList.remove('dragged');
+      canvas.selectAll("#" + this.id).attr("class",function(d){
+      d.ui_drag=false;
+//      console.log(bubblefill_get_class(d));
+      return bubblefill_get_class(d)
+    });
     return false;
 
   }
@@ -441,15 +468,42 @@ function renderUI() {
 
   function category_handleDragEnter(e) {
 
-    this.classList.add('over');
+    console.log("enter " + this.id);
+
+    if (this.id != "bin" && this.id != "add") {
+
+      d3.selectAll("#" + this.id).attr("class", function(d) {
+        d.ui_dragover = true;
+        console.log(category_get_class(d));
+        return category_get_class(d)
+      });
+
+    } else {
+      d3.selectAll("#" + this.id).attr("class","categories draggedover");
+      //if it's a bin
+    }
+
     return false;
+
+
+
+
   }
 
 
   function category_handleDragLeave(e) {
 
+    if (this.id != "bin"  && this.id != "add") {
+      d3.selectAll("#" + this.id).attr("class", function(d) {
+        d.ui_dragover = false;
+        console.log(category_get_class(d));
+        return category_get_class(d)
+      });
 
-    this.classList.remove('over'); // this / e.target is previous target element.
+    } else {
+      d3.selectAll("#" + this.id).attr("class", "categories");
+      //if it's a bin
+    }
   }
 
 
@@ -460,63 +514,139 @@ function renderUI() {
       e.stopPropagation(); // stops the browser from redirecting.
     }
 
-    this.classList.remove('over');
-
-    var parent_id;
-    var node_id;
 
     var droppedElID = e.dataTransfer.getData('text/plain');
+    var node_id;
 
-    console.log(droppedElID);
+    d3.selectAll("#" + droppedElID).data().forEach(function(d, i) {
+      node_id = d.item.id;
+    });
+
+    //handle leave instead ?
+    if (this.id != "bin" && this.id != "add") {
+
+
+    var parent_id;
+
 
     // See the section on the DataTransfer object.
-    d3.selectAll("#" + this.id).forEach(function(d, i) {
-      parent_id = d[i].__data__.item.id
-      console.log(d[i].__data__)
+    d3.selectAll("#" + this.id).data().forEach(function(d, i) {
+      parent_id = d.item.id
     });
 
-    d3.selectAll("#" + droppedElID).forEach(function(d, i) {
-      node_id = d[i].__data__.item.id;
-      d[i].__data__.item.parent_id = parent_id;
-      d[i].__data__.cat_id = lookupCategoryID(categories, parent_id);
-      d[i].__data__.center = lookupCategoryID(categories, parent_id);
-      console.log(d[i].__data__);
+
+      d3.selectAll("#" + this.id).attr("class", function(d) {
+        d.ui_dragover = false;
+        console.log(category_get_class(d));
+        return category_get_class(d)
+
+      });
+
+      d3.selectAll("#" + droppedElID).data().forEach(function(d, i) {
+      d.item.parent_id = parent_id;
+      d.cat_id = lookupCategoryID(categories, parent_id);
+      d.center = lookupCategoryID(categories, parent_id);
+    //  console.log(d[i].__data__);
     });
+
+
+    canvas.selectAll("#" + droppedElID).attr("class",function(d){
+      d.ui_drag=false;
+//      console.log(bubblefill_get_class(d));
+      return bubblefill_get_class(d)
+    });
+
+    
+    Model.updateNodeAssigntoCategory(node_id, parent_id, function() {
+   //   console.log("in the model")
+    });
+
+
+    } 
+    if (this.id == "bin" ){
+      d3.selectAll("#" + this.id).attr("class", "categories");
+      d3.selectAll("#" + droppedElID).remove();
+
+      //tbd otherwise I will remove all my bookmarks
+
+    //   Model.removeNodeId(node_id, parent_id, function() {};
+
+    }  
+    if (this.id == "add" ){
+
+      console.log("clikced add")
+      d3.selectAll("#" + this.id).attr("class", "categories");
+
+      $('#popup').bPopup({
+      easing: 'easeOutBack', //uses jQuery easing plugin
+            speed: 450,
+            transition: 'slideDown'
+        });
+                
+
+
+      //show dialog
+      //create new category
+
+      //tbd otherwise I will remove all my bookmarks
+
+    //   Model.removeNodeId(node_id, parent_id, function() {};
+
+    }  
+
+
+               
+
+    // console.log(parent_id);
+    // console.log(node_id);
+
 
     force.resume();
 
-
-    console.log(parent_id);
-    console.log(node_id);
-
-    Model.updateNodeAssigntoCategory(node_id, parent_id, function() {
-      console.log("in the model")
-    });
-
-
-    //update categories array  
-
-
-    // color_set(lookupCategoryID(categories, parent_id))
-
-
-    $("#" + droppedElID).removeClass();
-    $("#" + droppedElID).addClass('bubbleFill');
-    $("#" + droppedElID).addClass(this.id);
-    //console.log($("#" + droppedElID).attr("color"));
-
-
-    //++ modify bookmarks as well/
-
     return false;
+
+
+
+    //figure what to do with border-color
+
   }
 
 
+  $('#add').click(function(){
+    $('#popup').bPopup({
+      easing: 'easeOutBack', //uses jQuery easing plugin
+            speed: 450,
+            transition: 'slideDown'
+        });
+  });
+
+
+  $("#submit").on("click", function(){
+    var url = $('[name="addurl"]').val();
+     var category = $('[name="category"]').val();
+
+     nodes.push({
+      cat_id: 0,
+      center: 0,
+      default_center:0,
+      item: {
+        url: url,
+        title: url,
+      },
+      ui_drag: false,
+     });
+
+     console.log(nodes);
+
+       Model.getUIData(renderUI);
+
+    //alert("url "+ url);
+  //  return false;
+  })
 
   //--------Editting Functionality: End Drag and Drop to edit ------------------------------- 
 
 
-}
 
 
 

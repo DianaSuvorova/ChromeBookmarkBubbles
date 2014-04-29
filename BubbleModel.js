@@ -34,7 +34,10 @@ var BookmarkDataSingleton = (function() {
 
 		function fetchBookmarkData(callBack) {
 
+
 			if (chrome.bookmarks) {
+				node_items=[];
+				navigation_items=[];
 
 				chrome.bookmarks.getTree(function(itemTree) {
 					itemTree.forEach(function(item) {
@@ -111,6 +114,7 @@ var BookmarkDataSingleton = (function() {
 					width: null,
 					ui_click: false,
 					ui_mouseover: false,
+					ui_dragover:false,
 				});
 
 			});

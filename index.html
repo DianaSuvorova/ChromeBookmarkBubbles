@@ -7,6 +7,8 @@
 
 body{
   background-color:rgb(227,226,225);
+    font-family: Typo Slab Serif Light;
+    font-size:20px ;
 }
 
 [draggable] {
@@ -163,9 +165,54 @@ body{
     }
 
 
+img#bin{
+  position: fixed; 
+  bottom: 0px; 
+  right: 0px;
+  width:5%;
+
+   filter: url(filters.svg#grayscale); /* Firefox 3.5+ */
+    filter: gray; /* IE6-9 */
+    -webkit-filter: grayscale(1);
+}
+
+
+img#add{
+  padding: 0;
+  border:0;
+  top: 0px; 
+  width:50%;
+
+   filter: url(filters.svg#grayscale); /* Firefox 3.5+ */
+    filter: gray; /* IE6-9 */
+    -webkit-filter: grayscale(1);
+}
+
+img#bin.draggedover,img#add.draggedover,img#add:hover {
+    filter: none;
+    -webkit-filter: grayscale(0);
+}
+
+
+#popup{
+  font-size: 20px;
+  color:#555;
+  width: 400px;
+  margin: 10% auto;
+  padding: 5px 20px 13px 20px;
+  border-radius: 10px;
+  background: #fff;
+  background: -moz-linear-gradient(#fff, #999);
+  background: -webkit-linear-gradient(#fff, #999);
+  background: -o-linear-gradient(#fff, #999);
+}
+
+
 </style>
 <script src="sources/jquery-2.1.0.min.js"></script>
 <script src="sources/d3.v3.min.js"></script>
+<script src="sources/jquery-ui.js"></script>
+<script src="sources/bpopup.js"></script>
 <script src="BubbleModel.js"></script>
 <script src="Main.js"></script>
 
@@ -174,10 +221,13 @@ body{
 
 <div id="wraper" class="center">
 <div id="navigation">
-  <div id="bookmark" style="width:99%; float:left; display:inline-block;">
-    Bookmarks
-    <div class="clearfix"> </div>
+  <div id="bookmark" style="width:90%; float:left; display:inline-block;">  </div>
+  <div style="width:9%; float:left; display:inline-block;">  
+  <img  id ="add" class="categories" src="Images\Plus.png">
+ 
   </div>
+    <div class="clearfix"> </div>
+
 </div> 
 <div class="clearfix"> </div>
 
@@ -185,9 +235,18 @@ body{
  <a href="#" id="categorize">categorize</a>
 <!--  <a href="#" id="timeline">Time Line</a> -->
  <a href="#" id="reset">Reset</a>
+
+ <img  id ="bin" class="categories" src="Images\RecyclingBin.png">
+
  </div>
 </div>
 
+
+<div id="popup" style="display: none;">
+        URL   <input type="text" name="addurl" value=""><br>
+        Category<input type="text" name="category" value=""><br>
+          <button id="submit" type="button"> Submit  </button>      
+    </div>
 
 </body>
 
