@@ -15006,4 +15006,3 @@ $.widget( "ui.tooltip", {
 });
 
 }( jQuery ) );
-PreferencesEnglish

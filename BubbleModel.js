@@ -94,6 +94,14 @@ var BookmarkDataSingleton = (function() {
 
 		}
 
+
+		function createNewBookmarkinBookMarkBar(url,callback){
+			      chrome.bookmarks.create({'parentId': '1',
+                  'title': url,
+                  'url': url}, 
+                  callback());
+		}
+
 		function lookupCategoryID(navigation_items, node_item) {
 			for (var i = 0; i < navigation_items.length; i++) {
 				if (navigation_items[i].id === node_item.parent_id) {
@@ -169,8 +177,15 @@ var BookmarkDataSingleton = (function() {
 			updateNodeAssigntoCategory: function(node_id, cat_id, callBackonBookmarksUpdated) {
 				updateBookmarkParentForNode(node_id, cat_id, callBackonBookmarksUpdated)
 
-			}
+			},
 
+			createNewBookmark: function(url,parent_id,callback){
+				createNewBookmarkinFolder(url,parent_id,callback)
+			},
+
+			createNewBookmark: function(url,callback){
+				createNewBookmarkinBookMarkBar(url,callback)
+			}
 			//end of public methods   
 
 		};
