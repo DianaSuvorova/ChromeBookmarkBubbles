@@ -14,29 +14,17 @@ function lookupCategoryID(categories, itemid) {
 }
 
 
-function getUICategoryCenters(categoriesUIElements, width, height) {
+function getUICategoryCenters(width, height) {
   var centers = [];
 
   var jq_categories = document.querySelectorAll('.categories');
   [].forEach.call(jq_categories, function(cat) {
-    console.log(cat);
-    centers.push({
-      x: cat.offset().left,
-      y: height / 2
-    })
+     centers.push({
+          x: $(cat).offset().left,
+       y: height / 2
+      })
   })
 
-  // d3.selectAll(".categories").forEach(function(d,i) {
-  //    console.log(d);
-  //   //     console.log($("#category-"+i).offset().left);
-  //   centers.push({
-  //     x: $("#category-"+i).offset().left,
-  //     y: height / 2
-  //   })
-  //   console.log(centers);
-  // });
-
-  console.log(centers);
   return centers;
 }
 
@@ -52,12 +40,7 @@ var color_set = d3.scale.category10();
 var nodes = [];
 var categories = [];
 var force;
-
 var bubble;
-
-
- var width ; 
- var height
 
 $(document).ready(function() {
 
@@ -67,9 +50,7 @@ $(document).ready(function() {
     function(){
         nodes = Model.getNodes();
         categories = Model.getCategories();
-
     renderUI();
-
   })
 })
 
@@ -79,15 +60,9 @@ function renderUI() {
 
 
   var canvas = d3.select("#canvas");
-  width = canvas.style("width").slice(0, -2);
-   height = canvas.style("height").slice(0, -2);
+  var width = canvas.style("width").slice(0, -2);
+  var height = canvas.style("height").slice(0, -2);
 
-
-
-
-  console.log(categories);
-  console.log(nodes);
-  console.log(Model.getNavigationItems());
 
 
 
@@ -115,10 +90,9 @@ function renderUI() {
 
 
 
-   var centers = [{x:200,y:200},{x:400,y:200},{x:600,y:200},{x:800,y:200},{x:1000,y:200}]
-   //getUICategoryCenters(bookmarks, width, height);
+   var centers = getUICategoryCenters( width, height);
 
-   console.log(nodes);
+   //console.log(centers);
 
    bubble = canvas.selectAll("div.bubble").data(nodes);
    bubble.enter().append("div")
@@ -126,12 +100,7 @@ function renderUI() {
     .attr("id", function(d, i) {
       return "bubble-" + i
     });
-  //.call(drag);
 
-// bubble.enter().append().attr("class", "bubble")
-//     .attr("id", function(d, i) {
-//       return "bubble-" + i
-//     });
 console.log(bubble)
 
 
@@ -460,24 +429,6 @@ $("#submit").on("click", function() {
 
   force.stop();
 
-  Model.createNewBookmark(url,function(){
-  Model.getUIData(function(){
-    console.log("getUI created");
-      console.log(Model.getNavigationItems());
-
-     nodes = Model.getNodes();
-    categories = Model.getCategories();
-    console.log("after add")
-   console.log(nodes);
-
-   renderUI();
-
-});
-
-
-
-
-  });
 
 
 
@@ -486,9 +437,72 @@ $("#submit").on("click", function() {
   //  return false;
 })
 
+
+
+$(function() {
+  $('.enter').click(function() {
+    $('.inputurl').slideToggle();
+  });
+});
+
+$(document).keyup(function(e) {
+  if ($("input.inputnewurl") && (e.keyCode === 13)) {
+       addNewURL( $("input.inputnewurl").val())
+      $('.inputurl').slideToggle();
+
+  }
+})
+
+
+$(function() {
+  $('.enterCat').click(function() {
+    $('.inputcat').slideToggle();
+  });
+});
+
+// $(document).keyup(function(e) {
+//   if ($("input.inputnewcat") && (e.keyCode === 13)) {
+//     //alert($("input.inputnewcat").val())
+//         addNewCategory( $("input.inputnewcat").val())
+//        $('.inputcat').slideToggle();
+
+//   }
+// })
+
   //--------End UI Interaction Functions: Categorize,Reset ------------------------------- 
 
 }
+
+
+function addNewURL(url)
+{
+    Model.createNewBookmark(url, function() {
+      Model.getUIData(
+        function() {
+          nodes = Model.getNodes();
+          categories = Model.getCategories();
+
+          renderUI();
+
+        })
+    });
+}
+
+
+function addNewCategory(name)
+{
+    Model.createNewCategory(name, function() {
+      Model.getUIData(
+        function() {
+          nodes = Model.getNodes();
+          categories = Model.getCategories();
+          console.log(categories);
+          renderUI();
+
+        })
+    });
+}
+
 
 //Calculate bubble class
 function category_get_class(d) {
@@ -719,15 +733,3 @@ function category_handleDrop(e) {
 
 
 //Add new to JSON
-$(function() {
-  $('#enter').click(function() {
-    $('.inputfield').slideToggle();
-  });
-});
-
-$(document).keyup(function(e) {
-  if ($("input.inputnewurl") && (e.keyCode === 13)) {
-    //   alert('I told ya there is no Sorry no back end:(')
-
-  }
-});

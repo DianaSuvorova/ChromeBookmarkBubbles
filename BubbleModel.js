@@ -102,6 +102,13 @@ var BookmarkDataSingleton = (function() {
                   callback());
 		}
 
+		function createNewCategoryinBookMarkBar(name,callback){
+			      chrome.bookmarks.create({'parentId': '1',
+                  'title': name}, 
+                  function(newFolder) {callback();}
+                  );
+		}
+
 		function lookupCategoryID(navigation_items, node_item) {
 			for (var i = 0; i < navigation_items.length; i++) {
 				if (navigation_items[i].id === node_item.parent_id) {
@@ -185,6 +192,10 @@ var BookmarkDataSingleton = (function() {
 
 			createNewBookmark: function(url,callback){
 				createNewBookmarkinBookMarkBar(url,callback)
+			},
+
+			createNewCategory: function(name,callback){
+				createNewCategoryinBookMarkBar(name,callback)
 			}
 			//end of public methods   
 
