@@ -473,34 +473,26 @@ $(function() {
 
 }
 
+function reloadUI() {
 
-function addNewURL(url)
-{
-    Model.createNewBookmark(url, function() {
-      Model.getUIData(
-        function() {
-          nodes = Model.getNodes();
-          categories = Model.getCategories();
+  Model.getUIData(
+    function() {
+      nodes = Model.getNodes();
+      categories = Model.getCategories();
 
-          renderUI();
+      renderUI();
 
-        })
-    });
+    })
 }
 
 
-function addNewCategory(name)
-{
-    Model.createNewCategory(name, function() {
-      Model.getUIData(
-        function() {
-          nodes = Model.getNodes();
-          categories = Model.getCategories();
-          console.log(categories);
-          renderUI();
+function addNewURL(url) {
+  Model.createNewBookmark(url, reloadUI);
+}
 
-        })
-    });
+
+function addNewCategory(name){
+    Model.createNewCategory(name, reloadUI);
 }
 
 

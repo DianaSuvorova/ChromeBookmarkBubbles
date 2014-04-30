@@ -95,11 +95,16 @@ var BookmarkDataSingleton = (function() {
 		}
 
 
-		function createNewBookmarkinBookMarkBar(url,callback){
-			      chrome.bookmarks.create({'parentId': '1',
-                  'title': url,
-                  'url': url}, 
-                  callback());
+		function createNewBookmarkinBookMarkBar(url, callback) {
+			chrome.bookmarks.create({
+					'parentId': '1',
+					'title': url,
+					'url': url
+				},
+				function(result) {
+					callback();
+				}
+			);
 		}
 
 		function createNewCategoryinBookMarkBar(name,callback){
@@ -186,9 +191,9 @@ var BookmarkDataSingleton = (function() {
 
 			},
 
-			createNewBookmark: function(url,parent_id,callback){
-				createNewBookmarkinFolder(url,parent_id,callback)
-			},
+			// createNewBookmark: function(url,parent_id,callback){
+			// 	createNewBookmarkinFolder(url,parent_id,callback)
+			// },
 
 			createNewBookmark: function(url,callback){
 				createNewBookmarkinBookMarkBar(url,callback)
