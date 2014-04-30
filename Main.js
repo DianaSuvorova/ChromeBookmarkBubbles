@@ -41,6 +41,16 @@ var nodes = [];
 var categories = [];
 var force;
 var bubble;
+var bookmarks;
+  var bookmark ;
+
+  var canvas;
+  var width;
+  var height;
+
+
+
+
 
 $(document).ready(function() {
 
@@ -55,25 +65,15 @@ $(document).ready(function() {
 })
 
 
-function renderUI() {
+ function updateCategories() {
 
 
 
-  var canvas = d3.select("#canvas");
-  var width = canvas.style("width").slice(0, -2);
-  var height = canvas.style("height").slice(0, -2);
+   var cat_width_pct = Math.floor((bookmark.style("width").slice(0, -2) / categories.length - 2 * 2) / bookmark.style("width").slice(0, -2) * 100) + '%';
 
 
 
-
-  var bookmark = d3.select("#bookmark");
-  var cat_width_pct = Math.floor((bookmark.style("width").slice(0, -2) / categories.length - 2 * 2) / bookmark.style("width").slice(0, -2) * 100) + '%';
-
-
-  //---------Main UI Object rendering----------------------------------------------------- 
-
-  var bookmarks = bookmark.selectAll(".categories").data(categories)
-    .enter().append("div")
+    bookmarks.enter().append("div")
     .attr("class", "categories")
     .attr("id", function(d, i) {
       return "category-" + i
@@ -89,107 +89,45 @@ function renderUI() {
     });
 
 
+        bookmarks.style("width", function(d, i) {return cat_width_pct});
 
-   var centers = getUICategoryCenters( width, height);
-
-   //console.log(centers);
-
-   bubble = canvas.selectAll("div.bubble").data(nodes);
-   bubble.enter().append("div")
-    .attr("class", "bubble")
-    .attr("id", function(d, i) {
-      return "bubble-" + i
-    });
-
-console.log(bubble)
-
-
-  var bubbleFill = bubble.append("div")
-    .attr("id", function(d, i) {
-      return "bubbleFill-" + i
-    })
-    .attr("class", bubblefill_get_class)
-    .style("background-image", function(d, i) {
-      return 'url(http://api.thumbalizr.com/?url=' + d.item.url + '&width=250)'
-    })
-  //'url(http://api.page2images.com/directlink?p2i_url='+d.image.url+'&p2i_key=c022422933354341&&p2i_size=300x300)'})
-  //http://immediatenet.com/t/m?Size=1024x768&URL=http://immediatenet.com/"/
-  //{ return "url("+d.image.url_full+")"})
-  .style("width", radius + "px")
-    .style("height", radius + "px")
-    .attr("draggable", "true")
-  //.style("background-color",function(d,i){ return color(i)})
-  // .on("contextmenu",node_drag)
-  .on("click", bubble_mouseover)
-    .on("mouseout", bubble_mouseout)
-
-  .on("dblclick", bubble_click);
-  //either click or drag
-
-
-
-
-  //--------End Main UI Object rendering--------------------------------------------------        
-
-  //--------D3 Force Layout---------------------------------------------------------------  
-  force = d3.layout.force()
-    .nodes(nodes)
-    .size([width, height])
-    .charge(-Math.pow(radius / 2 + padding, 1) * 20)
-    .gravity(0)
-  //.friction(0.87)
-  .on("tick", tick)
-    .start();
-
-
-
-  function tick(e) {
-    var k = 0.2 * e.alpha;
-    nodes.forEach(function(o, i) {
-      o.y += (centers[o.center].y - o.y) * k;
-      o.x += (centers[o.center].x - o.x) * k;
-    });
-
-    bubble
-      .style("left", function(d, i) {
-        if (d.x < 0) d.x = -d.x;
-        return d.x + "px";
-      })
-      .style("top", function(d, i) {
-        if (d.y < 0) d.y = -d.y;
-        return d.y + "px";
-      });
-
-    // .style("left", function(d, i) {
-    //   return d.x + "px";
-    // })
-    //   .style("top", function(d, i) {
-    //     return d.y + "px";
-    //   });
   }
 
 
+function renderUI() {
+
+
+  bookmark = d3.select("#bookmark")
+   canvas = d3.select("#canvas");
+   width = canvas.style("width").slice(0, -2);
+   height = canvas.style("height").slice(0, -2);
+
+
+
+
+  //---------Main UI Object rendering----------------------------------------------------- 
+
+
+  //  updateCategories();
+
+     BookmarkNavigationLayout = new NavigationLayout("#navigation");
+     BookmarkNavigationLayout.initializeLayout(categories);
+
+    centers=BookmarkNavigationLayout.getNavigationCenters(height);
+    console.log(centers);
+
+
+   bubbleForceLayout = new ForceLayout("#canvas",centers);
+   bubbleForceLayout.initializeLayout(nodes);
+
+
+
+
+
+
+
+
   //--------End D3 Force Layout----------------------------------------------------------------  
-
-
-
-  var jq_bubbleFill = document.querySelectorAll('.bubbleFill');
-  [].forEach.call(jq_bubbleFill, function(bubbleFill) {
-    bubbleFill.addEventListener('dragstart', bubble_handleDragStart, false);
-    bubbleFill.addEventListener('dragend', bubble_handleDragEnd, false);
-    //  bubbleFill.addEventListener('drop', function(){console.log("drrrop")}, false);
-  });
-
-
-  var jq_categories = document.querySelectorAll('.categories');
-  [].forEach.call(jq_categories, function(cat) {
-    cat.addEventListener('dragenter', category_handleDragEnter, false);
-    cat.addEventListener('dragover', category_handleDragOver, false);
-    cat.addEventListener('dragleave', category_handleDragLeave, false);
-    cat.addEventListener('drop', category_handleDrop, false);
-
-  });
-
 
 
 }
@@ -439,14 +377,12 @@ $("#submit").on("click", function() {
 
 
 
-$(function() {
-  $('.enter').click(function() {
-    $('.inputurl').slideToggle();
-  });
-});
 
-$(document).keyup(function(e) {
-  if ($("input.inputnewurl") && (e.keyCode === 13)) {
+  $('.enter').click(function() {$('.inputurl').slideToggle()});
+
+
+$("input.inputnewurl").keyup(function(e) {
+  if (e.keyCode === 13) {
        addNewURL( $("input.inputnewurl").val())
       $('.inputurl').slideToggle();
 
@@ -454,20 +390,18 @@ $(document).keyup(function(e) {
 })
 
 
-$(function() {
-  $('.enterCat').click(function() {
-    $('.inputcat').slideToggle();
-  });
-});
 
-// $(document).keyup(function(e) {
-//   if ($("input.inputnewcat") && (e.keyCode === 13)) {
-//     //alert($("input.inputnewcat").val())
-//         addNewCategory( $("input.inputnewcat").val())
-//        $('.inputcat').slideToggle();
+  $('.enterCat').click(function() {$('.inputcat').slideToggle();});
 
-//   }
-// })
+
+$("input.inputnewcat").keyup(function(e) {
+  if (e.keyCode === 13) {
+    //alert($("input.inputnewcat").val())
+        addNewCategory( $("input.inputnewcat").val().replace("\r", "<br>"))
+       $('.inputcat').slideToggle();
+
+  }
+})
 
   //--------End UI Interaction Functions: Categorize,Reset ------------------------------- 
 
@@ -479,8 +413,11 @@ function reloadUI() {
     function() {
       nodes = Model.getNodes();
       categories = Model.getCategories();
+      console.log(categories);
 
       renderUI();
+
+    //  force.tick();
 
     })
 }

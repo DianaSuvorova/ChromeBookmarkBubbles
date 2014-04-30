@@ -43,6 +43,15 @@ var BookmarkDataSingleton = (function() {
 					itemTree.forEach(function(item) {
 						processNode(item);
 					});
+
+					navigation_items.sort(function(a, b){
+					    if(a.id < b.id) return -1;
+					    if(a.id > b.id) return 1;
+					    return 0;
+					})
+
+					console.log(navigation_items)
+
 					callBack();
 				});
 			} else {
@@ -61,13 +70,16 @@ var BookmarkDataSingleton = (function() {
 				});
 			}
 
-			var isFolderWithChildren = !node.url && node.children.length > 0;
+			var isFolderWithChildren = !node.url 
+			var isFoldernotdefaulhidden = node.title !="Other Bookmarks" && node.title !="Mobile Bookmarks"
+			//&& node.children.length > 0;
 			var isRoot = node.title.length == 0;
 
-			if (isFolderWithChildren && !isRoot) {
+			if (isFolderWithChildren && !isRoot && isFoldernotdefaulhidden) {
 				navigation_items.push({
 					id: node.id,
-					title: node.title
+					title: node.title,
+					date: node.dateAdded
 				});
 			}
 
@@ -154,6 +166,7 @@ var BookmarkDataSingleton = (function() {
 					item: node_items[i],
 					cat_id: lookupCategoryID(navigation_items, node_items[i]),
 					ui_drag: false,
+					radius: 70
 				})
 			});
 
