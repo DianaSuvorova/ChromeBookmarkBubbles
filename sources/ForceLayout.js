@@ -32,6 +32,8 @@ function ForceLayout(element, centers) {
 
 
 	this.addNode = function(node) {
+		node.x=0;
+		node.y=0;
 		nodes.push(node);
 		update();
 	}
@@ -66,7 +68,7 @@ function ForceLayout(element, centers) {
 			.attr("id", function(d, i) {
 				return "bubbleFill-" + i
 			})
-			.attr("class", function(d) {return d.get_class()})
+			.attr("class", "bubbleFill")
 			.style("background-image", function(d, i) {
 				return 'url(http://api.thumbalizr.com/?url=' + d.item.url + '&width=250)'
 			})

@@ -81,19 +81,21 @@ function initializeUI() {
   nodes = Model.getNodes();
   categories = Model.getCategories();
 
-  bookmarkNavigationLayout = new NavigationLayout("#navigation",color_set);
+  bookmarkNavigationLayout = new NavigationLayout("#navigation", color_set);
   bookmarkNavigationLayout.initializeLayout(categories);
-  centers = { default_center: {y: height/2,x: width/2},
-              cat_centers :  bookmarkNavigationLayout.getNavigationCenters(height)};
-
-  console.log(centers);            
+  centers = {
+    default_center: {
+      y: height / 2,
+      x: width / 2
+    },
+    cat_centers: bookmarkNavigationLayout.getNavigationCenters(height)
+  };
 
   bubbleForceLayout = new ForceLayout("#canvas", centers);
   bubbleForceLayout.initializeLayout(nodes);
 
 
   $("#categorize").on("click", function(e) {
-    console.log("cat")
     bubbleForceLayout.categorize();
   });
 
@@ -102,28 +104,35 @@ function initializeUI() {
   });
 
 
-
-$("input.inputnewurl").keyup(function(e) {
-  if (e.keyCode === 13) {
-       addNewURL( $("input.inputnewurl").val())
+  $("input.inputnewurl").keyup(function(e) {
+    if (e.keyCode === 13) {
+      addNewURL($("input.inputnewurl").val())
       $('.inputurl').slideToggle();
 
-  }
-})
+    }
+  })
 
 
 
-  $('.enterCat').click(function() {$('.inputcat').slideToggle();});
+  $('.enterCat').click(function() {
+    $('.inputcat').slideToggle();
+  });
 
 
-$("input.inputnewcat").keyup(function(e) {
-  if (e.keyCode === 13) {
-    //alert($("input.inputnewcat").val())
-        addNewCategory( $("input.inputnewcat").val().replace("\r", "<br>"))
-       $('.inputcat').slideToggle();
+  $("input.inputnewcat").keyup(function(e) {
+    if (e.keyCode === 13) {
+      //alert($("input.inputnewcat").val())
+      addNewCategory($("input.inputnewcat").val().replace("\r", "<br>"))
+      $('.inputcat').slideToggle();
 
-  }
-})
+    }
+  })
+
+
+  $('.enter').click(function() {
+    $('.inputurl').slideToggle()
+  });
+
 
 
 
@@ -138,36 +147,6 @@ function renderStaticUIElements() {
   //--------UI Interaction Functions: Categorize,Reset ------------------------------- 
 
 
-
-  $('#add').click(function() {
-  $('#popup').bPopup({
-    easing: 'easeOutBack', //uses jQuery easing plugin
-    speed: 450,
-    transition: 'slideDown'
-  });
-});
-
-
-$("#submit").on("click", function() {
-  var url = $('[name="addurl"]').val();
-  var category = $('[name="category"]').val();
-
-
-  //console.log(nodes);
-
-  force.stop();
-
-
-
-
-
-  //alert("url "+ url);
-  //  return false;
-})
-
-
-
-$('.enter').click(function() {$('.inputurl').slideToggle()});
 
 
 
@@ -192,6 +171,7 @@ function reloadUI() {
 
 
 function addNewURL(url) {
+  console.log(url);
   Model.createNewBookmark(url, function(newnode) {
     bubbleForceLayout.addNode(newnode)
 

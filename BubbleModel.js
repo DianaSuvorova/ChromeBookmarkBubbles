@@ -50,8 +50,6 @@ var BookmarkDataSingleton = (function() {
 						return 0;
 					})
 
-					console.log(navigation_items)
-
 					callBack();
 				});
 			} else {
@@ -120,7 +118,6 @@ var BookmarkDataSingleton = (function() {
 
 		}
 		function processBookmark(node) {
-			console.log("processnode");
 			var node_item = {
 				id: node.id,
 				parent_id: node.parentId,
@@ -251,7 +248,7 @@ var BookmarkDataSingleton = (function() {
 			createNewBookmark: function(url, callback) {
 				var resultnode;
 				createNewBookmarkinBookMarkBar(url, function(result){
-				//	console.log(result)
+					console.log(result)
 					callback(result)	
 				});
 			},
