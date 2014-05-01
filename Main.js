@@ -68,6 +68,7 @@ $(document).ready(function() {
 function initializeUI() {
 
 
+  var color_set = d3.scale.category10();
 
   canvas = d3.select("#canvas");
   height = canvas.style("height").slice(0, -2);
@@ -82,7 +83,7 @@ function initializeUI() {
   nodes = Model.getNodes();
   categories = Model.getCategories();
 
-  bookmarkNavigationLayout = new NavigationLayout("#navigation");
+  bookmarkNavigationLayout = new NavigationLayout("#navigation",color_set);
   bookmarkNavigationLayout.initializeLayout(categories);
   centers = bookmarkNavigationLayout.getNavigationCenters(height);
 
@@ -90,184 +91,10 @@ function initializeUI() {
   bubbleForceLayout.initializeLayout(nodes);
 }
 
-//------------------End renderUI
 
-//--------bubble Interaction Functions: Mouseover,MouseOut ------------------------------- 
 
-function bubble_click(d, i) {
 
-  if (d3.event.defaultPrevented) return;
-  return (d.item.url == "") ? "" : window.open(d.item.url);
-}
 
-
-
-function bubble_mouseover(d, i) {
-
-
-  d3.selectAll("#bubble-" + i).select('.tooltip').remove();
-
-  d3.event.preventDefault();
-  //  force.stop();
-
-
-  //center of an expanded div is at the mouse
-  // d3.selectAll("#bubble-"+i).transition().duration(250).ease("linear")
-  //   .style("top", (mouseY- 120 )+"px" ) 
-  //   .style("left", (mouseX- 120)+"px" );
-
-
-  //keep center in the center
-
-  // console.log("onmouseover")
-
-  bubbletop = parseFloat(d3.select("#bubble-" + i).style("top"));
-  bubbleleft = parseFloat(d3.select("#bubble-" + i).style("left"));
-
-  // d3.selectAll("#bubble-"+i).transition().duration(750).ease("linear")
-  //    .style("top", bubbletop-(expanded_radius-radius)/4 + "px" ) 
-  //    .style("left", bubbleleft-(expanded_radius-radius)/4 + "px"); 
-
-  var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
-
-  d3.selectAll(".bubbleFill").style("opacity", 0.5);
-
-  d3.select(this).transition().delay(200).duration(500).ease("circle")
-    .style('width', expanded_radius + 'px')
-    .style('height', expanded_radius + 'px')
-    .style("border-color", color_set(d.cat_id))
-    .style("opacity", 1)
-    .style("z-index", 1)
-    .each("end", function(d) {
-
-      d3.select(this).append('div')
-        .attr('class', 'tooltip')
-        .style("background-color", color_set(d.cat_id))
-        .style("top", expanded_radius / 4 + 3 + "px")
-        .style("left", 3 + "px")
-        .style("opacity", 0.9)
-        .style("z-index", 2)
-        .append("span")
-      // .on ("click", window.open(d.item.url))
-      .text(function(d, i) {
-        return ((d.item.url == "") ? "no link " : d.item.title)
-      });
-
-    });
-
-  d3.selectAll("#" + curr_class).style('color', color_set(d.cat_id));
-
-}
-
-function bubble_mouseout(d, i) {
-  //force.gravity(0.05);
-
-  //  if (d3.event.defaultPrevented) return;
-
-  //bring bubble's center where it was before expanding
-
-
-  //console.log("onmouseout")
-
-  // d3.selectAll("#bubble-"+i).transition().duration(5750).ease("linear")
-  //   .style("top", bubbletop + "px" ) 
-  //   .style("left", bubbleleft + "px" ); 
-
-  var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
-
-
-  var category = d3.selectAll("#" + curr_class);
-
-
-
-  d3.selectAll(".bubbleFill").transition().duration(50).ease("linear")
-    .style("opacity", 1)
-    .style('width', radius + 'px')
-    .style('height', radius + 'px')
-  //.style("border-color","rgb(179,179,179)")
-  //   .style('border-color','rgb(179,179,179)')
-  .style("z-index", 0);
-
-  d3.selectAll("#bubble-" + i).select('.tooltip').remove();
-  d3.selectAll("#bubble-" + i).selectAll(".bubbleFill").style("border-color", function() {
-    return (category.attr("class") == 'categories') ? 'rgb(152,151,150)' : d.color;
-  });
-  category.style('color', function() {
-    return (d3.select(this).attr("class") == 'categories') ? 'rgb(152,151,150)' : d.color;
-  });
-
-}
-//--------End bubble Interaction Functions: Mouseover,MouseOut ------------------------------- 
-
-//   var mouseX;
-//   var mouseY;
-//   $('#canvas').mousemove( function(e) {
-//      var offset = $(this).offset();
-//     // get mouse position relative to the #canvas  as bubbles top and  left position is set relative to the dic
-//      mouseX = e.pageX-offset.left; 
-//      mouseY = e.pageY-offset.top;
-// });
-
-
-// var bubbletop;
-// var bubbleleft;
-
-//var transitionE = transition().duration(7500).ease("circle");
-
-
-
-//--------Category Interaction Functions: Clicked -------------------------------   
-function category_clicked(d, i) {
-
-
-  var cur_class = d3.select(this).attr("class");
-
-  if (!d.ui_click)
-
-  {
-    d.ui_click = true;
-
-    d3.select(this).attr("class", cur_class + ' selected')
-      .style("color", color_set(i))
-      .style("border-color", color_set(i));
-
-
-    bubble.selectAll(".category-" + i).style("border-color", color_set(i));
-  } else {
-
-    d.ui_click = false;
-
-    d3.select(this).attr("class", cur_class.replace(" selected", ""))
-      .style("color", "rgb(152,151,150)")
-      .style("border-color", "transparent");
-
-    bubble.selectAll(".category-" + i).style("border-color", "rgb(179,179,179)");
-
-  }
-}
-
-function category_mouseover(d, i) {
-
-  d.ui_mouseover = true;
-
-  if (d.ui_click == false) {
-    d3.select(this).style('color', color_set(i));
-  }
-
-}
-
-function category_mouseout(d, i) {
-
-  d.ui_mouseover = false;
-
-  if (d.ui_click == false) {
-    d3.select(this).style('color', 'rgb(179,179,179)');
-  }
-
-}
-
-
-//--------End Category Interaction Functions: Clicked -------------------------------   
 
 function renderStaticUIElements() {
 
@@ -404,15 +231,7 @@ function category_get_class(d) {
 }
 
 
-function bubblefill_get_class(d) {
-  var bubblefill_class = 'bubbleFill' + ' ';
 
-  bubblefill_class += 'category-' + d.cat_id + ' ';
-  if (d.ui_drag) {
-    bubblefill_class += 'dragged' + ' '
-  }
-  return bubblefill_class;
-}
 
 //--------Editting Functionality: Drag and Drop to edit ------------------------------- 
 
@@ -425,31 +244,7 @@ function bubblefill_get_class(d) {
 
 
 
-function bubble_handleDragStart(e) {
 
-
-  e.dataTransfer.setData('text/plain', this.id);
-
-  d3.selectAll("#" + this.id).attr("class", function(d) {
-    d.ui_drag = true;
-    return bubblefill_get_class(d)
-  });
-
-  e.dataTransfer.effectAllowed = 'move';
-
-}
-
-
-function bubble_handleDragEnd(e) {
-
-  d3.selectAll("#" + this.id).attr("class", function(d) {
-    d.ui_drag = false;
-    //      console.log(bubblefill_get_class(d));
-    return bubblefill_get_class(d)
-  });
-  return false;
-
-}
 
 function category_handleDragOver(e) {
 
@@ -609,17 +404,3 @@ function category_handleDrop(e) {
 
 
 
-
-//--------Editting Functionality: End Drag and Drop to edit ------------------------------- 
-
-
-
-
-
-
-
-
-//end drag-and-drop
-
-
-//Add new to JSON

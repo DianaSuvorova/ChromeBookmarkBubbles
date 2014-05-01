@@ -171,6 +171,13 @@ var BookmarkDataSingleton = (function() {
 					ui_click: false,
 					ui_mouseover: false,
 					ui_dragover: false,
+					get_class : function(){
+						var cat_class= 'categories' + ' ';
+						if (this.ui_dragover){
+							cat_class += "over ";
+						}
+						return cat_class;
+					}
 				});
 
 			});
@@ -189,7 +196,17 @@ var BookmarkDataSingleton = (function() {
 					radius: null,
 					item: node_items[i],
 					cat_id: lookupCategoryID(navigation_items, node_items[i]),
-					ui_drag: false
+					ui_drag: false,
+					get_class: function() {
+						var bubblefill_class = 'bubbleFill' + ' ';
+
+						bubblefill_class += 'category-' + this.cat_id + ' ';
+						if (this.ui_drag) {
+							bubblefill_class += 'dragged' + ' '
+						}
+						return bubblefill_class;
+					}
+
 				})
 			});
 
