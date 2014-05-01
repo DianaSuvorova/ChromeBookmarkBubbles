@@ -5,6 +5,24 @@ function ForceLayout(element, centers) {
 	var height = canvas.style("height").slice(0, -2);
 
 
+	this.reset = function() {
+
+		nodes.forEach(function(o, i) {
+			o.center = -1;
+		})
+		force.resume();
+	}
+
+	this.categorize = function() {
+	    nodes.forEach(function(o, i) {
+
+	      o.center = o.cat_id;
+	    })
+	    force.resume();
+	}
+
+
+
 	this.initializeLayout = function(initNodes) {
 		for (var i = 0; i < initNodes.length; i++) {
 			nodes.push(initNodes[i]);
@@ -34,64 +52,6 @@ function ForceLayout(element, centers) {
    	       .on("drag", dragMove)
           .on("dragend", dragEnd);
 
-         function dragStart(d){
-  			d3.select(this).classed("fixed", d.fixed = true);
-
-         };
-
-		function dragMove(d, i) {
-
-		var cat ;
-
-			d3.selectAll("div.categories").each(function(cat_d, cat_i) {
-
-				cat = "#category-"+cat_i;
-
-					if (overlaps("#bubble-" + i, cat)) {
-
-						d3.selectAll(cat).attr("class", function(d) {
-							d.ui_dragover = true;
-							return d.get_class();
-						});
-					} else {
-
-						d3.selectAll(cat).attr("class", function(d) {
-							d.ui_dragover = false;
-							return d.get_class();
-						});
-					}
-				}
-
-			);
-			d.px += d3.event.dx;
-			d.py += d3.event.dy;
-			d.x += d3.event.dx;
-			d.y += d3.event.dy;
-			tick(); // this is the key to make it work together with updating both px,py,x,y on d !
-		}
-
-		function dragEnd(d, i) {
-			
-			var cat;
-			var node_id=d.item.id
-
-			d3.selectAll("div.categories").each(function(cat_d, cat_i) {
-
-					cat = "#category-" + i;
-
-					console.log(cat_d);
-					parent_id=cat_d.item.id;
-
-				    Model.updateNodeAssigntoCategory(node_id, parent_id, function() {
-				         console.log("in the model")
-				    });
-				}
-
-			);
-
-			d3.select(this).classed("fixed", d.fixed = true);
-		}
-
 
 		var node = canvas.selectAll("div.bubble").data(nodes);
 
@@ -119,14 +79,21 @@ function ForceLayout(element, centers) {
 
 		node.exit().remove();
 
-		force.on("tick",tick);
+		force.on("tick", tick);
 
-		 function tick() {
+		function tick() {
 			var k = 0.2 * force.alpha();
-			nodes.forEach(function(o, i) {
-				o.y += (this.centers[o.center].y - o.y) * k;
 
-				o.x += (this.centers[o.center].x - o.x) * k;
+			nodes.forEach(function(o, i) {
+				if (o.center == -1) {
+					o.y += (this.centers.default_center.y - o.y) * k;
+
+					o.x += (this.centers.default_center.x - o.x) * k;
+
+				} else {
+					o.y += (this.centers.cat_centers[o.center].y - o.y) * k;
+					o.x += (this.centers.cat_centers[o.center].x - o.x) * k;
+				}
 			});
 
 			node
@@ -140,7 +107,6 @@ function ForceLayout(element, centers) {
 				});
 
 		};
-
 		force.start();
 
 
@@ -210,5 +176,62 @@ function ForceLayout(element, centers) {
 
 		}
 
+	         function dragStart(d){
+  			d3.select(this).classed("fixed", d.fixed = true);
+
+         };
+
+		function dragMove(d, i) {
+
+		var cat ;
+
+			d3.selectAll("div.categories").each(function(cat_d, cat_i) {
+
+				cat = "#category-"+cat_i;
+
+					if (overlaps("#bubble-" + i, cat)) {
+
+						d3.selectAll(cat).attr("class", function(d) {
+							d.ui_dragover = true;
+							return d.get_class();
+						});
+					} else {
+
+						d3.selectAll(cat).attr("class", function(d) {
+							d.ui_dragover = false;
+							return d.get_class();
+						});
+					}
+				}
+
+			);
+			d.px += d3.event.dx;
+			d.py += d3.event.dy;
+			d.x += d3.event.dx;
+			d.y += d3.event.dy;
+			tick(); // this is the key to make it work together with updating both px,py,x,y on d !
+		}
+
+		function dragEnd(d, i) {
+			
+			var cat;
+			var node_id=d.item.id
+
+			d3.selectAll("div.categories").each(function(cat_d, cat_i) {
+
+					cat = "#category-" + i;
+
+					console.log(cat_d);
+					parent_id=cat_d.item.id;
+
+				    Model.updateNodeAssigntoCategory(node_id, parent_id, function() {
+				         console.log("in the model")
+				    });
+				}
+
+			);
+
+			d3.select(this).classed("fixed", d.fixed = false);
+		}	
 		
 }

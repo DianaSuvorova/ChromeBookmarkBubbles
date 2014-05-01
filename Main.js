@@ -55,8 +55,6 @@ var bubbleForceLayout;
 
 $(document).ready(function() {
 
-  renderStaticUIElements();
-
   Model.getUIData(
     function(){     
     initializeUI();
@@ -85,12 +83,51 @@ function initializeUI() {
 
   bookmarkNavigationLayout = new NavigationLayout("#navigation",color_set);
   bookmarkNavigationLayout.initializeLayout(categories);
-  centers = bookmarkNavigationLayout.getNavigationCenters(height);
+  centers = { default_center: {y: height/2,x: width/2},
+              cat_centers :  bookmarkNavigationLayout.getNavigationCenters(height)};
+
+  console.log(centers);            
 
   bubbleForceLayout = new ForceLayout("#canvas", centers);
   bubbleForceLayout.initializeLayout(nodes);
-}
 
+
+  $("#categorize").on("click", function(e) {
+    console.log("cat")
+    bubbleForceLayout.categorize();
+  });
+
+  $("#reset").on("click", function(e) {
+    bubbleForceLayout.reset();
+  });
+
+
+
+$("input.inputnewurl").keyup(function(e) {
+  if (e.keyCode === 13) {
+       addNewURL( $("input.inputnewurl").val())
+      $('.inputurl').slideToggle();
+
+  }
+})
+
+
+
+  $('.enterCat').click(function() {$('.inputcat').slideToggle();});
+
+
+$("input.inputnewcat").keyup(function(e) {
+  if (e.keyCode === 13) {
+    //alert($("input.inputnewcat").val())
+        addNewCategory( $("input.inputnewcat").val().replace("\r", "<br>"))
+       $('.inputcat').slideToggle();
+
+  }
+})
+
+
+
+}
 
 
 
@@ -99,38 +136,6 @@ function initializeUI() {
 function renderStaticUIElements() {
 
   //--------UI Interaction Functions: Categorize,Reset ------------------------------- 
-
-  $("#categorize").on("click", function(e) {
-    nodes.forEach(function(o, i) {
-      o.center = o.cat_id;
-      o.fixed = false;
-    })
-
-    force.resume();
-    return false;
-  });
-
-
-  $("#reset").on("click", function(e) {
-    nodes.forEach(function(o, i) {
-      o.center = o.default_center;
-      o.fixed = false;
-    })
-
-    force.resume();
-    return false;
-  });
-
-
-  $("#timeline").on("click", function(e) {
-
-    nodes.forEach(function(o, i) {
-      o.center = Math.floor(color_tags.length / 2);
-    })
-
-    force.resume();
-    return false;
-  });
 
 
 
@@ -162,31 +167,9 @@ $("#submit").on("click", function() {
 
 
 
-
-  $('.enter').click(function() {$('.inputurl').slideToggle()});
-
-
-$("input.inputnewurl").keyup(function(e) {
-  if (e.keyCode === 13) {
-       addNewURL( $("input.inputnewurl").val())
-      $('.inputurl').slideToggle();
-
-  }
-})
+$('.enter').click(function() {$('.inputurl').slideToggle()});
 
 
-
-  $('.enterCat').click(function() {$('.inputcat').slideToggle();});
-
-
-$("input.inputnewcat").keyup(function(e) {
-  if (e.keyCode === 13) {
-    //alert($("input.inputnewcat").val())
-        addNewCategory( $("input.inputnewcat").val().replace("\r", "<br>"))
-       $('.inputcat').slideToggle();
-
-  }
-})
 
   //--------End UI Interaction Functions: Categorize,Reset ------------------------------- 
 

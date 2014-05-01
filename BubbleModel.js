@@ -191,8 +191,8 @@ var BookmarkDataSingleton = (function() {
 
 			d3.range(node_items.length).map(function(i) {
 				nodes.push({
-					default_center: Math.floor(navigation_items.length / 2),
-					center: Math.floor(navigation_items.length / 2),
+					default_center: -1,
+					center: -1,
 					radius: null,
 					item: node_items[i],
 					cat_id: lookupCategoryID(navigation_items, node_items[i]),
