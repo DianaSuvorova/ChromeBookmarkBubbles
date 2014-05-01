@@ -78,7 +78,7 @@ function ForceLayout(element, centers) {
 			.attr("id", function(d, i) {
 				return "bubbleFill-" + i
 			})
-			.attr("class", "bubbleFill")
+			.attr("class", function(d, i){ return "bubbleFill category-"+ d.cat_id})
 			.style("background-image", function(d, i) {
 				return 'url(http://api.thumbalizr.com/?url=' + d.item.url + '&width=250)'
 			})
@@ -86,7 +86,7 @@ function ForceLayout(element, centers) {
 			.style("height", radius + "px")
 			.attr("draggable", "true")
 			.on("click", showDetails)
-			.on("mouseout", hideDetails)
+		//	.on("mouseout", hideDetails)
 			.on("dblclick", gotoLink);
 
 		node.exit().remove();

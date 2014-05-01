@@ -28,6 +28,7 @@ function NavigationLayout(element, color_set) {
 
 	this.addNode=function(node){		
 		nodes.push(node);
+		console.log(nodes);
 		update();
 
 	}
