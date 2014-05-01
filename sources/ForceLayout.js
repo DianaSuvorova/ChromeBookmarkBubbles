@@ -12,6 +12,12 @@ function ForceLayout(element,centers) {
 		update();
 	}
 
+
+	this.addNode = function(node) {
+		nodes.push(node);
+		update();
+	}
+
 	var force = d3.layout.force()
 		.size([width, height])
 		.charge(-Math.pow(radius / 2 + padding, 1) * 20)

@@ -48,7 +48,8 @@ var bookmarks;
   var width;
   var height;
 
-
+var BookmarkNavigationLayout;
+var bubbleForceLayout;
 
 
 
@@ -57,79 +58,36 @@ $(document).ready(function() {
   renderStaticUIElements();
 
   Model.getUIData(
-    function(){
-        nodes = Model.getNodes();
-        categories = Model.getCategories();
-    renderUI();
+    function(){     
+    initializeUI();
   })
 })
 
 
- function updateCategories() {
+
+function initializeUI() {
 
 
 
-   var cat_width_pct = Math.floor((bookmark.style("width").slice(0, -2) / categories.length - 2 * 2) / bookmark.style("width").slice(0, -2) * 100) + '%';
-
-
-
-    bookmarks.enter().append("div")
-    .attr("class", "categories")
-    .attr("id", function(d, i) {
-      return "category-" + i
-    })
-    .style("width", function(d, i) {
-      return cat_width_pct
-    })
-    .on("mouseover", category_mouseover)
-    .on("mouseout", category_mouseout)
-    .on("click", category_clicked)
-    .text(function(d) {
-      return d.item.title.toUpperCase();
-    });
-
-
-        bookmarks.style("width", function(d, i) {return cat_width_pct});
-
-  }
-
-
-function renderUI() {
+  canvas = d3.select("#canvas");
+  height = canvas.style("height").slice(0, -2);
 
 
   bookmark = d3.select("#bookmark")
-   canvas = d3.select("#canvas");
-   width = canvas.style("width").slice(0, -2);
-   height = canvas.style("height").slice(0, -2);
+
+  width = canvas.style("width").slice(0, -2);
 
 
 
+  nodes = Model.getNodes();
+  categories = Model.getCategories();
 
-  //---------Main UI Object rendering----------------------------------------------------- 
+  bookmarkNavigationLayout = new NavigationLayout("#navigation");
+  bookmarkNavigationLayout.initializeLayout(categories);
+  centers = bookmarkNavigationLayout.getNavigationCenters(height);
 
-
-  //  updateCategories();
-
-     BookmarkNavigationLayout = new NavigationLayout("#navigation");
-     BookmarkNavigationLayout.initializeLayout(categories);
-
-    centers=BookmarkNavigationLayout.getNavigationCenters(height);
-    console.log(centers);
-
-
-   bubbleForceLayout = new ForceLayout("#canvas",centers);
-   bubbleForceLayout.initializeLayout(nodes);
-
-
-
-
-
-
-
-
-  //--------End D3 Force Layout----------------------------------------------------------------  
-
-
+  bubbleForceLayout = new ForceLayout("#canvas", centers);
+  bubbleForceLayout.initializeLayout(nodes);
 }
 
 //------------------End renderUI
@@ -424,12 +382,15 @@ function reloadUI() {
 
 
 function addNewURL(url) {
-  Model.createNewBookmark(url, reloadUI);
+  Model.createNewBookmark(url, function(newnode) {
+    bubbleForceLayout.addNode(newnode)
+
+  });
 }
 
 
 function addNewCategory(name){
-    Model.createNewCategory(name, reloadUI);
+   console.log( Model.createNewCategory(name, reloadUI));
 }
 
 

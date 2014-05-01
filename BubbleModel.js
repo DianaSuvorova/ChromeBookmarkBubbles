@@ -36,18 +36,18 @@ var BookmarkDataSingleton = (function() {
 
 
 			if (chrome.bookmarks) {
-				node_items=[];
-				navigation_items=[];
+				node_items = [];
+				navigation_items = [];
 
 				chrome.bookmarks.getTree(function(itemTree) {
 					itemTree.forEach(function(item) {
 						processNode(item);
 					});
 
-					navigation_items.sort(function(a, b){
-					    if(a.id < b.id) return -1;
-					    if(a.id > b.id) return 1;
-					    return 0;
+					navigation_items.sort(function(a, b) {
+						if (a.id < b.id) return -1;
+						if (a.id > b.id) return 1;
+						return 0;
 					})
 
 					console.log(navigation_items)
@@ -70,8 +70,8 @@ var BookmarkDataSingleton = (function() {
 				});
 			}
 
-			var isFolderWithChildren = !node.url 
-			var isFoldernotdefaulhidden = node.title !="Other Bookmarks" && node.title !="Mobile Bookmarks"
+			var isFolderWithChildren = !node.url
+			var isFoldernotdefaulhidden = node.title != "Other Bookmarks" && node.title != "Mobile Bookmarks"
 			//&& node.children.length > 0;
 			var isRoot = node.title.length == 0;
 
@@ -114,16 +114,40 @@ var BookmarkDataSingleton = (function() {
 					'url': url
 				},
 				function(result) {
-					callback();
+					callback(processBookmark(result))
 				}
 			);
+
+		}
+		function processBookmark(node) {
+			console.log("processnode");
+			var node_item = {
+				id: node.id,
+				parent_id: node.parentId,
+				url: node.url,
+				title: node.title,
+				date: node.dateAdded
+			};
+
+			var rnode = {
+				default_center: Math.floor(navigation_items.length / 2),
+				center: Math.floor(navigation_items.length / 2),
+				radius: null,
+				item: node_item,
+				cat_id: lookupCategoryID(navigation_items, node_item),
+				ui_drag: false
+			};
+			return rnode;
+
 		}
 
-		function createNewCategoryinBookMarkBar(name,callback){
-			      chrome.bookmarks.create({'parentId': '1',
-                  'title': name}, 
-                  function(newFolder) {callback();}
-                  );
+		function createNewCategoryinBookMarkBar(name, callback) {
+			chrome.bookmarks.create({
+					'parentId': '1',
+					'title': name
+				},
+				callback(newFolder)
+			);
 		}
 
 		function lookupCategoryID(navigation_items, node_item) {
@@ -146,7 +170,7 @@ var BookmarkDataSingleton = (function() {
 					width: null,
 					ui_click: false,
 					ui_mouseover: false,
-					ui_dragover:false,
+					ui_dragover: false,
 				});
 
 			});
@@ -165,8 +189,7 @@ var BookmarkDataSingleton = (function() {
 					radius: null,
 					item: node_items[i],
 					cat_id: lookupCategoryID(navigation_items, node_items[i]),
-					ui_drag: false,
-					radius: 70
+					ui_drag: false
 				})
 			});
 
@@ -208,12 +231,16 @@ var BookmarkDataSingleton = (function() {
 			// 	createNewBookmarkinFolder(url,parent_id,callback)
 			// },
 
-			createNewBookmark: function(url,callback){
-				createNewBookmarkinBookMarkBar(url,callback)
+			createNewBookmark: function(url, callback) {
+				var resultnode;
+				createNewBookmarkinBookMarkBar(url, function(result){
+				//	console.log(result)
+					callback(result)	
+				});
 			},
 
-			createNewCategory: function(name,callback){
-				createNewCategoryinBookMarkBar(name,callback)
+			createNewCategory: function(name, callback) {
+				createNewCategoryinBookMarkBar(name, callback)
 			}
 			//end of public methods   
 
