@@ -106,7 +106,8 @@ function initializeUI() {
 
   $("input.inputnewurl").keyup(function(e) {
     if (e.keyCode === 13) {
-      addNewURL($("input.inputnewurl").val())
+      addNewURL($("input.inputnewurl").val());
+      $("input.inputnewurl").val("");
       $('.inputurl').slideToggle();
 
     }
