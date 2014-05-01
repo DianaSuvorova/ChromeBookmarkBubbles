@@ -14,12 +14,13 @@ function ForceLayout(element, centers) {
 	}
 
 	this.categorize = function() {
-	    nodes.forEach(function(o, i) {
+		nodes.forEach(function(o, i) {
 
-	      o.center = o.cat_id;
-	    })
-	    force.resume();
+			o.center = o.cat_id;
+		})
+		force.resume();
 	}
+
 
 
 
@@ -32,11 +33,20 @@ function ForceLayout(element, centers) {
 
 
 	this.addNode = function(node) {
-		node.x=0;
-		node.y=0;
+		node.x = 0;
+		node.y = 0;
 		nodes.push(node);
 		update();
 	}
+
+	 function updateNode (i ,updatednode){
+		nodes[i]=updatedNode;
+		console.log(nodes[i])
+		console.log("test");
+		update();
+
+	}
+
 
 	var force = d3.layout.force()
 		.size([width, height])
@@ -49,10 +59,10 @@ function ForceLayout(element, centers) {
 	var update = function() {
 
 
-		  var node_drag = force.drag()
-          .on("dragstart", dragStart)
-   	       .on("drag", dragMove)
-          .on("dragend", dragEnd);
+		var node_drag = force.drag()
+			.on("dragstart", dragStart)
+			.on("drag", dragMove)
+			.on("dragend", dragEnd);
 
 
 		var node = canvas.selectAll("div.bubble").data(nodes);
@@ -178,62 +188,72 @@ function ForceLayout(element, centers) {
 
 		}
 
-	         function dragStart(d){
-  			d3.select(this).classed("fixed", d.fixed = true);
+		function dragStart(d) {
+			d3.event.sourceEvent.stopPropagation();
+			d3.select(this).classed("fixed", d.fixed = true);
 
-         };
+		};
 
-		function dragMove(d, i) {
+	function dragMove(d, i) {
 
-		var cat ;
+		var cat;
 
-			d3.selectAll("div.categories").each(function(cat_d, cat_i) {
+		d3.selectAll("div.categories").each(function(cat_d, cat_i) {
 
-				cat = "#category-"+cat_i;
+				cat = "#category-" + cat_i;
 
-					if (overlaps("#bubble-" + i, cat)) {
+				if (overlaps("#bubble-" + i, cat)) {
 
-						d3.selectAll(cat).attr("class", function(d) {
-							d.ui_dragover = true;
-							return d.get_class();
-						});
-					} else {
+					d3.selectAll(cat).attr("class", function(d) {
+						d.ui_dragover = true;
+						return d.get_class();
+					});
+				} else {
 
-						d3.selectAll(cat).attr("class", function(d) {
-							d.ui_dragover = false;
-							return d.get_class();
-						});
-					}
+					d3.selectAll(cat).attr("class", function(d) {
+						d.ui_dragover = false;
+						return d.get_class();
+					});
 				}
+			}
 
-			);
-			d.px += d3.event.dx;
-			d.py += d3.event.dy;
-			d.x += d3.event.dx;
-			d.y += d3.event.dy;
-			tick(); // this is the key to make it work together with updating both px,py,x,y on d !
-		}
+		);
+		d.px += d3.event.dx;
+		d.py += d3.event.dy;
+		d.x += d3.event.dx;
+		d.y += d3.event.dy;
+		//			tick(); // this is the key to make it work together with updating both px,py,x,y on d !
+	}
 
-		function dragEnd(d, i) {
-			
-			var cat;
-			var node_id=d.item.id
+	function dragEnd(d, i) {
 
-			d3.selectAll("div.categories").each(function(cat_d, cat_i) {
+		console.log(d);
+		console.log(i);
 
-					cat = "#category-" + i;
+		var cat;
+		var node_id = d.item.id
 
-					console.log(cat_d);
-					parent_id=cat_d.item.id;
+		d3.selectAll("div.categories").each(function(cat_d, cat_i) {
+			cat = "#category-" + cat_i;
 
-				    Model.updateNodeAssigntoCategory(node_id, parent_id, function() {
-				         console.log("in the model")
-				    });
-				}
+			if (overlaps("#bubble-" + i, cat)) {
+				cat = "#category-" + i;
+				parent_id = cat_d.item.id;
 
-			);
+				console.log("parent_id: " + parent_id);
+				console.log("cat: " + cat);
 
-			d3.select(this).classed("fixed", d.fixed = false);
-		}	
-		
+
+				Model.updateNodeAssigntoCategory(node_id, parent_id, function(updatednode) {
+					updatednode.x=nodes[i].x;
+					updatednode.y=nodes[i].y;
+					nodes[i]=updatednode;
+					update();
+				});
+			}
+		});
+
+		d3.select(this).classed("fixed", d.fixed = false);
+	}
+
 }

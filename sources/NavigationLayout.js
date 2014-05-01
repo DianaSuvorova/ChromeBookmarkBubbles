@@ -88,14 +88,6 @@ function NavigationLayout(element, color_set) {
 
 		node.style("width", (90 / nodes.length) + '%');
 
-
-		var jq_categories = document.querySelectorAll('.categories');
-		[].forEach.call(jq_categories, function(cat) {
-			cat.addEventListener('dragenter', category_handleDragEnter, false);
-			cat.addEventListener('dragover', category_handleDragOver, false);
-			cat.addEventListener('dragleave', category_handleDragLeave, false);
-			cat.addEventListener('drop', category_handleDrop, false);
-		});
 	}
 
 
