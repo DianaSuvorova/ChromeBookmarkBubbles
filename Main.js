@@ -19,10 +19,10 @@ function getUICategoryCenters(width, height) {
 
   var jq_categories = document.querySelectorAll('.categories');
   [].forEach.call(jq_categories, function(cat) {
-     centers.push({
-          x: $(cat).offset().left,
-       y: height / 2
-      })
+    centers.push({
+      x: $(cat).offset().left,
+      y: height / 2
+    })
   })
 
   return centers;
@@ -42,13 +42,13 @@ var categories = [];
 var force;
 var bubble;
 var bookmarks;
-  var bookmark ;
+var bookmark;
 
-  var canvas;
-  var width;
-  var height;
+var canvas;
+var width;
+var height;
 
-var BookmarkNavigationLayout;
+var bookmarkNavigationLayout;
 var bubbleForceLayout;
 
 
@@ -56,9 +56,9 @@ var bubbleForceLayout;
 $(document).ready(function() {
 
   Model.getUIData(
-    function(){     
-    initializeUI();
-  })
+    function() {
+      initializeUI();
+    })
 })
 
 
@@ -113,18 +113,22 @@ function initializeUI() {
   })
 
 
+  var categoryInput = $("input.inputnewcat");
+  var categoryDefaultValue = categoryInput.val();
 
-  $('.enterCat').click(function() {
-    $('.inputcat').slideToggle();
+
+  categoryInput.focus(function() {
+    if (categoryInput.val() == categoryDefaultValue) categoryInput.val("");
+  }).blur(function() {
+    if (categoryInput.val().length == 0) categoryInput.val(categoryDefaultValue);
   });
 
 
-  $("input.inputnewcat").keyup(function(e) {
+  categoryInput.keyup(function(e) {
     if (e.keyCode === 13) {
-      //alert($("input.inputnewcat").val())
-      addNewCategory($("input.inputnewcat").val().replace("\r", "<br>"))
-      $('.inputcat').slideToggle();
-
+      //alert(categoryInput.val())
+      addNewCategory(categoryInput.val())
+      categoryInput.val(categoryDefaultValue)
     }
   })
 
@@ -134,40 +138,8 @@ function initializeUI() {
   });
 
 
-
-
 }
 
-
-
-
-
-function renderStaticUIElements() {
-
-  //--------UI Interaction Functions: Categorize,Reset ------------------------------- 
-
-
-
-
-
-  //--------End UI Interaction Functions: Categorize,Reset ------------------------------- 
-
-}
-
-function reloadUI() {
-
-  Model.getUIData(
-    function() {
-      nodes = Model.getNodes();
-      categories = Model.getCategories();
-      console.log(categories);
-
-      renderUI();
-
-    //  force.tick();
-
-    })
-}
 
 
 function addNewURL(url) {
@@ -179,8 +151,13 @@ function addNewURL(url) {
 }
 
 
-function addNewCategory(name){
-   console.log( Model.createNewCategory(name, reloadUI));
+function addNewCategory(name) {
+  console.log(name);
+  Model.createNewCategory(name, function(newnode) {
+    console.log(newnode)
+    bookmarkNavigationLayout.addNode(newnode)
+  });
+
 }
 
 
@@ -364,6 +341,3 @@ function category_handleDrop(e) {
   //figure what to do with border-color
 
 }
-
-
-

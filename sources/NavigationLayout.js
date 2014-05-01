@@ -26,6 +26,13 @@ function NavigationLayout(element, color_set) {
 		update();
 	}
 
+	this.addNode=function(node){		
+		nodes.push(node);
+		update();
+
+	}
+
+
 	function mouseover(d, i) {
 
 		d.ui_mouseover = true;
@@ -91,39 +98,6 @@ function NavigationLayout(element, color_set) {
 		});
 	}
 
-		function bubble_handleDragStart(e) {
 
-
-			e.dataTransfer.setData('text/plain', this.id);
-
-			d3.selectAll("#" + this.id).attr("class", function(d) {
-				d.ui_drag = true;
-				return bubblefill_get_class(d)
-			});
-
-			e.dataTransfer.effectAllowed = 'move';
-
-		}
-
-
-		function bubble_handleDragEnd(e) {
-
-			d3.selectAll("#" + this.id).attr("class", function(d) {
-				d.ui_drag = false;
-				return bubblefill_get_class(d)
-			});
-			return false;
-
-		}
-
-		function bubblefill_get_class(d) {
-			var bubblefill_class = 'bubbleFill' + ' ';
-
-			bubblefill_class += 'category-' + d.cat_id + ' ';
-			if (d.ui_drag) {
-				bubblefill_class += 'dragged' + ' '
-			}
-			return bubblefill_class;
-		}
 
 }

@@ -193,27 +193,17 @@ img#bin.draggedover,img#add.draggedover,img#add:hover {
     -webkit-filter: grayscale(0);
 }
 
+.inputurl {display:none;}
 
-#popup{
-  font-size: 20px;
-  color:#555;
-  width: 400px;
-  margin: 10% auto;
-  padding: 5px 20px 13px 20px;
-  border-radius: 10px;
-  background: #fff;
-  background: -moz-linear-gradient(#fff, #999);
-  background: -webkit-linear-gradient(#fff, #999);
-  background: -o-linear-gradient(#fff, #999);
+.inputcat {
+  float: right;
 }
-
-.inputurl,.inputcat{display:none;}
 
 
 .enter{
 
     width: 30px; 
-        height: 30px; 
+    height: 30px; 
     padding:20px ;
     display: block;
     border: solid 3px rgb(179,179,179);
@@ -229,25 +219,6 @@ img#bin.draggedover,img#add.draggedover,img#add:hover {
 
 }
 
-
-.enterCat{
-
-    width: 40px; 
-    height: 30px; 
-/*    padding:15px 20px ;
-*/    display: block;
-    border: solid 3px rgb(179,179,179);
-    -webkit-border-radius: 240px;
-    -moz-border-radius: 240px;
-     border-radius: 240px;
-     cusror:pointer;
-     -moz-box-shadow: 0 0 10px #bdbdbd;
-    -webkit-box-shadow: 0 0 10px #bdbdbd;
-    box-shadow: 0 0 10px #bdbdbd;
-    text-align: center;
-    background: white;
-
-}
 
 
 .displaytoggle{
@@ -277,13 +248,9 @@ img#bin.draggedover,img#add.draggedover,img#add:hover {
   <div style="width:9%; float:left; display:inline-block;">  
 <!--   <img  id ="add" class="categories" src="Images\Plus.png">
  --> 
-
-   <div id="AddNewCat">
-    <div class="enterCat" style= "cursor: pointer;>">+ </div>
     <div class="inputcat">
-      <input class="inputnewcat" type="text" name="URL" ><br>
+      <input class="inputnewcat" type="text" name="category" value="new folder" ><br>
     </div>
-  </div> 
 
   </div>
 

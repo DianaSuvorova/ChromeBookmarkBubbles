@@ -138,12 +138,45 @@ var BookmarkDataSingleton = (function() {
 
 		}
 
+
+		function processCategory(node) {
+			var node_item = {
+					id: node.id,
+					title: node.title,
+					date: node.dateAdded
+			};
+
+			console.log(node_item);
+
+			navigation_items.push(node_item);
+
+			var rnode = {
+					item: node_item,
+					width: null,
+					ui_click: false,
+					ui_mouseover: false,
+					ui_dragover: false,
+					get_class : function(){
+						var cat_class= 'categories' + ' ';
+						if (this.ui_dragover){
+							cat_class += "over ";
+						}
+						return cat_class;
+					}
+				}
+			return rnode;
+
+		}
+
 		function createNewCategoryinBookMarkBar(name, callback) {
 			chrome.bookmarks.create({
 					'parentId': '1',
 					'title': name
 				},
-				callback(newFolder)
+				function(result) {
+					console.log(processCategory(result))
+					callback(processCategory(result))
+				}
 			);
 		}
 
@@ -246,7 +279,6 @@ var BookmarkDataSingleton = (function() {
 			// },
 
 			createNewBookmark: function(url, callback) {
-				var resultnode;
 				createNewBookmarkinBookMarkBar(url, function(result){
 					console.log(result)
 					callback(result)	
@@ -254,7 +286,9 @@ var BookmarkDataSingleton = (function() {
 			},
 
 			createNewCategory: function(name, callback) {
-				createNewCategoryinBookMarkBar(name, callback)
+				createNewCategoryinBookMarkBar(name, function(result){
+					callback(result)	
+				});
 			}
 			//end of public methods   
 
