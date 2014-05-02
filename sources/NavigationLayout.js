@@ -57,16 +57,18 @@ function NavigationLayout(element, color_set) {
 
 		if (!d.ui_click) {
 			d.ui_click = true;
-			d3.select(this).attr("class", cur_class + ' selected')
-				.style("color", color_set(i))
-				.style("border-color", color_set(i));
+			d3.select(this).attr("class", function(d,i){return d.get_class()})
+				 .style("color", color_set(i))
+				 .style("border-color", color_set(i));
 
 			d3.selectAll(".category-" + i).style("border-color", color_set(i));
 		} else {
 			d.ui_click = false;
-			d3.select(this).attr("class", cur_class.replace(" selected", ""))
+			d3.select(this).attr("class",function(d,i){return d.get_class()})
 				.style("color", "rgb(152,151,150)")
-				.style("border-color", "transparent");
+				.style("border-color", "");
+				//.style();
+
 			d3.selectAll(".category-" + i).style("border-color", "rgb(179,179,179)");
 
 		}

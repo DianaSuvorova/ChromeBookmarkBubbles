@@ -8,8 +8,8 @@ var BookmarkDataSingleton = (function() {
 
 		var navigation_items = [];
 		var node_items = [];
-		var color_tags = [];
-		var local_tags;
+		var categories = [];
+		var nodes = [];
 
 		//fetchData(function(){console.log("callback")});
 
@@ -42,13 +42,15 @@ var BookmarkDataSingleton = (function() {
 				chrome.bookmarks.getTree(function(itemTree) {
 					itemTree.forEach(function(item) {
 						processNode(item);
-					});
 
 					navigation_items.sort(function(a, b) {
 						if (a.id < b.id) return -1;
 						if (a.id > b.id) return 1;
 						return 0;
 					})
+
+
+					});
 
 					callBack();
 				});
@@ -74,21 +76,18 @@ var BookmarkDataSingleton = (function() {
 			var isRoot = node.title.length == 0;
 
 			if (isFolderWithChildren && !isRoot && isFoldernotdefaulhidden) {
-				navigation_items.push({
-					id: node.id,
-					title: node.title,
-					date: node.dateAdded
-				});
+				categories.push(processCategory(node))
+
+					categories.sort(function(a, b) {
+						if (a.item.id < b.item.id) return -1;
+						if (a.item.id > b.item.id) return 1;
+						return 0;
+					})
+
 			}
 
 			if (node.url) {
-				node_items.push({
-					id: node.id,
-					parent_id: node.parentId,
-					url: node.url,
-					title: node.title,
-					date: node.dateAdded,
-				});
+				nodes.push(processBookmark(node))
 			}
 
 		};
@@ -117,6 +116,7 @@ var BookmarkDataSingleton = (function() {
 			);
 
 		}
+
 		function processBookmark(node) {
 			var node_item = {
 				id: node.id,
@@ -126,13 +126,22 @@ var BookmarkDataSingleton = (function() {
 				date: node.dateAdded
 			};
 
-			var rnode = { 
+			var rnode = {
 				default_center: -1,
 				center: lookupCategoryID(navigation_items, node_item),
 				radius: null,
 				item: node_item,
 				cat_id: lookupCategoryID(navigation_items, node_item),
-				ui_drag: false
+				ui_drag: false,
+				get_class: function() {
+					var bubblefill_class = 'bubbleFill' + ' ';
+
+					bubblefill_class = bubblefill_class + 'category-' + this.cat_id + ' ';
+					if (this.ui_drag) {
+						bubblefill_class += 'dragged' + ' '
+					}
+					return bubblefill_class;
+				}
 			};
 			return rnode;
 
@@ -141,31 +150,39 @@ var BookmarkDataSingleton = (function() {
 
 		function processCategory(node) {
 			var node_item = {
-					id: node.id,
-					title: node.title,
-					date: node.dateAdded
+				id: node.id,
+				title: node.title,
+				date: node.dateAdded
 			};
 
-			console.log(node_item);
 
 			navigation_items.push(node_item);
 
 			var rnode = {
-					item: node_item,
-					width: null,
-					ui_click: false,
-					ui_mouseover: false,
-					ui_dragover: false,
-					get_class : function(){
-						var cat_class= 'categories' + ' ';
-						if (this.ui_dragover){
-							cat_class += "over ";
-						}
-						return cat_class;
+				item: node_item,
+				width: null,
+				ui_click: false,
+				ui_mouseover: false,
+				ui_dragover: false,
+				get_class: function() {
+					var cat_class = 'categories' + ' ';
+					if (this.ui_dragover) {
+						cat_class += "over ";
 					}
+					if (this.ui_click) {
+						cat_class += "selected ";
+					}
+					return cat_class;
 				}
+			}
 			return rnode;
 
+		}
+
+		function updateCategoryID(nodes) {
+			return nodes.forEach(function(d) {
+				d.center = d.cat_id = lookupCategoryID(navigation_items, d.item)
+			});
 		}
 
 		function createNewCategoryinBookMarkBar(name, callback) {
@@ -190,60 +207,6 @@ var BookmarkDataSingleton = (function() {
 
 		}
 
-		function updateCategories(navigation_items) {
-
-			var categories = [];
-
-			d3.range(navigation_items.length).map(function(i) {
-				categories.push({
-					item: navigation_items[i],
-					width: null,
-					ui_click: false,
-					ui_mouseover: false,
-					ui_dragover: false,
-					get_class : function(){
-						var cat_class= 'categories' + ' ';
-						if (this.ui_dragover){
-							cat_class += "over ";
-						}
-						return cat_class;
-					}
-				});
-
-			});
-
-			return categories;
-		}
-
-		function UpdateNodes(node_items, navigation_items) {
-
-			var nodes = [];
-
-			d3.range(node_items.length).map(function(i) {
-				nodes.push({
-					default_center: -1,
-					center: lookupCategoryID(navigation_items, node_items[i]),
-					radius: null,
-					item: node_items[i],
-					cat_id: lookupCategoryID(navigation_items, node_items[i]),
-					ui_drag: false,
-					get_class: function() {
-						var bubblefill_class = 'bubbleFill' + ' ';
-
-						bubblefill_class += 'category-' + this.cat_id + ' ';
-						if (this.ui_drag) {
-							bubblefill_class += 'dragged' + ' '
-						}
-						return bubblefill_class;
-					}
-
-				})
-			});
-
-			return nodes;
-			//  console.log(nodes);
-		}
-
 		//End Private methods and variables
 
 		//public methods
@@ -262,33 +225,31 @@ var BookmarkDataSingleton = (function() {
 			},
 
 			getCategories: function() {
-				return updateCategories(navigation_items)
+				return categories;
 			},
 
 			getNodes: function() {
-				return UpdateNodes(node_items, navigation_items)
+				updateCategoryID(nodes);
+				return nodes;
 			},
 
 			updateNodeAssigntoCategory: function(node_id, cat_id, callback) {
-				updateBookmarkParentForNode(node_id, cat_id, function(result){
+				updateBookmarkParentForNode(node_id, cat_id, function(result) {
 					callback(result);
 				});
 
 			},
 
-			// createNewBookmark: function(url,parent_id,callback){
-			// 	createNewBookmarkinFolder(url,parent_id,callback)
-			// },
 
 			createNewBookmark: function(url, callback) {
-				createNewBookmarkinBookMarkBar(url, function(result){
-					callback(result)	
+				createNewBookmarkinBookMarkBar(url, function(result) {
+					callback(result)
 				});
 			},
 
 			createNewCategory: function(name, callback) {
-				createNewCategoryinBookMarkBar(name, function(result){
-					callback(result)	
+				createNewCategoryinBookMarkBar(name, function(result) {
+					callback(result)
 				});
 			}
 			//end of public methods   

@@ -1,4 +1,4 @@
-function ForceLayout(element, centers) {
+function ForceLayout(element, centers, color_set) {
 
 	var canvas = this.canvas = d3.select(element);
 	var width = canvas.style("width").slice(0, -2);
@@ -39,14 +39,6 @@ function ForceLayout(element, centers) {
 		update();
 	}
 
-	 function updateNode (i ,updatednode){
-		nodes[i]=updatedNode;
-		console.log(nodes[i])
-		console.log("test");
-		update();
-
-	}
-
 
 	var force = d3.layout.force()
 		.size([width, height])
@@ -78,7 +70,9 @@ function ForceLayout(element, centers) {
 			.attr("id", function(d, i) {
 				return "bubbleFill-" + i
 			})
-			.attr("class", function(d, i){ return "bubbleFill category-"+ d.cat_id})
+			.attr("class", function(d, i) {
+				return d.get_class()
+			})
 			.style("background-image", function(d, i) {
 				return 'url(http://api.thumbalizr.com/?url=' + d.item.url + '&width=250)'
 			})
@@ -87,7 +81,9 @@ function ForceLayout(element, centers) {
 			.attr("draggable", "true")
 			.on("click", showDetails)
 		//	.on("mouseout", hideDetails)
-			.on("dblclick", gotoLink);
+		.on("dblclick", gotoLink);
+
+
 
 		node.exit().remove();
 
@@ -119,7 +115,10 @@ function ForceLayout(element, centers) {
 				});
 
 		};
+
+
 		force.start();
+
 
 
 	}
@@ -202,7 +201,7 @@ function ForceLayout(element, centers) {
 
 				cat = "#category-" + cat_i;
 
-				if (overlaps("#bubble-" + i, cat)) {
+				if (overlaps("#bubbleFill-" + i, cat)) {
 
 					d3.selectAll(cat).attr("class", function(d) {
 						d.ui_dragover = true;
@@ -227,30 +226,50 @@ function ForceLayout(element, centers) {
 
 	function dragEnd(d, i) {
 
-		console.log(d);
-		console.log(i);
-
 		var cat;
 		var node_id = d.item.id
 
 		d3.selectAll("div.categories").each(function(cat_d, cat_i) {
 			cat = "#category-" + cat_i;
 
-			if (overlaps("#bubble-" + i, cat)) {
-				cat = "#category-" + i;
+			if (overlaps("#bubbleFill-" + i, cat)) {
+				//	cat = "#category-" + i;
 				parent_id = cat_d.item.id;
 
-				console.log("parent_id: " + parent_id);
-				console.log("cat: " + cat);
+
+				// console.log("parent_id: " + parent_id);
+				// console.log("cat: " + cat);
+
+				d3.selectAll(cat).attr("class", function(d) {
+					d.ui_dragover = false;
+					return d.get_class();
+				});
+
 
 
 				Model.updateNodeAssigntoCategory(node_id, parent_id, function(updatednode) {
-					updatednode.x=nodes[i].x;
-					updatednode.y=nodes[i].y;
-					nodes[i]=updatednode;
+
+					d3.select("#bubbleFill-" + i).attr("class", function(d) {
+						d.center = d.cat_id = updatednode.cat_id;
+						d.item = updatednode.item;
+
+						return d.get_class()
+					});
+
+					if (cat_d.ui_click) {
+						d3.selectAll("#bubbleFill-" + i).style("border-color", color_set(cat_i));
+					}
+
+					if (!cat_d.ui_click) {
+						d3.selectAll("#bubbleFill-" + i).style("border-color", "rgb(179,179,179)");
+					}
+
 					update();
+
 				});
 			}
+
+
 		});
 
 		d3.select(this).classed("fixed", d.fixed = false);

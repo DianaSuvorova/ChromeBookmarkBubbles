@@ -12,7 +12,9 @@ var bubbleForceLayout;
 
 $(document).ready(function() {
 
-  Model.getUIData(function() {initializeUI();})
+  Model.getUIData(function() {
+    initializeUI();
+  })
 })
 
 
@@ -40,7 +42,7 @@ function initializeUI() {
     cat_centers: bookmarkNavigationLayout.getNavigationCenters(height)
   };
 
-  bubbleForceLayout = new ForceLayout("#canvas", centers);
+  bubbleForceLayout = new ForceLayout("#canvas", centers,color_set);
   bubbleForceLayout.initializeLayout(nodes);
 
 
@@ -91,9 +93,7 @@ function initializeUI() {
 }
 
 
-
 function addNewURL(url) {
-  console.log(url);
   Model.createNewBookmark(url, function(newnode) {
     bubbleForceLayout.addNode(newnode)
 
@@ -102,9 +102,7 @@ function addNewURL(url) {
 
 
 function addNewCategory(name) {
-  console.log(name);
   Model.createNewCategory(name, function(newnode) {
-    console.log(newnode)
     bookmarkNavigationLayout.addNode(newnode)
   });
 
