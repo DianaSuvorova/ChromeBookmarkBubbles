@@ -26,7 +26,7 @@ function initializeUI() {
   var nodes = Model.getNodes();
   var categories = Model.getCategories();
 
-  bookmarkNavigationLayout = new NavigationLayout("#navigation", color_set);
+  bookmarkNavigationLayout = new NavigationLayout("#canvas", color_set);
   bookmarkNavigationLayout.initializeLayout(categories);
 
 

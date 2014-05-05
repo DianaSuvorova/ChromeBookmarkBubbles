@@ -12,9 +12,10 @@ function ForceLayout(element, color_set) {
 
 		var jq_categories = document.querySelectorAll('.categories');
 		[].forEach.call(jq_categories, function(cat) {
+	//		console.log($(cat).width())
 			centers.push({
-				x: $(cat).offset().left,
-				y: height / 2
+				x: $(cat).offset().left-$(cat).width()/2,
+				y: $(cat).offset().top+$(cat).height()/4 
 			})
 		})
 
@@ -73,7 +74,7 @@ function ForceLayout(element, color_set) {
 
 	var force = d3.layout.force()
 		.size([width, height])
-		.charge(-Math.pow(radius / 2 + padding, 1) * 20)
+		.charge(-Math.pow(radius / 2 + padding, 1) *20)
 		.gravity(0)
 		.friction(0.87);
 
@@ -124,7 +125,7 @@ function ForceLayout(element, color_set) {
 			//maybe wrong place to update centers
 			var centers = updateCenters();
 
-			var k = 0.2 * force.alpha();
+			var k = 0.15* force.alpha();
 
 			nodes.forEach(function(o, i) {
 				if (o.center == -1) {
@@ -282,8 +283,6 @@ function ForceLayout(element, color_set) {
 	}
 
 	function dragEnd(d, i) {
-
-		console.log(d);
 
 		var cat;
 		var node_id = d.item.id
