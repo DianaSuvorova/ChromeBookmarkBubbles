@@ -165,7 +165,7 @@ body{
     }
 
 
-img#bin{
+#bin{
   position: fixed; 
   bottom: 0px; 
   right: 0px;
@@ -177,18 +177,7 @@ img#bin{
 }
 
 
-img#add{
-  padding: 0;
-  border:0;
-  top: 0px; 
-  width:50%;
-
-   filter: url(filters.svg#grayscale); /* Firefox 3.5+ */
-    filter: gray; /* IE6-9 */
-    -webkit-filter: grayscale(1);
-}
-
-img#bin.draggedover,img#add.draggedover,img#add:hover {
+#bin.draggedover,img#add.draggedover,img#add:hover {
     filter: none;
     -webkit-filter: grayscale(0);
 }
@@ -200,7 +189,7 @@ img#bin.draggedover,img#add.draggedover,img#add:hover {
 }
 
 
-.enter{
+#bin ,.enter{
 
     width: 30px; 
     height: 30px; 
@@ -219,6 +208,11 @@ img#bin.draggedover,img#add.draggedover,img#add:hover {
 
 }
 
+.bottomright{
+  position: fixed; 
+  bottom: 10px; 
+  right: 10px;
+}
 
 
 .displaytoggle{
@@ -245,8 +239,6 @@ img#bin.draggedover,img#add.draggedover,img#add:hover {
 <div id="navigation">
   <div id="bookmark" style="width:90%; float:left; display:inline-block;">  </div>
   <div style="width:9%; float:left; display:inline-block;">  
-<!--   <img  id ="add" class="categories" src="Images\Plus.png">
- --> 
     <div class="inputcat">
       <input class="inputnewcat" type="text" name="category" value="new folder" ><br>
     </div>
@@ -270,22 +262,22 @@ img#bin.draggedover,img#add.draggedover,img#add:hover {
   <div class="inputurl">
     URL: <input class="inputnewurl" type="text" name="URL" ><br>
   </div>
-  </div> 
+<!--   </div> 
 
- <img  id ="bin" class="categories" src="Images\RecyclingBin.png">
-
+    <div id="bin" style= "cursor: pointer;>"> X </div>
+ 
  </div>
+ -->
+<div class="bottomright">
+<input type="radio" id="bblsize" name="r1" value="75" />75
+<input type="radio" id="bblsize" name="r1" value="100" /> 100
+<input type="radio" id="bblsize" name="r1" value="150" />150
+</div>
+
 </div>
 
 
 
-
-
-<div id="popup" style="display: none;">
-        URL   <input type="text" name="addurl" value=""><br>
-        Category<input type="text" name="category" value=""><br>
-          <button id="submit" type="button"> Submit  </button>      
-    </div>
 
 </body>
 

@@ -1,9 +1,32 @@
-function ForceLayout(element, centers, color_set) {
+function ForceLayout(element, color_set) {
 
 	var canvas = this.canvas = d3.select(element);
 	var width = canvas.style("width").slice(0, -2);
 	var height = canvas.style("height").slice(0, -2);
 
+
+
+	updateCenters = function() {
+
+		var centers = [];
+
+		var jq_categories = document.querySelectorAll('.categories');
+		[].forEach.call(jq_categories, function(cat) {
+			centers.push({
+				x: $(cat).offset().left,
+				y: height / 2
+			})
+		})
+
+
+		return {
+			default_center: {
+				y: height / 2,
+				x: width / 2
+			},
+			cat_centers: centers
+		};
+	}
 
 	this.reset = function() {
 
@@ -22,7 +45,15 @@ function ForceLayout(element, centers, color_set) {
 	}
 
 
+	this.changeBubbleSize = function(radius) {
+		d3.selectAll(".bubbleFill")
+			.transition().duration(750)
+			.style("width", radius + "px")
+			.style("height", radius + "px");
 
+		force.charge(-Math.pow(radius / 2 + padding, 1) * 20);
+		update();
+	}
 
 	this.initializeLayout = function(initNodes) {
 		for (var i = 0; i < initNodes.length; i++) {
@@ -32,7 +63,7 @@ function ForceLayout(element, centers, color_set) {
 	}
 
 
-	this.addNode = function(node) {
+	this.addNode = function(node, radius) {
 		node.x = 0;
 		node.y = 0;
 		nodes.push(node);
@@ -48,8 +79,7 @@ function ForceLayout(element, centers, color_set) {
 
 	var nodes = force.nodes();
 
-	var update = function() {
-
+	var update = function(raduis) {
 
 		var node_drag = force.drag()
 			.on("dragstart", dragStart)
@@ -80,8 +110,8 @@ function ForceLayout(element, centers, color_set) {
 			.style("height", radius + "px")
 			.attr("draggable", "true")
 			.on("click", showDetails)
-		//	.on("mouseout", hideDetails)
-		.on("dblclick", gotoLink);
+			.on("mouseout", hideDetails)
+			.on("dblclick", gotoLink);
 
 
 
@@ -90,17 +120,21 @@ function ForceLayout(element, centers, color_set) {
 		force.on("tick", tick);
 
 		function tick() {
+
+			//maybe wrong place to update centers
+			var centers = updateCenters();
+
 			var k = 0.2 * force.alpha();
 
 			nodes.forEach(function(o, i) {
 				if (o.center == -1) {
-					o.y += (this.centers.default_center.y - o.y) * k;
+					o.y += (centers.default_center.y - o.y) * k;
 
-					o.x += (this.centers.default_center.x - o.x) * k;
+					o.x += (centers.default_center.x - o.x) * k;
 
 				} else {
-					o.y += (this.centers.cat_centers[o.center].y - o.y) * k;
-					o.x += (this.centers.cat_centers[o.center].x - o.x) * k;
+					o.y += (centers.cat_centers[o.center].y - o.y) * k;
+					o.x += (centers.cat_centers[o.center].x - o.x) * k;
 				}
 			});
 
@@ -123,17 +157,55 @@ function ForceLayout(element, centers, color_set) {
 
 	}
 
+
+
+		function hideDetails(d, i) {
+
+			//this  doesn't fix first circle tick
+			d3.select(this).classed("fixed", d.fixed = false);
+
+
+			var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
+
+			var category = d3.selectAll("#" + curr_class);
+
+			d3.selectAll(".bubbleFill").transition().duration(50).ease("linear")
+				.style("opacity", 1)
+				.style('top', (expanded_radius - radius) / 4 + 'px')
+				.style('left', (expanded_radius - radius) / 4 + 'px')
+				.style('width', radius + 'px')
+				.style('height', radius + 'px')
+				.style("z-index", 0);
+
+			d3.selectAll("#bubble-" + i).select('.tooltip').remove();
+			d3.selectAll("#bubble-" + i).selectAll(".bubbleFill").style("border-color", function() {
+				return (category.attr("class") == 'categories') ? 'rgb(152,151,150)' : d.color;
+			});
+			category.style('color', function() {
+				return (d3.select(this).attr("class") == 'categories') ? 'rgb(152,151,150)' : d.color;
+			});
+		}
+
+
 		function showDetails(d, i) {
 
 			d3.event.preventDefault();
+
+			//this doesn't fix  first circle tick
+			d3.select(this).classed("fixed", d.fixed = true);
 
 			var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
 
 			d3.selectAll(".bubbleFill").style("opacity", 0.5);
 
-			d3.select(this).transition().delay(200).duration(500).ease("circle")
+			d3.selectAll("#bubble-" + i).select('.tooltip').remove();
+
+
+			d3.select(this).transition().duration(250).ease("circle")
 				.style('width', expanded_radius + 'px')
 				.style('height', expanded_radius + 'px')
+				.style('top', -(expanded_radius - radius) / 4 + 'px')
+				.style('left', -(expanded_radius - radius) / 4 + 'px')
 				.style("border-color", color_set(d.cat_id))
 				.style("opacity", 1)
 				.style("z-index", 1)
@@ -159,28 +231,13 @@ function ForceLayout(element, centers, color_set) {
 		}
 
 
-		function hideDetails(d, i) {
-			var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
-
-
-			var category = d3.selectAll("#" + curr_class);
-
-			d3.selectAll(".bubbleFill").transition().duration(50).ease("linear")
-				.style("opacity", 1)
-				.style('width', radius + 'px')
-				.style('height', radius + 'px')
-				.style("z-index", 0);
-
-			d3.selectAll("#bubble-" + i).select('.tooltip').remove();
-			d3.selectAll("#bubble-" + i).selectAll(".bubbleFill").style("border-color", function() {
-				return (category.attr("class") == 'categories') ? 'rgb(152,151,150)' : d.color;
-			});
-			category.style('color', function() {
-				return (d3.select(this).attr("class") == 'categories') ? 'rgb(152,151,150)' : d.color;
-			});
-		}
 
 		function gotoLink(d, i) {
+
+			d3.selectAll(".bubbleFill").style("opacity", 0.5);
+
+			console.log(d);
+
 			if (d3.event.defaultPrevented) return;
 			return (d.item.url == "") ? "" : window.open(d.item.url);
 
@@ -225,6 +282,8 @@ function ForceLayout(element, centers, color_set) {
 	}
 
 	function dragEnd(d, i) {
+
+		console.log(d);
 
 		var cat;
 		var node_id = d.item.id
@@ -273,6 +332,8 @@ function ForceLayout(element, centers, color_set) {
 		});
 
 		d3.select(this).classed("fixed", d.fixed = false);
+
+
 	}
 
 }

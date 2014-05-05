@@ -4,21 +4,6 @@ function NavigationLayout(element, color_set) {
 	var width = canvas.style("width").slice(0, -2);
 	var nodes = [];
 
-
-	this.getNavigationCenters = function(height) {
-		var centers = [];
-
-		var jq_categories = document.querySelectorAll('.categories');
-		[].forEach.call(jq_categories, function(cat) {
-			centers.push({
-				x: $(cat).offset().left,
-				y: height / 2
-			})
-		})
-
-		return centers;
-	}
-
 	this.initializeLayout = function(initNodes) {
 		for (var i = 0; i < initNodes.length; i++) {
 			nodes.push(initNodes[i]);
@@ -32,6 +17,7 @@ function NavigationLayout(element, color_set) {
 		update();
 
 	}
+
 
 
 	function mouseover(d, i) {

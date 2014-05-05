@@ -2,7 +2,7 @@ var Model = BookmarkDataSingleton.getInstance();
 
 var radius = 75;
 var expanded_radius = 240;
-var padding = 10;
+var padding = radius/4;
 
 
 var bookmarkNavigationLayout;
@@ -23,26 +23,14 @@ function initializeUI() {
 
 
   var color_set = d3.scale.category10();
-
-  var canvas = d3.select("#canvas");
-  var height = canvas.style("height").slice(0, -2);
-  var width = canvas.style("width").slice(0, -2);
-
-
   var nodes = Model.getNodes();
   var categories = Model.getCategories();
 
   bookmarkNavigationLayout = new NavigationLayout("#navigation", color_set);
   bookmarkNavigationLayout.initializeLayout(categories);
-  centers = {
-    default_center: {
-      y: height / 2,
-      x: width / 2
-    },
-    cat_centers: bookmarkNavigationLayout.getNavigationCenters(height)
-  };
 
-  bubbleForceLayout = new ForceLayout("#canvas", centers,color_set);
+
+  bubbleForceLayout = new ForceLayout("#canvas",color_set);
   bubbleForceLayout.initializeLayout(nodes);
 
 
@@ -90,8 +78,14 @@ function initializeUI() {
   });
 
 
-}
+jQuery("input[id^='bblsize']").click(function() {
+    //jQuery("input[name='sum']").val(jQuery(this).val());
+    radius=jQuery(this).val();
+    padding=radius/5;
+    bubbleForceLayout.changeBubbleSize(jQuery(this).val());
+});
 
+}
 
 function addNewURL(url) {
   Model.createNewBookmark(url, function(newnode) {
