@@ -212,6 +212,16 @@ var BookmarkDataSingleton = (function() {
 		//public methods
 		return {
 
+			getColorSetforCategories :function(colorSet, categories){
+				var ColorSetforCategories=[];
+				categories.forEach(function(d,i){
+					ColorSetforCategories["category-"+categories[i].item.id]=colorSet(i);
+				})
+
+				return ColorSetforCategories;
+
+			},
+
 			getUIData: function(callBackonBookmarksProcesed) {
 				fetchBookmarkData(callBackonBookmarksProcesed)
 			},

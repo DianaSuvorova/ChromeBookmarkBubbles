@@ -24,7 +24,7 @@ function NavigationLayout(element, color_set) {
 
 		d.ui_mouseover = true;
 		if (d.ui_click == false) {
-			d3.select(this).style('color', color_set(i));
+			d3.select(this).style('color', color_set["category-"+d.item.id]);
 		}
 
 	}
@@ -49,10 +49,10 @@ function NavigationLayout(element, color_set) {
 		if (!d.ui_click) {
 			d.ui_click = true;
 			d3.select(this).attr("class", function(d,i){return d.get_class()})
-				 .style("color", color_set(i))
-				 .style("border-color", color_set(i));
+				 .style("color", color_set["category-"+d.item.id])
+				 .style("border-color", color_set["category-"+d.item.id]);
 
-			d3.selectAll(".category-" + i).style("border-color", color_set(i));
+			d3.selectAll(".category-" + d.item.id).style("border-color", color_set["category-"+d.item.id]);
 
 
 
@@ -63,7 +63,7 @@ function NavigationLayout(element, color_set) {
 				.style("border-color", "");
 				//.style();
 
-			d3.selectAll(".category-" + i).style("border-color", "rgb(179,179,179)");
+			d3.selectAll(".category-" + d.item.id).style("border-color", "rgb(179,179,179)");
 
 
 

@@ -22,9 +22,10 @@ $(document).ready(function() {
 function initializeUI() {
 
 
-  var color_set = d3.scale.category10();
   var nodes = Model.getNodes();
   var categories = Model.getCategories();
+  var color_set = Model.getColorSetforCategories(d3.scale.category10(),categories);
+ 
 
   bookmarkNavigationLayout = new NavigationLayout("#canvas", color_set);
   bookmarkNavigationLayout.initializeLayout(categories);
