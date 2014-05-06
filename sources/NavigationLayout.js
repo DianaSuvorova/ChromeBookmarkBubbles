@@ -89,14 +89,23 @@ function NavigationLayout(element, color_set) {
 	
 		nodes.splice(findNodeIndexForCategory(d.item.id),1);
 		d3.selectAll("#cat_wrapper-"+d.item.id).remove();
-		 bubbleForceLayout.removeNodesForCategory(d.item.id);
+		bubbleForceLayout.removeNodesForCategory(d.item.id);
 		update();
+
 
 	}
 
-	var update = function() {
+	function emptyCategory(d,i){
+		d3.selectAll(".category-"+d.item.id).each(function(d,i){
+			Model.deleteNode(d.item.id);
+		})
+		Model.deleteNode(d.item.id);
+		removeCategory(d,i);
 
-		console.log(nodes);
+	}
+
+
+	var update = function() {
 
 		var node = canvas.selectAll("div.cat_wrapper").data(nodes);
 		var nodeEnter = node.enter().append("div")
@@ -113,7 +122,8 @@ function NavigationLayout(element, color_set) {
 		 
 		 nodeEnter.append("span").attr('class', 'only')
 		 //.on("click",removeOtherCategories)
-		 .text("only");
+		 .on("click",emptyCategory)
+		 .text("empty");
 
 		 nodeEnter.append("div")
 			.attr("class", "categories")

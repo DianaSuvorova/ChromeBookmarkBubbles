@@ -197,6 +197,7 @@ var BookmarkDataSingleton = (function() {
 			);
 		}
 
+
 		function lookupCategoryID(navigation_items, node_item) {
 			for (var i = 0; i < navigation_items.length; i++) {
 				if (navigation_items[i].id === node_item.parent_id) {
@@ -250,6 +251,11 @@ var BookmarkDataSingleton = (function() {
 
 			},
 
+			deleteNode: function(node_id,callback){
+				
+				chrome.bookmarks.remove(node_id, function(){console.log("tree is gone");});
+			
+			},
 
 			createNewBookmark: function(url, callback) {
 				createNewBookmarkinBookMarkBar(url, function(result) {

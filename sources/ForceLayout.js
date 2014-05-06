@@ -71,7 +71,7 @@ function ForceLayout(element, color_set) {
 	this.categorize = function() {
 		nodes.forEach(function(o, i) {
 
-			o.center = o.cat_id;
+			o.center = "category-"+o.cat_id;
 		})
 		force.resume();
 	}
