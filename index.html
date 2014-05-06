@@ -11,25 +11,25 @@ body{
     font-size:20px ;
 }
 
-[draggable] {
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  /* Required to make elements draggable in old WebKit */
-  -khtml-user-drag: element;
-  -webkit-user-drag: element;
+
+.cat_wrapper{
+      min-width: 300px;
+      display:inline-block;
+         height: 400px;
+/*    float:left;
+*/
 }
   
   .categories{
-    padding: 25px;
-    min-width: 300px;
-    display:inline-block;
-    padding: 20px 0;
-    height: 400px;
-    float:left;
-/*    width:20%;
-*/    overflow:hidden;
+   /* position: relative;
+*/  
+    float:none;
+    top: 20px;
+    width:90%;
+    padding: 20px;
+    margin: 0 20px;
+    height:300px;
+    overflow:hidden;
     text-overflow:ellipsis;
     text-align:center;
     font-family: Typo Slab Serif Light;
@@ -42,7 +42,24 @@ body{
   .categories:hover, .categories.selected  {
     cursor: pointer;
   }
-  
+
+
+
+#bin{
+
+/*  position: absolute; 
+  bottom: 0; 
+  right: 0;*/
+ border: solid 2px white;
+    -webkit-border-radius: 240px;
+    -moz-border-radius: 240px;
+    border-radius: 240px;
+    -moz-box-shadow: 0 0 10px #bdbdbd;
+    -webkit-box-shadow: 0 0 10px #bdbdbd;
+    box-shadow: 0 0 10px #bdbdbd;
+    background-color: white;
+
+}  
 
   .over {
 
@@ -52,7 +69,7 @@ body{
     -moz-box-shadow: 0 0 10px #bdbdbd;
     -webkit-box-shadow: 0 0 10px #bdbdbd;
     box-shadow: 0 0 10px #bdbdbd;  
-  border: dashed 2px;
+    border: dashed 2px;
 }
 
 .categories.selected{ 
@@ -168,23 +185,30 @@ body{
     }
 
 
-#bin{
-  position: fixed; 
-  bottom: 0px; 
-  right: 0px;
-  width:5%;
 
-   filter: url(filters.svg#grayscale); /* Firefox 3.5+ */
-    filter: gray; /* IE6-9 */
-    -webkit-filter: grayscale(1);
+span.close:hover, span.only:hover{
+ cursor:pointer;
+ text-decoration:underline;
 }
 
 
-#bin.draggedover,img#add.draggedover,img#add:hover {
+span.close, span.only{
+  visibility: hidden;
+  margin: 0 10px;
+  color: red;
+/* position: static;
+  top:0;
+  right:0;
+*/ 
+ display: inline-block; 
+  float: right;
+
+}
+/*#bin.draggedover,img#add.draggedover,img#add:hover {
     filter: none;
     -webkit-filter: grayscale(0);
 }
-
+*/
 .inputurl {display:none;}
 
 .inputcat {
@@ -192,7 +216,7 @@ body{
 }
 
 
-#bin ,.enter{
+.enter{
 
     width: 30px; 
     height: 30px; 

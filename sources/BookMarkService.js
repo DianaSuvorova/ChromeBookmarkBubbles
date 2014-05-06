@@ -128,10 +128,10 @@ var BookmarkDataSingleton = (function() {
 
 			var rnode = {
 				default_center: -1,
-				center: lookupCategoryID(navigation_items, node_item),
+				center: "category-"+node_item.parent_id,//lookupCategoryID(navigation_items, node_item),
 				radius: null,
 				item: node_item,
-				cat_id: lookupCategoryID(navigation_items, node_item),
+				cat_id: node_item.parent_id,//lookupCategoryID(navigation_items, node_item),
 				ui_drag: false,
 				get_class: function() {
 					var bubblefill_class = 'bubbleFill' + ' ';
@@ -229,7 +229,7 @@ var BookmarkDataSingleton = (function() {
 			},
 
 			getNodes: function() {
-				updateCategoryID(nodes);
+				//updateCategoryID(nodes);
 				return nodes;
 			},
 

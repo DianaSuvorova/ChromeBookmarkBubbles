@@ -34,10 +34,15 @@ function NavigationLayout(element, color_set) {
 		if (d.ui_click == false) {
 			d3.select(this).style('color', 'rgb(179,179,179)');
 		}
+
+		d3.select(this.parent).selectAll("span").remove();
+
 	}
 
 
 	function clicked(d, i) {
+
+
 
 		var cur_class = d3.select(this).attr("class");
 
@@ -48,6 +53,9 @@ function NavigationLayout(element, color_set) {
 				 .style("border-color", color_set(i));
 
 			d3.selectAll(".category-" + i).style("border-color", color_set(i));
+
+
+
 		} else {
 			d.ui_click = false;
 			d3.select(this).attr("class",function(d,i){return d.get_class()})
@@ -57,16 +65,60 @@ function NavigationLayout(element, color_set) {
 
 			d3.selectAll(".category-" + i).style("border-color", "rgb(179,179,179)");
 
+
+
+
 		}
 	}
 
+	function showOptions(d, i){
+		d3.select(this).selectAll("span").style("visibility","visible");
+	}
+
+	function hideOptions(d, i){
+			d3.select(this).selectAll("span").style("visibility","hidden");
+
+	}
+
+	  function findNodeIndexForCategory(cat_id) {
+        for (var i in nodes) {if (nodes[i].item.id === cat_id) return i};
+    }	
+
+
+	function removeCategory(d,i){
+	
+		nodes.splice(findNodeIndexForCategory(d.item.id),1);
+		d3.selectAll("#cat_wrapper-"+d.item.id).remove();
+		 bubbleForceLayout.removeNodesForCategory(d.item.id);
+		update();
+
+	}
 
 	var update = function() {
-		var node = canvas.selectAll("div.categories").data(nodes);
+
+		console.log(nodes);
+
+		var node = canvas.selectAll("div.cat_wrapper").data(nodes);
 		var nodeEnter = node.enter().append("div")
+			.attr("class", "cat_wrapper")
+			.attr("id", function(d, i) {
+				return "cat_wrapper-" + d.item.id
+			})
+			.on("mouseover", showOptions)
+			.on("mouseout", hideOptions);
+
+		 nodeEnter.append("span").attr('class', 'close')
+		 .on("click",removeCategory)
+		 .text("X");
+		 
+		 nodeEnter.append("span").attr('class', 'only')
+		 //.on("click",removeOtherCategories)
+		 .text("only");
+
+		 nodeEnter.append("div")
 			.attr("class", "categories")
 			.attr("id", function(d, i) {
-				return "category-" + i
+				return "category-" + d.item.id
 			})
 			.on("mouseover", mouseover)
 			.on("mouseout", mouseout)
@@ -75,7 +127,19 @@ function NavigationLayout(element, color_set) {
 				return d.item.title.toUpperCase();
 			});
 
-		node.style("width", (90 / nodes.length) + '%');
+
+		node.exit().remove();	
+
+		// canvas.selectAll("#bin").data(["bin"])
+		// 	.enter().append("div")
+		// //	.attr("class", "categories")
+		// 	.attr("id", "bin" )
+		// 	 .on("mouseover", mouseover)
+		// 	 .on("mouseout", mouseout)
+		// 	 .on("click", clicked)
+		// 	.text("BIN");
+
+	//	node.style("width", (90 / nodes.length) + '%');
 
 	}
 

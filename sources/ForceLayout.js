@@ -13,10 +13,13 @@ function ForceLayout(element, color_set) {
 		var jq_categories = document.querySelectorAll('.categories');
 		[].forEach.call(jq_categories, function(cat) {
 	//		console.log($(cat).width())
-			centers.push({
-				x: $(cat).offset().left-$(cat).width()/2,
-				y: $(cat).offset().top+$(cat).height()/4 
-			})
+
+			centers[$(cat).attr('id')+'x']= $(cat).offset().left;
+			centers[$(cat).attr('id')+'y']= $(cat).offset().top;
+			// centers.push({
+			// 	x: $(cat).offset().left,//+$(cat).width()/2,
+			// 	 y: $(cat).offset().top//+$(cat).height()/2 
+			// })
 		})
 
 
@@ -29,6 +32,31 @@ function ForceLayout(element, color_set) {
 		};
 	}
 
+	 findNodeIndexForCategory = function(cat_id) {
+        for (var i in nodes) {if (nodes[i].cat_id === cat_id) return i};
+    }	
+
+	function deleteNodesForCategory(cat_id){
+		while (findNodeIndexForCategory(cat_id)){
+			nodes.splice(findNodeIndexForCategory(cat_id),1);
+		}
+	}
+
+
+	function updateCategoriesForNodes(deleted_cat_id){
+		for (var i in nodes) {if (nodes[i].cat_id>deleted_cat_id)
+			nodes[i].cat_id = nodes[i].center = nodes[i].cat_id-1;
+		}
+	}
+
+	this.removeNodesForCategory = function(cat_id){
+		//force.stop();
+		deleteNodesForCategory(cat_id);
+//		d3.selectAll(".category-"+cat_id).remove();
+		update();
+
+	}
+	
 	this.reset = function() {
 
 		nodes.forEach(function(o, i) {
@@ -134,8 +162,8 @@ function ForceLayout(element, color_set) {
 					o.x += (centers.default_center.x - o.x) * k;
 
 				} else {
-					o.y += (centers.cat_centers[o.center].y - o.y) * k;
-					o.x += (centers.cat_centers[o.center].x - o.x) * k;
+					o.y += (centers.cat_centers[o.center+"y"] - o.y) * k;
+					o.x += (centers.cat_centers[o.center+"x"] - o.x) * k;
 				}
 			});
 
