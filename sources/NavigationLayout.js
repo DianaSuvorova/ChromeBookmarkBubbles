@@ -12,9 +12,10 @@ function NavigationLayout(element, color_set) {
 	}
 
 	this.addNode=function(node){		
-		nodes.push(node);
-		console.log(nodes);
+		nodes.unshift(node);
+//		console.log(nodes);
 		update();
+		console.log(nodes);
 
 	}
 
@@ -88,33 +89,68 @@ function NavigationLayout(element, color_set) {
 	function removeCategory(d,i){
 	
 		nodes.splice(findNodeIndexForCategory(d.item.id),1);
-		d3.selectAll("#cat_wrapper-"+d.item.id).remove();
+//		d3.selectAll("#cat_wrapper-"+d.item.id).remove();
 		bubbleForceLayout.removeNodesForCategory(d.item.id);
 		update();
 
 
 	}
 
-	function emptyCategory(d,i){
-		d3.selectAll(".category-"+d.item.id).each(function(d,i){
-			Model.deleteNode(d.item.id);
-		})
-		Model.deleteNode(d.item.id);
-		removeCategory(d,i);
 
+	function showDialog(d,i)
+	{
+	$("#dialog").dialog({
+				width: 600,
+				modal: true,
+				resizable: false,
+				buttons: {
+					"Yeah!": function() {
+								// d3.selectAll(".category-"+d.item.id).each(function(d,i){
+								// 	Model.deleteNode(d.item.id);
+								// })
+								// Model.deleteNode(d.item.id);
+								removeCategory(d,i);
+
+						$(this).dialog("close");
+					},
+					"Wait a  sec": function() {
+						$(this).dialog("close");
+					}
+				}
+			});
 	}
+
+
+	function emptyCategory(d,i){
+
+		showDialog(d,i);
+	}
+
+
+	var drag = d3.behavior.drag()
+	    .origin(function(d) { return d; })
+	    .on("drag", dragmove);
+
+
+	function dragmove(d) {
+		console.log("drag");
+  		d3.select(this)
+      	.style("top", d.y = d3.event.y)
+      	.style("left", d.x = d3.event.x);
+}    
 
 
 	var update = function() {
 
-		var node = canvas.selectAll("div.cat_wrapper").data(nodes);
-		var nodeEnter = node.enter().append("div")
+		var node = canvas.selectAll("div.cat_wrapper").data(nodes, function(d) { return d.item.id });
+		var nodeEnter = node.enter().insert("div")
 			.attr("class", "cat_wrapper")
 			.attr("id", function(d, i) {
 				return "cat_wrapper-" + d.item.id
 			})
 			.on("mouseover", showOptions)
-			.on("mouseout", hideOptions);
+			.on("mouseout", hideOptions)
+			.call(drag);
 
 		 nodeEnter.append("span").attr('class', 'close')
 		 .on("click",removeCategory)

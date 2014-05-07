@@ -101,4 +101,26 @@ function addNewCategory(name) {
     bookmarkNavigationLayout.addNode(newnode)
   });
 
+
+function showDialog()
+{
+    $("#dialog").dialog(
+    {
+        width: 600,
+        height: 400,
+        open: function(event, ui)
+        {
+            var textarea = $('<textarea style="height: 276px;">');
+            $(textarea).redactor({
+                focus: true,
+                autoresize: false,
+                initCallback: function()
+                {
+                    this.set('<p>Lorem...</p>');
+                }
+            });
+        }
+     });
+}
+
 }

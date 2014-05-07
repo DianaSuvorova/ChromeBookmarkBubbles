@@ -119,7 +119,7 @@ function ForceLayout(element, color_set) {
 			.on("dragend", dragEnd);
 
 
-		var node = canvas.selectAll("div.bubble").data(nodes);
+		var node = canvas.selectAll("div.bubble").data(nodes, function(d) { return d.item.id });
 
 		var nodeEnter = node.enter().append("div")
 			.attr("class", "bubble")
@@ -194,10 +194,10 @@ function ForceLayout(element, color_set) {
 		function hideDetails(d, i) {
 
 			//this  doesn't fix first circle tick
-			d3.select(this).classed("fixed", d.fixed = false);
+		//	d3.select(this).classed("fixed", d.fixed = false);
 
 
-			var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
+		   var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
 
 			var category = d3.selectAll("#" + curr_class);
 
@@ -226,9 +226,9 @@ function ForceLayout(element, color_set) {
 			d3.event.preventDefault();
 
 			//this doesn't fix  first circle tick
-			d3.select(this).classed("fixed", d.fixed = true);
+		//	d3.select(this).classed("fixed", d.fixed = true);
 
-			var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
+			// var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
 
 			d3.selectAll(".bubbleFill").style("opacity", 0.5);
 
@@ -260,7 +260,7 @@ function ForceLayout(element, color_set) {
 
 				});
 
-			d3.selectAll("#" + curr_class).style('color', color_set[d.center]);
+		//	d3.selectAll("#" + curr_class).style('color', color_set[d.center]);
 
 		}
 
