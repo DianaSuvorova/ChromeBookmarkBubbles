@@ -1,0 +1,224 @@
+  body{
+    background-color:rgb(227,226,225);
+    font-family: Typo Slab Serif Light;
+    font-size:12px ;
+  }
+
+
+  .cat_wrapper{
+    min-width: 300px;
+    display:inline-block;
+  }
+
+  .categories{
+    width:90%;
+    padding: 20px;
+    margin: 0 20px;
+    height: 400px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    text-align:center;
+    font-family: Typo Slab Serif Light;
+    font-size:10px ;
+    color: rgb(152,151,150);
+    border: solid 2px transparent;
+  }
+
+
+  .categories:hover, .categories.selected  {
+    cursor: pointer;
+  }
+
+
+
+  .over {
+
+   -webkit-border-radius: 240px;
+   -moz-border-radius: 240px;
+   border-radius: 240px;
+   -moz-box-shadow: 0 0 10px #bdbdbd;
+   -webkit-box-shadow: 0 0 10px #bdbdbd;
+   box-shadow: 0 0 10px #bdbdbd;  
+   border: dashed 2px;
+  }
+
+  .categories.selected{ 
+    -webkit-border-radius: 240px;
+    -moz-border-radius: 240px;
+    border-radius: 240px;
+    -moz-box-shadow: 0 0 10px #bdbdbd;
+    -webkit-box-shadow: 0 0 10px #bdbdbd;
+    box-shadow: 0 0 10px #bdbdbd;
+  }
+
+  .center{
+    margin-left:auto;
+    margin-right:auto;
+    width:80%;
+  }
+
+  #canvas{
+    margin-top:10px; 
+    border-top:1px solid rgb(206,205,203);
+  }
+
+  #navigation{
+  /*    height:100px;
+  */  font-family: Typo Slab Serif Light;
+  font-size:30px ;
+  color: rgb(38,38,38);
+  align: center;
+  padding: 20px;
+
+
+  }
+
+  .bubble {
+    display: block;
+    position: absolute;
+
+  }
+
+  .bubbleFill  {
+    position: absolute;
+    display: block;
+    border: solid 3px rgb(179,179,179);
+    -webkit-border-radius: 240px;
+    -moz-border-radius: 240px;
+    border-radius: 240px;
+  /*    background-image: url(CollapsableTreeJS/Images/TimeOfDay.jpeg);
+  */    background-position :center;
+  /*    background-repeat: no-repeat;*/
+  background-size: 130%;
+  draggable: "true";
+
+  }
+
+  /*.bubbleFill:hover {cursor: pointer;}
+  */
+
+  .bubbleFill.dragged{
+    opacity: 0.4;
+  }
+  .bubbleFill.highlighted{
+    border: solid 3px rgb(29,112,184);
+  }
+
+
+  .msover{
+   position: absolute; bottom: 0; left: 0;
+   cursor:copy;
+   z-index:3;
+  }
+
+  .tooltip{
+    font-size: 20px;
+    pointer-events:none;
+    cursor:pointer;
+    position: relative;
+    z-index: 2;
+    width:236px; 
+    height:180px;
+    opacity:0;
+      /* beware that Safari needs actual
+      px for border radius (bug) */
+      -webkit-border-radius:50% 50% 50% 50%/40% 40% 60% 60% ;
+      /* fails in Safari, but overwrites in Chrome */
+      border-radius:50% 50% 50% 50%/ 40% 40% 60% 60%;
+
+    }
+
+    .tooltip span{
+      width: 220px;
+      position: absolute;
+      align: center;
+      padding: 50px 10px;
+      color:#ffffff;
+      font-family: Caviar Dreams, Bebas Neue;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      vertical-align:middle;
+      text-align:center;
+    }
+
+    .clearfix:after {
+      visibility: hidden;
+      display: block;
+      font-size: 0;
+      content: " ";
+      clear: both;
+      height: 0;
+    }
+
+
+
+
+    span.option:hover{
+     cursor:pointer;
+     text-decoration:underline;
+   }
+
+
+   span.option{
+    visibility: hidden;
+    margin: 0 10px;
+    color: red;
+    display: inline-block; 
+    float: right;
+
+  }
+
+  span.option.hide{
+    width:30px;
+    height:30px;
+    background:url(/Images/hide.png);
+    background-size: 100% 100%;
+  }
+
+
+  span.option.delete{
+    width:30px;
+    height:30px;
+    background:url(/Images/recycle43.png);
+    background-size: 100% 100%;
+  }
+
+
+  .inputurl {display:none;}
+
+  .inputcat {
+    float: right;
+  }
+
+
+  .enter{
+    width: 30px; 
+    height: 30px; 
+    padding:20px ;
+    display: block;
+    border: solid 3px rgb(179,179,179);
+    -webkit-border-radius: 240px;
+    -moz-border-radius: 240px;
+    border-radius: 240px;
+    cusror:pointer;
+    -moz-box-shadow: 0 0 10px #bdbdbd;
+    -webkit-box-shadow: 0 0 10px #bdbdbd;
+    box-shadow: 0 0 10px #bdbdbd;
+    text-align: center;
+    background: white;
+
+  }
+
+  .bottomright{
+    position: fixed; 
+    bottom: 10px; 
+    right: 10px;
+    font-size: 16px;
+  }
+
+  .bottomright a{
+  padding:10px 0;
+  font-size:16px ;
+  color: rgb(38,38,38);
+  }
+

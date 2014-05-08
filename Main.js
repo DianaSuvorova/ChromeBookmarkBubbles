@@ -2,7 +2,7 @@ var Model = BookmarkDataSingleton.getInstance();
 
 var radius = 75;
 var expanded_radius = 240;
-var padding = radius/4;
+var padding = radius / 4;
 
 
 var bookmarkNavigationLayout;
@@ -24,14 +24,14 @@ function initializeUI() {
 
   var nodes = Model.getNodes();
   var categories = Model.getCategories();
-  var color_set = Model.getColorSetforCategories(d3.scale.category10(),categories);
- 
+  var color_set = Model.getColorSetforCategories(d3.scale.category10(), categories);
+
 
   bookmarkNavigationLayout = new NavigationLayout("#canvas", color_set);
   bookmarkNavigationLayout.initializeLayout(categories);
 
 
-  bubbleForceLayout = new ForceLayout("#canvas",color_set);
+  bubbleForceLayout = new ForceLayout("#canvas", color_set);
   bubbleForceLayout.initializeLayout(nodes);
 
 
@@ -79,12 +79,12 @@ function initializeUI() {
   });
 
 
-jQuery("input[id^='bblsize']").click(function() {
+  jQuery("input[id^='bblsize']").click(function() {
     //jQuery("input[name='sum']").val(jQuery(this).val());
-    radius=jQuery(this).val();
-    padding=radius/5;
+    radius = jQuery(this).val();
+    padding = radius / 5;
     bubbleForceLayout.changeBubbleSize(jQuery(this).val());
-});
+  });
 
 }
 
@@ -102,25 +102,5 @@ function addNewCategory(name) {
   });
 
 
-function showDialog()
-{
-    $("#dialog").dialog(
-    {
-        width: 600,
-        height: 400,
-        open: function(event, ui)
-        {
-            var textarea = $('<textarea style="height: 276px;">');
-            $(textarea).redactor({
-                focus: true,
-                autoresize: false,
-                initCallback: function()
-                {
-                    this.set('<p>Lorem...</p>');
-                }
-            });
-        }
-     });
-}
 
 }
