@@ -3,124 +3,103 @@
 <meta http-equiv="Cache-control" content="Private">
 <meta charset="utf-8">
 <style type="text/css">
-  
+
 
 body{
   background-color:rgb(227,226,225);
-    font-family: Typo Slab Serif Light;
-    font-size:20px ;
+  font-family: Typo Slab Serif Light;
+  font-size:12px ;
 }
 
 
 .cat_wrapper{
-      min-width: 300px;
-      display:inline-block;
-/*    float:left;
-*/
+  min-width: 300px;
+  display:inline-block;
 }
-  
-  .categories{
-    width:90%;
-    padding: 20px;
-    margin: 0 20px;
-/*    padding: 20px 0;
-*/    height: 400px;
 
-/*    width:20%;
-*/    overflow:hidden;
-    text-overflow:ellipsis;
-    text-align:center;
-    font-family: Typo Slab Serif Light;
-    font-size:10px ;
-    color: rgb(152,151,150);
-    border: solid 2px transparent;
-   }
+.categories{
+  width:90%;
+  padding: 20px;
+  margin: 0 20px;
+  height: 400px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  text-align:center;
+  font-family: Typo Slab Serif Light;
+  font-size:10px ;
+  color: rgb(152,151,150);
+  border: solid 2px transparent;
+}
 
 
-  .categories:hover, .categories.selected  {
-    cursor: pointer;
-  }
+.categories:hover, .categories.selected  {
+  cursor: pointer;
+}
 
 
 
-#bin{
+.over {
 
-/*  position: absolute; 
-  bottom: 0; 
-  right: 0;*/
- border: solid 2px white;
-    -webkit-border-radius: 240px;
-    -moz-border-radius: 240px;
-    border-radius: 240px;
-    -moz-box-shadow: 0 0 10px #bdbdbd;
-    -webkit-box-shadow: 0 0 10px #bdbdbd;
-    box-shadow: 0 0 10px #bdbdbd;
-    background-color: white;
-
-}  
-
-  .over {
-
-     -webkit-border-radius: 240px;
-    -moz-border-radius: 240px;
-    border-radius: 240px;
-    -moz-box-shadow: 0 0 10px #bdbdbd;
-    -webkit-box-shadow: 0 0 10px #bdbdbd;
-    box-shadow: 0 0 10px #bdbdbd;  
-    border: dashed 2px;
+ -webkit-border-radius: 240px;
+ -moz-border-radius: 240px;
+ border-radius: 240px;
+ -moz-box-shadow: 0 0 10px #bdbdbd;
+ -webkit-box-shadow: 0 0 10px #bdbdbd;
+ box-shadow: 0 0 10px #bdbdbd;  
+ border: dashed 2px;
 }
 
 .categories.selected{ 
-    -webkit-border-radius: 240px;
-    -moz-border-radius: 240px;
-    border-radius: 240px;
-    -moz-box-shadow: 0 0 10px #bdbdbd;
-    -webkit-box-shadow: 0 0 10px #bdbdbd;
-    box-shadow: 0 0 10px #bdbdbd;
+  -webkit-border-radius: 240px;
+  -moz-border-radius: 240px;
+  border-radius: 240px;
+  -moz-box-shadow: 0 0 10px #bdbdbd;
+  -webkit-box-shadow: 0 0 10px #bdbdbd;
+  box-shadow: 0 0 10px #bdbdbd;
 }
 
-  .center{
-    margin-left:auto;
-    margin-right:auto;
-    width:80%;
-  }
+.center{
+  margin-left:auto;
+  margin-right:auto;
+  width:80%;
+}
 
-  #canvas{
-    margin-top:10px; 
-    border-top:1px solid rgb(206,205,203);
-  }
+#canvas{
+  margin-top:10px; 
+  border-top:1px solid rgb(206,205,203);
+}
 
-  #navigation{
+#navigation{
 /*    height:100px;
 */  font-family: Typo Slab Serif Light;
-    font-size:30px ;
-    color: rgb(38,38,38);
-    align: center;
-    padding: 20px;
+font-size:30px ;
+color: rgb(38,38,38);
+align: center;
+padding: 20px;
 
 
-  }
+}
 
-  .bubble {
-    display: block;
-    position: absolute;
+.bubble {
+  display: block;
+  position: absolute;
 
-    }
+}
 
-    .bubbleFill  {
-    position: absolute;
-    display: block;
-    border: solid 3px rgb(179,179,179);
-    -webkit-border-radius: 240px;
-    -moz-border-radius: 240px;
-     border-radius: 240px;
+.bubbleFill  {
+  position: absolute;
+  display: block;
+  border: solid 3px rgb(179,179,179);
+  -webkit-border-radius: 240px;
+  -moz-border-radius: 240px;
+  border-radius: 240px;
 /*    background-image: url(CollapsableTreeJS/Images/TimeOfDay.jpeg);
 */    background-position :center;
 /*    background-repeat: no-repeat;*/
-    background-size: 130%;
-    draggable: "true";
+background-size: 130%;
+draggable: "true";
 
-    }
+}
 
 /*.bubbleFill:hover {cursor: pointer;}
 */
@@ -129,49 +108,45 @@ body{
   opacity: 0.4;
 }
 .bubbleFill.highlighted{
-      border: solid 3px rgb(29,112,184);
+  border: solid 3px rgb(29,112,184);
 }
 
 
 .msover{
-         position: absolute; bottom: 0; left: 0;
-         cursor:copy;
-        z-index:3;
+ position: absolute; bottom: 0; left: 0;
+ cursor:copy;
+ z-index:3;
 }
 
-  .tooltip{
-      pointer-events:none;
-      cursor:pointer;
-       position: relative;
-       z-index: 2;
-       width:236px; 
-    /* width has to be 70% of height */
-    /* could use width:70%; in a square container */
-       height:180px;
-       opacity:0;
+.tooltip{
+  font-size: 20px;
+  pointer-events:none;
+  cursor:pointer;
+  position: relative;
+  z-index: 2;
+  width:236px; 
+  height:180px;
+  opacity:0;
     /* beware that Safari needs actual
-     px for border radius (bug) */
-       -webkit-border-radius:50% 50% 50% 50%/40% 40% 60% 60% ;
-       /* fails in Safari, but overwrites in Chrome */
-       border-radius:50% 50% 50% 50%/ 40% 40% 60% 60%;
+    px for border radius (bug) */
+    -webkit-border-radius:50% 50% 50% 50%/40% 40% 60% 60% ;
+    /* fails in Safari, but overwrites in Chrome */
+    border-radius:50% 50% 50% 50%/ 40% 40% 60% 60%;
 
-     }
+  }
 
-     .tooltip span{
-/*      pointer-events:all;*/
-        width: 220px;
-       position: absolute;
-       align: center;
-       padding: 50px 10px;
-/*       bottom: 0;
-       right: 0;*/
-       color:#ffffff;
-       font-family: Caviar Dreams, Bebas Neue;
-       overflow:hidden;
-       text-overflow:ellipsis;
-       vertical-align:middle;
-       text-align:center;
-     }
+  .tooltip span{
+    width: 220px;
+    position: absolute;
+    align: center;
+    padding: 50px 10px;
+    color:#ffffff;
+    font-family: Caviar Dreams, Bebas Neue;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    vertical-align:middle;
+    text-align:center;
+  }
 
   .clearfix:after {
     visibility: hidden;
@@ -180,36 +155,42 @@ body{
     content: " ";
     clear: both;
     height: 0;
-    }
+  }
 
 
 
 
-span.close:hover, span.only:hover{
- cursor:pointer;
- text-decoration:underline;
-}
+  span.option:hover{
+   cursor:pointer;
+   text-decoration:underline;
+ }
 
 
-span.close, span.only{
+ span.option{
   visibility: hidden;
   margin: 0 10px;
   color: red;
-/* position: static;
-  top:0;
-  right:0;
-*/ 
- display: inline-block; 
+  display: inline-block; 
   float: right;
 
 }
 
-
-/*#bin.draggedover,img#add.draggedover,img#add:hover {
-    filter: none;
-    -webkit-filter: grayscale(0);
+span.option.hide{
+  width:30px;
+  height:30px;
+  background:url(Images/hide.png);
+  background-size: 100% 100%;
 }
-*/
+
+
+span.option.delete{
+  width:30px;
+  height:30px;
+  background:url(Images/recycle43.png);
+  background-size: 100% 100%;
+}
+
+
 .inputurl {display:none;}
 
 .inputcat {
@@ -218,21 +199,20 @@ span.close, span.only{
 
 
 .enter{
-
-    width: 30px; 
-    height: 30px; 
-    padding:20px ;
-    display: block;
-    border: solid 3px rgb(179,179,179);
-    -webkit-border-radius: 240px;
-    -moz-border-radius: 240px;
-     border-radius: 240px;
-     cusror:pointer;
-     -moz-box-shadow: 0 0 10px #bdbdbd;
-    -webkit-box-shadow: 0 0 10px #bdbdbd;
-    box-shadow: 0 0 10px #bdbdbd;
-    text-align: center;
-    background: white;
+  width: 30px; 
+  height: 30px; 
+  padding:20px ;
+  display: block;
+  border: solid 3px rgb(179,179,179);
+  -webkit-border-radius: 240px;
+  -moz-border-radius: 240px;
+  border-radius: 240px;
+  cusror:pointer;
+  -moz-box-shadow: 0 0 10px #bdbdbd;
+  -webkit-box-shadow: 0 0 10px #bdbdbd;
+  box-shadow: 0 0 10px #bdbdbd;
+  text-align: center;
+  background: white;
 
 }
 
@@ -240,23 +220,22 @@ span.close, span.only{
   position: fixed; 
   bottom: 10px; 
   right: 10px;
+  font-size: 16px;
 }
 
-
-.displaytoggle{
-  float:right;
-  display:inline-block;
-  margin:10px;
+.bottomright a{
+padding:10px 0;
+font-size:16px ;
+color: rgb(38,38,38);
 }
-
 
 </style>
 <link href="sources/jquery-ui-1.10.4.custom2/css/smoothness/jquery-ui-1.10.4.custom.min.css" rel="stylesheet">
+<script language="JavaScript" type="text/javascript"  src="sources/jquery-2.1.0.min.js"></script>
 <script language="JavaScript" type="text/javascript"  src="sources/Overlap.js"></script>
 <script language="JavaScript" type="text/javascript"  src="sources/NavigationLayout.js"></script>
 <script language="JavaScript" type="text/javascript"  src="sources/ForceLayout.js"></script>
 <script language="JavaScript" type="text/javascript"  src="sources/jquery-ui.js"></script>
-<script language="JavaScript" type="text/javascript"  src="sources/jquery-2.1.0.min.js"></script>
 <script language="JavaScript" type="text/javascript"  src="sources/d3.v3.min.js"></script>
 <script language="JavaScript" type="text/javascript"  src="sources/jquery-ui.js"></script>
 <script language="JavaScript" type="text/javascript"  src="sources/BookmarkService.js"></script>
@@ -265,53 +244,38 @@ span.close, span.only{
 
 <body>
 
-<div id="wraper" class="center">
-<div id="navigation">
-  <div id="bookmark" style="width:90%; float:left; display:inline-block;">  </div>
-  <div style="width:9%; float:left; display:inline-block;">  
-    <div class="inputcat">
-      <input class="inputnewcat" type="text" name="category" value="new folder" ><br>
+  <div id="wraper" class="center">
+
+    <div id="canvas" style="width: 100%; height: 400px; position: relative;">
+
+        <div class="inputcat">
+          <input class="inputnewcat" type="text" name="category" value="new folder" ><br>
+        </div>
+
+     <div id="AddNewURL">
+      <div class="enter" style= "cursor: pointer;>">+ </div>
+      <div class="inputurl">
+        URL: <input class="inputnewurl" type="text" name="URL" ><br>
+      </div>
+
+      <div class="bottomright">
+
+       <a href="#" id="categorize" class="displaytoggle">categorize</a>
+       <a href="#" id="reset" class="displaytoggle">Reset</a>
+
+        <input type="radio" id="bblsize" name="r1" value="75" checked="checked"/>75
+        <input type="radio" id="bblsize" name="r1" value="100" /> 100
+        <input type="radio" id="bblsize" name="r1" value="150" />150
+      </div>
+
     </div>
 
-  </div>
 
-  <div class="clearfix"> </div>
+    <div id="dialog" title="Delete?" style="display: none;"></div>
 
-</div> 
-<div class="clearfix"> </div>
+  </body>
 
- <div id="canvas" style="width: 100%; height: 400px; position: relative;">
- 
- <a href="#" id="categorize" class="displaytoggle">categorize</a>
-<!--  <a href="#" id="timeline">Time Line</a> -->
- <a href="#" id="reset" class="displaytoggle">Reset</a>
-
-
-   <div id="AddNewURL">
-    <div class="enter" style= "cursor: pointer;>">+ </div>
-  <div class="inputurl">
-    URL: <input class="inputnewurl" type="text" name="URL" ><br>
-  </div>
-<!--   </div> 
-
-    <div id="bin" style= "cursor: pointer;>"> X </div>
- 
- </div>
- -->
-<div class="bottomright">
-<input type="radio" id="bblsize" name="r1" value="75" />75
-<input type="radio" id="bblsize" name="r1" value="100" /> 100
-<input type="radio" id="bblsize" name="r1" value="150" />150
-</div>
-
-</div>
-
-
-<div id="dialog" title="Are you sure you want to delete this folder and everything in it" style="display: none;"></div>
-
-</body>
-
-</html>
+  </html>
 
 
 

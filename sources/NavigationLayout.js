@@ -13,9 +13,8 @@ function NavigationLayout(element, color_set) {
 
 	this.addNode = function(node) {
 		nodes.unshift(node);
-		//		console.log(nodes);
 		update();
-		console.log(nodes);
+		bubbleForceLayout.categorize();
 
 	}
 
@@ -91,10 +90,9 @@ function NavigationLayout(element, color_set) {
 	}
 
 
-	function removeCategory(d, i) {
+	function hideCategory(d, i) {
 
 		nodes.splice(findNodeIndexForCategory(d.item.id), 1);
-		//		d3.selectAll("#cat_wrapper-"+d.item.id).remove();
 		bubbleForceLayout.removeNodesForCategory(d.item.id);
 		update();
 
@@ -103,17 +101,17 @@ function NavigationLayout(element, color_set) {
 
 
 	function showDialog(d, i) {
+		$("#dialog").text("Are you sure you want to delete " + d.item.title + " folder and everything in it?");
 		$("#dialog").dialog({
-			width: 600,
 			modal: true,
 			resizable: false,
 			buttons: {
-				"Yeah!": function() {
-					d3.selectAll(".category-"+d.item.id).each(function(d,i){
+				"Yeap": function() {
+					d3.selectAll(".category-" + d.item.id).each(function(d, i) {
 						Model.deleteNode(d.item.id);
 					})
 					Model.deleteNode(d.item.id);
-					removeCategory(d, i);
+					hideCategory(d, i);
 
 					$(this).dialog("close");
 				},
@@ -153,57 +151,44 @@ function NavigationLayout(element, color_set) {
 	// 	}
 
 
-		var update = function() {
+	var update = function() {
 
-			var node = canvas.selectAll("div.cat_wrapper").data(nodes, function(d) {
-				return d.item.id
+		var node = canvas.selectAll("div.cat_wrapper").data(nodes, function(d) {
+			return d.item.id
+		});
+		var nodeEnter = node.enter().insert("div")
+			.attr("class", "cat_wrapper")
+			.attr("id", function(d, i) {
+				return "cat_wrapper-" + d.item.id
+			})
+			.on("mouseover", showOptions)
+			.on("mouseout", hideOptions);
+		//.call(drag);
+		nodeEnter.append("span").attr('class', 'option delete')
+			.on("click", emptyCategory);
+
+		nodeEnter.append("span").attr('class', 'option hide')
+			.on("click", hideCategory);
+
+
+
+		nodeEnter.append("div")
+			.attr("class", "categories")
+			.attr("id", function(d, i) {
+				return "category-" + d.item.id
+			})
+			.on("mouseover", mouseover)
+			.on("mouseout", mouseout)
+			.on("click", clicked)
+			.text(function(d) {
+				return d.item.title.toUpperCase();
 			});
-			var nodeEnter = node.enter().insert("div")
-				.attr("class", "cat_wrapper")
-				.attr("id", function(d, i) {
-					return "cat_wrapper-" + d.item.id
-				})
-				.on("mouseover", showOptions)
-				.on("mouseout", hideOptions);
-				//.call(drag);
-
-			nodeEnter.append("span").attr('class', 'close')
-				.on("click", removeCategory)
-				.text("X");
-
-			nodeEnter.append("span").attr('class', 'only')
-			//.on("click",removeOtherCategories)
-			.on("click", emptyCategory)
-				.text("empty");
-
-			nodeEnter.append("div")
-				.attr("class", "categories")
-				.attr("id", function(d, i) {
-					return "category-" + d.item.id
-				})
-				.on("mouseover", mouseover)
-				.on("mouseout", mouseout)
-				.on("click", clicked)
-				.text(function(d) {
-					return d.item.title.toUpperCase();
-				});
 
 
-			node.exit().remove();
-
-			// canvas.selectAll("#bin").data(["bin"])
-			// 	.enter().append("div")
-			// //	.attr("class", "categories")
-			// 	.attr("id", "bin" )
-			// 	 .on("mouseover", mouseover)
-			// 	 .on("mouseout", mouseout)
-			// 	 .on("click", clicked)
-			// 	.text("BIN");
-
-			//	node.style("width", (90 / nodes.length) + '%');
-
-		}
-
-
+		node.exit().remove();
 
 	}
+
+
+
+}

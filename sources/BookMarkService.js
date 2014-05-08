@@ -43,11 +43,11 @@ var BookmarkDataSingleton = (function() {
 					itemTree.forEach(function(item) {
 						processNode(item);
 
-					navigation_items.sort(function(a, b) {
-						if (a.id < b.id) return 1;
-						if (a.id > b.id) return -1;
-						return 0;
-					})
+						navigation_items.sort(function(a, b) {
+							if (a.id < b.id) return 1;
+							if (a.id > b.id) return -1;
+							return 0;
+						})
 
 
 					});
@@ -78,11 +78,11 @@ var BookmarkDataSingleton = (function() {
 			if (isFolderWithChildren && !isRoot && isFoldernotdefaulhidden) {
 				categories.push(processCategory(node))
 
-					categories.sort(function(a, b) {
-						if (a.item.id < b.item.id) return -1;
-						if (a.item.id > b.item.id) return 1;
-						return 0;
-					})
+				categories.sort(function(a, b) {
+					if (a.item.id < b.item.id) return -1;
+					if (a.item.id > b.item.id) return 1;
+					return 0;
+				})
 
 			}
 
@@ -128,10 +128,10 @@ var BookmarkDataSingleton = (function() {
 
 			var rnode = {
 				default_center: -1,
-				center: "category-"+node_item.parent_id,//lookupCategoryID(navigation_items, node_item),
+				center: "category-" + node_item.parent_id, //lookupCategoryID(navigation_items, node_item),
 				radius: null,
 				item: node_item,
-				cat_id: node_item.parent_id,//lookupCategoryID(navigation_items, node_item),
+				cat_id: node_item.parent_id, //lookupCategoryID(navigation_items, node_item),
 				ui_drag: false,
 				get_class: function() {
 					var bubblefill_class = 'bubbleFill' + ' ';
@@ -191,7 +191,7 @@ var BookmarkDataSingleton = (function() {
 					'title': name
 				},
 				function(result) {
-					console.log(processCategory(result))
+					//					console.log(processCategory(result))
 					callback(processCategory(result))
 				}
 			);
@@ -213,10 +213,10 @@ var BookmarkDataSingleton = (function() {
 		//public methods
 		return {
 
-			getColorSetforCategories :function(colorSet, categories){
-				var ColorSetforCategories=[];
-				categories.forEach(function(d,i){
-					ColorSetforCategories["category-"+categories[i].item.id]=colorSet(i);
+			getColorSetforCategories: function(colorSet, categories) {
+				var ColorSetforCategories = [];
+				categories.forEach(function(d, i) {
+					ColorSetforCategories["category-" + categories[i].item.id] = colorSet(i);
 				})
 
 				return ColorSetforCategories;
@@ -251,10 +251,10 @@ var BookmarkDataSingleton = (function() {
 
 			},
 
-			deleteNode: function(node_id,callback){
-				
-				chrome.bookmarks.remove(node_id, function(){console.log("tree is gone");});
-			
+			deleteNode: function(node_id, callback) {
+
+				chrome.bookmarks.remove(node_id);
+
 			},
 
 			createNewBookmark: function(url, callback) {

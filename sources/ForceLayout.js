@@ -3,7 +3,20 @@ function ForceLayout(element, color_set) {
 	var canvas = this.canvas = d3.select(element);
 	var width = canvas.style("width").slice(0, -2);
 	var height = canvas.style("height").slice(0, -2);
+	var viscenters = [];
 
+
+	updateviscenters = function() {
+		var jq_categories = document.querySelectorAll('.categories');
+		[].forEach.call(jq_categories, function(cat) {
+			viscenters.push({
+				x: $(cat).offset().left,
+				y: $(cat).offset().top + $(cat).height() / 2
+			});
+			console.log(viscenters);
+		})
+
+	}
 
 
 	updateCenters = function() {
@@ -15,11 +28,8 @@ function ForceLayout(element, color_set) {
 			//		console.log($(cat).width())
 
 			centers[$(cat).attr('id') + 'x'] = $(cat).offset().left;
-			centers[$(cat).attr('id') + 'y'] = $(cat).offset().top;
-			// centers.push({
-			// 	x: $(cat).offset().left,//+$(cat).width()/2,
-			// 	 y: $(cat).offset().top//+$(cat).height()/2 
-			// })
+			centers[$(cat).attr('id') + 'y'] = $(cat).offset().top + $(cat).height() / 2;
+
 		})
 
 
@@ -71,7 +81,7 @@ function ForceLayout(element, color_set) {
 	this.categorize = function() {
 		nodes.forEach(function(o, i) {
 
-			o.center = "category-"+o.cat_id;
+			o.center = "category-" + o.cat_id;
 		})
 		force.resume();
 	}
@@ -119,7 +129,9 @@ function ForceLayout(element, color_set) {
 			.on("dragend", dragEnd);
 
 
-		var node = canvas.selectAll("div.bubble").data(nodes, function(d) { return d.item.id });
+		var node = canvas.selectAll("div.bubble").data(nodes, function(d) {
+			return d.item.id
+		});
 
 		var nodeEnter = node.enter().append("div")
 			.attr("class", "bubble")
@@ -184,20 +196,36 @@ function ForceLayout(element, color_set) {
 
 
 		force.start();
-
+		// updateviscenters();
+		// visualiseCenters();
 
 
 	}
 
 
 
+		function visualiseCenters() {
+			console.log(viscenters)
+			canvas.selectAll("div#e").data(viscenters).enter().append("div")
+				.attr("id", "e")
+				.attr("class", "bubble")
+				.style("top", function(d) {
+					return d.y + "px"
+				})
+				.style("left", function(d) {
+					return d.x + "px"
+				})
+				.text("X");
+
+		}
+
 		function hideDetails(d, i) {
 
 			//this  doesn't fix first circle tick
-		//	d3.select(this).classed("fixed", d.fixed = false);
+			//	d3.select(this).classed("fixed", d.fixed = false);
 
 
-		   var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
+			var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
 
 			var category = d3.selectAll("#" + curr_class);
 
@@ -226,7 +254,7 @@ function ForceLayout(element, color_set) {
 			d3.event.preventDefault();
 
 			//this doesn't fix  first circle tick
-		//	d3.select(this).classed("fixed", d.fixed = true);
+			//	d3.select(this).classed("fixed", d.fixed = true);
 
 			// var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
 
@@ -260,7 +288,7 @@ function ForceLayout(element, color_set) {
 
 				});
 
-		//	d3.selectAll("#" + curr_class).style('color', color_set[d.center]);
+			//	d3.selectAll("#" + curr_class).style('color', color_set[d.center]);
 
 		}
 
