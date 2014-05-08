@@ -1,22 +1,22 @@
- {
-  "manifest_version": 2,
-  "version": "1.6",
-  "name": "Bookmark Visualizer",
-  "description": "Adding Nodes and Folders; Editing nodes by assigning to foders;",
-  "background":{
-  "scripts": ["background.js"]
-   },
-  "browser_action": {
-    "name": "Manipulate DOM",
-    "icons": ["icon.png"],
-    "default_icon": "icon.png"
-  },
-  "content_scripts": [ {
-    "js": [ "sources/jquery-2.1.0.min.js","sources/d3.v3.min.js","main.js"],
-      "matches": [ "http://api.thumbalizr.com/*/"]
+   {
+    "manifest_version": 2,
+    "version": "1.7",
+    "name": "Bookmark Visualizer",
+    "description": "Tool to visually interact and organize bookmarks",
+    "background":{
+    "scripts": ["background.js"]
+     },
+    "browser_action": {
+      "name": "Manipulate DOM",
+      "icons": ["icon.png"],
+      "default_icon": "icon.png"
+    },
+    "content_scripts": [ {
+      "js": [ "sources/jquery-2.1.0.min.js","sources/d3.v3.min.js","main.js"],
+        "matches": [ "http://api.thumbalizr.com/*/"]
 
-  }],
-  "permissions": [
-          "bookmarks"
-        ]
-}
+    }],
+    "permissions": [
+            "bookmarks"
+          ]
+  }

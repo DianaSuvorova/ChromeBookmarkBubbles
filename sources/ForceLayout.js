@@ -154,7 +154,7 @@ function ForceLayout(element, color_set) {
 			.style("height", radius + "px")
 			.attr("draggable", "true")
 			.on("click", showDetails)
-			.on("mouseout", hideDetails)
+//			.on("mouseout", hideDetails)
 			.on("dblclick", gotoLink);
 
 
