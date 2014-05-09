@@ -44,14 +44,14 @@ function initializeUI() {
   });
 
 
-  $("input.inputnewurl").keyup(function(e) {
-    if (e.keyCode === 13) {
-      addNewURL($("input.inputnewurl").val());
-      $("input.inputnewurl").val("");
-      $('.inputurl').slideToggle();
+  // $("input.inputnewurl"). {
+  //   if (e.keyCode === 13) {
+  //     addNewURL($("input.inputnewurl").val());
+  //     $("input.inputnewurl").val("");
+  //     $('.inputurl').slideToggle();
 
-    }
-  })
+  //   }
+  // })
 
 
   var categoryInput = $("input.inputnewcat");
@@ -74,9 +74,9 @@ function initializeUI() {
   })
 
 
-  $('.enter').click(function() {
-    $('.inputurl').slideToggle()
-  });
+  // $('.enter').click(function() {
+  //   $('.inputurl').slideToggle()
+  // });
 
 
   jQuery("input[id^='bblsize']").click(function() {
@@ -100,6 +100,7 @@ function addNewCategory(name) {
   Model.createNewCategory(name, function(newnode) {
     bookmarkNavigationLayout.addNode(newnode)
   });
+
 
 
 

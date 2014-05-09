@@ -5,16 +5,30 @@
   }
 
 
-  .cat_wrapper{
+
+  .cat_wrapper,  #addnewcategory{
     display:inline-block;
+
   }
+
+
+   #addnewcategory{
+    width:300px;
+    height: 300px;
+   padding: 20px 0;
+   margin: 0 102px 0 0;
+   background-size: 30%;
+   background-image: url(/Images/add22.png);
+    background-repeat: no-repeat;
+    background-position :center;
+
+   }
 
   .categories{
     width:300px;
     height: 300px;
    padding: 20px 0;
-/*    margin: 0 20px;
-*/    
+   
     overflow:hidden;
     text-overflow:ellipsis;
     text-align:center;
@@ -30,7 +44,7 @@
 
 
 
-  .over {
+  .over, #addnewcategory {
 
    -webkit-border-radius: 240px;
    -moz-border-radius: 240px;
@@ -56,11 +70,11 @@
     width:80%;
   }
 
-  #canvas{
+  /*#canvas{
     margin-top:10px; 
     border-top:1px solid rgb(206,205,203);
   }
-
+*/
   #navigation{
   /*    height:100px;
   */  font-family: Typo Slab Serif Light;
@@ -103,12 +117,6 @@
     border: solid 3px rgb(29,112,184);
   }
 
-
-  .msover{
-   position: absolute; bottom: 0; left: 0;
-   cursor:copy;
-   z-index:3;
-  }
 
   .tooltip{
     font-size: 20px;
@@ -183,18 +191,19 @@
   }
 
 
-  .inputurl {display:none;}
+  .inputurl {
+    margin-left: 30px;
+    visibility: hidden;}
 
-  .inputcat {
-    float: right;
-  }
 
 
   .enter{
+    display: block;
+/*    position: absolute;
+*/    cursor: pointer;
     width: 30px; 
     height: 30px; 
     padding:20px ;
-    display: block;
     border: solid 3px rgb(179,179,179);
     -webkit-border-radius: 240px;
     -moz-border-radius: 240px;
@@ -205,7 +214,10 @@
     box-shadow: 0 0 10px #bdbdbd;
     text-align: center;
     background: white;
-
+    background-image: url(/Images/Plus16.png);
+      background-position :center;
+      background-repeat: no-repeat;
+      background-size: 50%
   }
 
   .bottomright{

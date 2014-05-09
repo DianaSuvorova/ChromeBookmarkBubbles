@@ -1,56 +1,54 @@
-  <!DOCTYPE html>
-  <html manifest="demo.appcache">
-  <meta http-equiv="Cache-control" content="Private">
-  <meta charset="utf-8">
+      <!DOCTYPE html>
+      <html manifest="demo.appcache">
+      <meta http-equiv="Cache-control" content="Private">
+      <meta charset="utf-8">
 
 
- <link href="css/main.css" rel="stylesheet">
-  <link href="sources/jquery-ui-1.10.4.custom2/css/smoothness/jquery-ui-1.10.4.custom.min.css" rel="stylesheet">
-  <script language="JavaScript" type="text/javascript"  src="sources/jquery-2.1.0.min.js"></script>
-  <script language="JavaScript" type="text/javascript"  src="sources/Overlap.js"></script>
-  <script language="JavaScript" type="text/javascript"  src="sources/NavigationLayout.js"></script>
-  <script language="JavaScript" type="text/javascript"  src="sources/ForceLayout.js"></script>
-  <script language="JavaScript" type="text/javascript"  src="sources/jquery-ui.js"></script>
-  <script language="JavaScript" type="text/javascript"  src="sources/d3.v3.min.js"></script>
-  <script language="JavaScript" type="text/javascript"  src="sources/jquery-ui.js"></script>
-  <script language="JavaScript" type="text/javascript"  src="sources/BookmarkService.js"></script>
-  <script language="JavaScript" type="text/javascript"  src="Main.js"></script>
+     <link href="css/main.css" rel="stylesheet">
+      <link href="sources/jquery-ui-1.10.4.custom2/css/smoothness/jquery-ui-1.10.4.custom.min.css" rel="stylesheet">
+      <script language="JavaScript" type="text/javascript"  src="sources/jquery-2.1.0.min.js"></script>
+      <script language="JavaScript" type="text/javascript"  src="sources/Overlap.js"></script>
+      <script language="JavaScript" type="text/javascript"  src="sources/NavigationLayout.js"></script>
+      <script language="JavaScript" type="text/javascript"  src="sources/ForceLayout.js"></script>
+      <script language="JavaScript" type="text/javascript"  src="sources/jquery-ui.js"></script>
+      <script language="JavaScript" type="text/javascript"  src="sources/d3.v3.min.js"></script>
+      <script language="JavaScript" type="text/javascript"  src="sources/jquery-ui.js"></script>
+      <script language="JavaScript" type="text/javascript"  src="sources/BookmarkService.js"></script>
+      <script language="JavaScript" type="text/javascript"  src="Main.js"></script>
 
 
-  <body>
+      <body>
 
-    <div id="wraper" class="center">
+        <div id="wraper" class="center">
 
-      <div id="canvas" style="width: 100%; height: 400px; position: relative;">
+          <div id="canvas" style="width: 100%;">
 
-          <div class="inputcat">
-            <input class="inputnewcat" type="text" name="category" value="new folder" ><br>
+
+          <div class="categories" id="addnewcategory">
+              <div class="inputcat">
+                <input class="inputnewcat" type="text" name="category" value="new folder" ><br>
+              </div>
+        </div> 
+
+
+            <div class="bottomright">
+
+             <a href="#" id="categorize" class="displaytoggle">categorize</a>
+             <a href="#" id="reset" class="displaytoggle">Reset</a>
+
+              <input type="radio" id="bblsize" name="r1" value="75" checked="checked"/>75
+              <input type="radio" id="bblsize" name="r1" value="100" /> 100
+              <input type="radio" id="bblsize" name="r1" value="150" />150
+            </div>
+
           </div>
 
-       <div id="AddNewURL">
-        <div class="enter" style= "cursor: pointer;>">+ </div>
-        <div class="inputurl">
-          URL: <input class="inputnewurl" type="text" name="URL" ><br>
-        </div>
 
-        <div class="bottomright">
+          <div id="dialog" title="Delete?" style="display: none;"></div>
 
-         <a href="#" id="categorize" class="displaytoggle">categorize</a>
-         <a href="#" id="reset" class="displaytoggle">Reset</a>
+        </body>
 
-          <input type="radio" id="bblsize" name="r1" value="75" checked="checked"/>75
-          <input type="radio" id="bblsize" name="r1" value="100" /> 100
-          <input type="radio" id="bblsize" name="r1" value="150" />150
-        </div>
-
-      </div>
-
-
-      <div id="dialog" title="Delete?" style="display: none;"></div>
-
-    </body>
-
-    </html>
+        </html>
 
 
 

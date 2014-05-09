@@ -151,11 +151,28 @@ function NavigationLayout(element, color_set) {
 	// 	}
 
 
+
+	function addNewURL(url,parent_id) {
+	  Model.createNewBookmarkinFolder(url,parent_id ,function(newnode) {
+	    bubbleForceLayout.addNode(newnode)
+	  });
+	}
+
 	var update = function() {
+
+
+
+		// canvas.selectAll("div#addnewcategory").data(["1"])
+		// .enter().append("div")
+		// .attr("class","categories")
+		// .attr("id","addnewcategory");
+
 
 		var node = canvas.selectAll("div.cat_wrapper").data(nodes, function(d) {
 			return d.item.id
 		});
+
+
 		var nodeEnter = node.enter().insert("div")
 			.attr("class", "cat_wrapper")
 			.attr("id", function(d, i) {
@@ -184,6 +201,48 @@ function NavigationLayout(element, color_set) {
 				return d.item.title.toUpperCase();
 			});
 
+
+		//add new category div		
+
+		nodeEnter.append("div")
+			.attr("class", "enter")
+			.attr("id", function(d) {
+				return "enter-" + d.item.id
+			})
+			// .style("left", function(d){ console.log($("#category-"+d.item.id).offset().left + $("#category-"+d.item.id).width() / 2);
+			// 	return $("#category-"+d.item.id).offset().left + $("#category-"+d.item.id).width() / 2 +"px"})
+
+			// .style("top", function(d){ console.log($("#category-"+d.item.id).offset().top + $("#category-"+d.item.id).height()/2);
+			// 	return $("#category-"+d.item.id).offset().top + $("#category-"+d.item.id).height()/2 +"px"})
+
+			.on("click", function(d) {
+				canvas.select("#inputurl-" + d.item.id)
+					.style("visibility", function (){return  (canvas.select("#inputurl-" + d.item.id).style("visibility") =="hidden") ? "visible" :""})
+			});
+
+
+			nodeEnter.append("div")
+			.attr("class", "inputurl")
+			.attr("id", function(d) {
+				return "inputurl-" + d.item.id
+			})
+			.append("input")
+			.attr("class", "inputnewurl")
+			.attr("id", function(d) {
+				return "inputnewurl-" + d.item.id
+			})
+			.on("click", "")
+			.on("keyup", function(d) {
+				if (d3.event.keyCode === 13) {
+					addNewURL($("#inputnewurl-"+d.item.id).val(),d.item.id);
+					
+					$("input.inputnewurl").val("");
+					canvas.select("#inputurl-" + d.item.id)
+					.style("visibility", "");
+
+				}
+			})
+			.attr("name", "URL")
 
 		node.exit().remove();
 

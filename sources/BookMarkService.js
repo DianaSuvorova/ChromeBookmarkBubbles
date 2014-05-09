@@ -104,9 +104,9 @@ var BookmarkDataSingleton = (function() {
 		}
 
 
-		function createNewBookmarkinBookMarkBar(url, callback) {
+		function createNewBookmarkinFolder(url,parent_id ,callback) {
 			chrome.bookmarks.create({
-					'parentId': '1',
+					'parentId': parent_id,
 					'title': url,
 					'url': url
 				},
@@ -116,6 +116,7 @@ var BookmarkDataSingleton = (function() {
 			);
 
 		}
+
 
 		function processBookmark(node) {
 			var node_item = {
@@ -198,6 +199,8 @@ var BookmarkDataSingleton = (function() {
 		}
 
 
+
+
 		function lookupCategoryID(navigation_items, node_item) {
 			for (var i = 0; i < navigation_items.length; i++) {
 				if (navigation_items[i].id === node_item.parent_id) {
@@ -258,7 +261,13 @@ var BookmarkDataSingleton = (function() {
 			},
 
 			createNewBookmark: function(url, callback) {
-				createNewBookmarkinBookMarkBar(url, function(result) {
+				createNewBookmarkinFolder(url,"1" ,function(result) {
+					callback(result)
+				});
+			},
+
+			createNewBookmarkinFolder: function(url, parent_id ,callback) {
+				createNewBookmarkinFolder(url, parent_id,function(result) {
 					callback(result)
 				});
 			},

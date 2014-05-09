@@ -10,7 +10,7 @@ function ForceLayout(element, color_set) {
 		var jq_categories = document.querySelectorAll('.categories');
 		[].forEach.call(jq_categories, function(cat) {
 			viscenters.push({
-				x: $(cat).offset().left- $(cat).outerWidth() / 4 ,
+				x: $(cat).offset().left+ $(cat).width() / 2 ,
 				y: $(cat).offset().top + $(cat).height()/2
 			});
 			console.log(viscenters);
@@ -27,7 +27,7 @@ function ForceLayout(element, color_set) {
 		[].forEach.call(jq_categories, function(cat) {
 			//		console.log($(cat).width())
 
-			centers[$(cat).attr('id') + 'x'] = $(cat).offset().left- $(cat).outerWidth() / 4;
+			centers[$(cat).attr('id') + 'x'] = $(cat).offset().left+ $(cat).width() / 2;
 			centers[$(cat).attr('id') + 'y'] = $(cat).offset().top +$(cat).height()/2
 
 		})
@@ -112,7 +112,6 @@ function ForceLayout(element, color_set) {
 		update();
 	}
 
-	var node;
 
 	var force = d3.layout.force()
 		.size([width, height])
@@ -171,10 +170,8 @@ function ForceLayout(element, color_set) {
 		// visualiseCenters();
 
 
-	}
 
-
-		function tick() {
+function tick() {
 			var centers = updateCenters();
 
 
@@ -189,6 +186,10 @@ function ForceLayout(element, color_set) {
 
 		}
 
+	}
+
+
+		
 		// Move d to be adjacent to the cluster node.
 		function cluster(alpha,centers) {
 			return function(d) {
