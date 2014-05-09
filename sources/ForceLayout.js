@@ -10,8 +10,8 @@ function ForceLayout(element, color_set) {
 		var jq_categories = document.querySelectorAll('.categories');
 		[].forEach.call(jq_categories, function(cat) {
 			viscenters.push({
-				x: $(cat).offset().left,
-				y: $(cat).offset().top + $(cat).height() / 2
+				x: $(cat).offset().left- $(cat).outerWidth() / 4 ,
+				y: $(cat).offset().top + $(cat).height()/2
 			});
 			console.log(viscenters);
 		})
@@ -27,8 +27,8 @@ function ForceLayout(element, color_set) {
 		[].forEach.call(jq_categories, function(cat) {
 			//		console.log($(cat).width())
 
-			centers[$(cat).attr('id') + 'x'] = $(cat).offset().left;
-			centers[$(cat).attr('id') + 'y'] = $(cat).offset().top + $(cat).height() / 2;
+			centers[$(cat).attr('id') + 'x'] = $(cat).offset().left- $(cat).outerWidth() / 4;
+			centers[$(cat).attr('id') + 'y'] = $(cat).offset().top +$(cat).height()/2
 
 		})
 
@@ -93,7 +93,7 @@ function ForceLayout(element, color_set) {
 			.style("width", radius + "px")
 			.style("height", radius + "px");
 
-		force.charge(-Math.pow(radius / 2 + padding, 1) * 20);
+//		force.charge(-Math.pow(radius / 2 + padding, 1) * 20);
 		update();
 	}
 
@@ -112,10 +112,11 @@ function ForceLayout(element, color_set) {
 		update();
 	}
 
+	var node;
 
 	var force = d3.layout.force()
 		.size([width, height])
-		.charge(-Math.pow(radius / 2 + padding, 1) * 20)
+		.charge(0)
 		.gravity(0)
 		.friction(0.87);
 
@@ -129,7 +130,7 @@ function ForceLayout(element, color_set) {
 			.on("dragend", dragEnd);
 
 
-		var node = canvas.selectAll("div.bubble").data(nodes, function(d) {
+		node = canvas.selectAll("div.bubble").data(nodes, function(d) {
 			return d.item.id
 		});
 
@@ -154,7 +155,7 @@ function ForceLayout(element, color_set) {
 			.style("height", radius + "px")
 			.attr("draggable", "true")
 			.on("click", showDetails)
-//			.on("mouseout", hideDetails)
+			.on("mouseout", hideDetails)
 			.on("dblclick", gotoLink);
 
 
@@ -163,36 +164,6 @@ function ForceLayout(element, color_set) {
 
 		force.on("tick", tick);
 
-		function tick() {
-
-			//maybe wrong place to update centers
-			var centers = updateCenters();
-
-			var k = 0.15 * force.alpha();
-
-			nodes.forEach(function(o, i) {
-				if (o.center == -1) {
-					o.y += (centers.default_center.y - o.y) * k;
-
-					o.x += (centers.default_center.x - o.x) * k;
-
-				} else {
-					o.y += (centers.cat_centers[o.center + "y"] - o.y) * k;
-					o.x += (centers.cat_centers[o.center + "x"] - o.x) * k;
-				}
-			});
-
-			node
-				.style("left", function(d, i) {
-					//if (d.x < 0) d.x = -d.x;
-					return d.x + "px";
-				})
-				.style("top", function(d, i) {
-					//if (d.y < 0) d.y = -d.y;
-					return d.y + "px";
-				});
-
-		};
 
 
 		force.start();
@@ -203,6 +174,110 @@ function ForceLayout(element, color_set) {
 	}
 
 
+		function tick() {
+			var centers = updateCenters();
+
+
+			node.each(cluster(10 * force.alpha() * force.alpha(),centers))
+				.each(collide(0.5))
+				.style("left", function(d, i) {
+					return d.x + "px";
+				})
+				.style("top", function(d, i) {
+					return d.y + "px";
+				});
+
+		}
+
+		// Move d to be adjacent to the cluster node.
+		function cluster(alpha,centers) {
+			return function(d) {
+	
+				var clusterX = centers.cat_centers[d.center + "x"];
+				var clusterY = centers.cat_centers[d.center + "y"];
+
+
+			if (d.center == -1) {
+				clusterY = centers.default_center.y; 
+				clusterX = centers.default_center.x; 
+			}
+
+
+				k = 10*alpha;
+
+				var x = d.x - clusterX,
+					y = d.y - clusterY,
+					l = Math.sqrt(x * x + y * y),
+					r = radius;
+				if (l != r) {
+					l = (l - r) / l * alpha * k;
+					d.x -= x *= l;
+					d.y -= y *= l;
+				}
+			};
+		}
+
+		var clusterPadding=45;
+
+		// Resolves collisions between d and all other circles.
+		function collide(alpha) {
+			var quadtree = d3.geom.quadtree(nodes);
+			return function(d) {
+				var r = radius + Math.max(padding, clusterPadding),
+					nx1 = d.x - r,
+					nx2 = d.x + r,
+					ny1 = d.y - r,
+					ny2 = d.y + r;
+				quadtree.visit(function(quad, x1, y1, x2, y2) {
+					if (quad.point && (quad.point !== d)) {
+						var x = d.x - quad.point.x,
+							y = d.y - quad.point.y,
+							l = Math.sqrt(x * x + y * y),
+							r = radius + quad.point.radius + (d.cluster === quad.point.cluster ? padding : clusterPadding);
+						if (l < r) {
+							l = (l - r) / l * alpha;
+							d.x -= x *= l;
+							d.y -= y *= l;
+							quad.point.x += x;
+							quad.point.y += y;
+						}
+					}
+					return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+				});
+			};
+		}
+
+
+		// function tick() {
+
+		// 	//maybe wrong place to update centers
+		// 	var centers = updateCenters();
+
+		// 	var k = 0.15 * force.alpha();
+
+		// 	nodes.forEach(function(o, i) {
+		// 		if (o.center == -1) {
+		// 			o.y += (centers.default_center.y - o.y) * k;
+
+		// 			o.x += (centers.default_center.x - o.x) * k;
+
+		// 		} else {
+		// 			o.y += (centers.cat_centers[o.center + "y"] - o.y) * k;
+		// 			o.x += (centers.cat_centers[o.center + "x"] - o.x) * k;
+		// 		}
+		// 	});
+
+		// 	node
+		// 		.style("left", function(d, i) {
+		// 			//if (d.x < 0) d.x = -d.x;
+		// 			return d.x + "px";
+		// 		})
+		// 		.style("top", function(d, i) {
+		// 			//if (d.y < 0) d.y = -d.y;
+		// 			return d.y + "px";
+		// 		});
+
+		// }
 
 		function visualiseCenters() {
 			console.log(viscenters)
