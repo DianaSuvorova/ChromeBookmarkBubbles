@@ -21,6 +21,12 @@
    background-image: url(/Images/add22.png);
     background-repeat: no-repeat;
     background-position :center;
+      overflow:hidden;
+    text-overflow:ellipsis;
+    text-align:center;
+    font-size:10px ;
+    color: rgb(152,151,150);
+    border: solid 2px transparent;
 
    }
 
@@ -190,10 +196,21 @@
     background-size: 100% 100%;
   }
 
+  span.option.add{
+    width:30px;
+    height:30px;
+    background:url(/Images/plus16.png);
+    background-size: 100% 100%;
+  }
+
 
   .inputurl {
-    margin-left: 30px;
-    visibility: hidden;}
+    margin:0 auto;
+     visibility: hidden;
+     display: block;
+
+    
+  }
 
 
 

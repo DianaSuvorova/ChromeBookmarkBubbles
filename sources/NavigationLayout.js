@@ -181,47 +181,28 @@ function NavigationLayout(element, color_set) {
 			.on("mouseover", showOptions)
 			.on("mouseout", hideOptions);
 		//.call(drag);
+
+
+
+
+
 		nodeEnter.append("span").attr('class', 'option delete')
 			.on("click", emptyCategory);
 
 		nodeEnter.append("span").attr('class', 'option hide')
 			.on("click", hideCategory);
 
-
-
-		nodeEnter.append("div")
-			.attr("class", "categories")
+		nodeEnter.append("span").attr('class', 'option add')
 			.attr("id", function(d, i) {
 				return "category-" + d.item.id
-			})
-			.on("mouseover", mouseover)
-			.on("mouseout", mouseout)
-			.on("click", clicked)
-			.text(function(d) {
-				return d.item.title.toUpperCase();
-			});
-
-
-		//add new category div		
-
-		nodeEnter.append("div")
-			.attr("class", "enter")
-			.attr("id", function(d) {
-				return "enter-" + d.item.id
-			})
-			// .style("left", function(d){ console.log($("#category-"+d.item.id).offset().left + $("#category-"+d.item.id).width() / 2);
-			// 	return $("#category-"+d.item.id).offset().left + $("#category-"+d.item.id).width() / 2 +"px"})
-
-			// .style("top", function(d){ console.log($("#category-"+d.item.id).offset().top + $("#category-"+d.item.id).height()/2);
-			// 	return $("#category-"+d.item.id).offset().top + $("#category-"+d.item.id).height()/2 +"px"})
-
-			.on("click", function(d) {
+			}).on("click", function(d) {
 				canvas.select("#inputurl-" + d.item.id)
 					.style("visibility", function (){return  (canvas.select("#inputurl-" + d.item.id).style("visibility") =="hidden") ? "visible" :""})
 			});
 
+			//.on("click", hideCategory);	
 
-			nodeEnter.append("div")
+		nodeEnter.append("div")
 			.attr("class", "inputurl")
 			.attr("id", function(d) {
 				return "inputurl-" + d.item.id
@@ -243,6 +224,45 @@ function NavigationLayout(element, color_set) {
 				}
 			})
 			.attr("name", "URL")
+
+
+
+
+		nodeEnter.append("div")
+			.attr("class", "categories")
+			.attr("id", function(d, i) {
+				return "category-" + d.item.id
+			})
+			.on("mouseover", mouseover)
+			.on("mouseout", mouseout)
+			.on("click", clicked)
+			.text(function(d) {
+				return d.item.title.toUpperCase();
+			});
+
+
+
+
+
+		//add new category div		
+
+		// nodeEnter.append("div")
+		// 	.attr("class", "enter")
+		// 	.attr("id", function(d) {
+		// 		return "enter-" + d.item.id
+		// 	})
+		// 	// .style("left", function(d){ console.log($("#category-"+d.item.id).offset().left + $("#category-"+d.item.id).width() / 2);
+		// 	// 	return $("#category-"+d.item.id).offset().left + $("#category-"+d.item.id).width() / 2 +"px"})
+
+		// 	// .style("top", function(d){ console.log($("#category-"+d.item.id).offset().top + $("#category-"+d.item.id).height()/2);
+		// 	// 	return $("#category-"+d.item.id).offset().top + $("#category-"+d.item.id).height()/2 +"px"})
+
+		// 	.on("click", function(d) {
+		// 		canvas.select("#inputurl-" + d.item.id)
+		// 			.style("visibility", function (){return  (canvas.select("#inputurl-" + d.item.id).style("visibility") =="hidden") ? "visible" :""})
+		// 	});
+
+
 
 		node.exit().remove();
 
