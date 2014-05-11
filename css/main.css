@@ -61,7 +61,7 @@
    border: dashed 2px;
   }
 
-  .categories.selected{ 
+/*  .categories.selected{ 
     -webkit-border-radius: 240px;
     -moz-border-radius: 240px;
     border-radius: 240px;
@@ -69,7 +69,7 @@
     -webkit-box-shadow: 0 0 10px #bdbdbd;
     box-shadow: 0 0 10px #bdbdbd;
   }
-
+*/
   .center{
     margin-left:auto;
     margin-right:auto;

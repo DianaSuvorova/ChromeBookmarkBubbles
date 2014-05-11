@@ -396,6 +396,8 @@ function tick() {
 
 				cat = "#category-" + cat_d.item.id;
 
+			//	console.log(cat);
+
 				if (overlaps("#bubbleFill-" + i, cat)) {
 
 					d3.selectAll(cat).attr("class", function(d) {
@@ -426,6 +428,7 @@ function tick() {
 
 		d3.selectAll("div.categories").each(function(cat_d, cat_i) {
 			cat = "#category-" + cat_d.item.id;
+			//console.log(cat)
 
 			if (overlaps("#bubbleFill-" + i, cat)) {
 				//	cat = "#category-" + i;

@@ -51,8 +51,8 @@ function NavigationLayout(element, color_set) {
 			d3.select(this).attr("class", function(d, i) {
 				return d.get_class()
 			})
-				.style("color", color_set["category-" + d.item.id])
-				.style("border-color", color_set["category-" + d.item.id]);
+				.style("color", color_set["category-" + d.item.id]);
+//				.style("border-color", color_set["category-" + d.item.id]);
 
 			d3.selectAll(".category-" + d.item.id).style("border-color", color_set["category-" + d.item.id]);
 
@@ -194,7 +194,7 @@ function NavigationLayout(element, color_set) {
 
 		nodeEnter.append("span").attr('class', 'option add')
 			.attr("id", function(d, i) {
-				return "category-" + d.item.id
+				return "add-" + d.item.id
 			}).on("click", function(d) {
 				canvas.select("#inputurl-" + d.item.id)
 					.style("visibility", function (){return  (canvas.select("#inputurl-" + d.item.id).style("visibility") =="hidden") ? "visible" :""})
