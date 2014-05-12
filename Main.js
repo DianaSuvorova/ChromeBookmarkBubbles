@@ -1,8 +1,9 @@
 var Model = BookmarkDataSingleton.getInstance();
 
 var radius = 75;
+var clusterPadding=0;
 var expanded_radius = 240;
-var padding = radius / 4;
+var padding =  75/5 ;
 
 
 var bookmarkNavigationLayout;
@@ -44,14 +45,6 @@ function initializeUI() {
   });
 
 
-  // $("input.inputnewurl"). {
-  //   if (e.keyCode === 13) {
-  //     addNewURL($("input.inputnewurl").val());
-  //     $("input.inputnewurl").val("");
-  //     $('.inputurl').slideToggle();
-
-  //   }
-  // })
 
 
   var categoryInput = $("input.inputnewcat");
@@ -81,19 +74,14 @@ function initializeUI() {
 
   jQuery("input[id^='bblsize']").click(function() {
     //jQuery("input[name='sum']").val(jQuery(this).val());
-    radius = jQuery(this).val();
+    radius = parseInt(jQuery(this).val());
     padding = radius / 5;
     bubbleForceLayout.changeBubbleSize(jQuery(this).val());
   });
 
 }
 
-function addNewURL(url) {
-  Model.createNewBookmark(url, function(newnode) {
-    bubbleForceLayout.addNode(newnode)
 
-  });
-}
 
 
 function addNewCategory(name) {

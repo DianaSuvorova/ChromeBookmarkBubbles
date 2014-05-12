@@ -75,7 +75,7 @@ function ForceLayout(element, color_set) {
 		nodes.forEach(function(o, i) {
 			o.center = -1;
 		})
-		force.resume();
+		//force.resume();
 	}
 
 	this.categorize = function() {
@@ -92,8 +92,6 @@ function ForceLayout(element, color_set) {
 			.transition().duration(750)
 			.style("width", radius + "px")
 			.style("height", radius + "px");
-
-//		force.charge(-Math.pow(radius / 2 + padding, 1) * 20);
 		update();
 	}
 
@@ -159,16 +157,16 @@ function ForceLayout(element, color_set) {
 
 
 
+
 		node.exit().remove();
 
 		force.on("tick", tick);
 
 
-
 		force.start();
-		// updateviscenters();
-		// visualiseCenters();
 
+
+	}
 
 
 function tick() {
@@ -176,8 +174,9 @@ function tick() {
 
 
 			node.each(cluster(10 * force.alpha() * force.alpha(),centers))
-				.each(collide(0.5))
+				.each(collide(0.2))
 				.style("left", function(d, i) {
+					console.log
 					return d.x + "px";
 				})
 				.style("top", function(d, i) {
@@ -185,9 +184,6 @@ function tick() {
 				});
 
 		}
-
-	}
-
 
 		
 		// Move d to be adjacent to the cluster node.
@@ -218,11 +214,12 @@ function tick() {
 			};
 		}
 
-		var clusterPadding=45;
 
 		// Resolves collisions between d and all other circles.
 		function collide(alpha) {
 			var quadtree = d3.geom.quadtree(nodes);
+
+
 			return function(d) {
 				var r = radius + Math.max(padding, clusterPadding),
 					nx1 = d.x - r,
@@ -234,7 +231,7 @@ function tick() {
 						var x = d.x - quad.point.x,
 							y = d.y - quad.point.y,
 							l = Math.sqrt(x * x + y * y),
-							r = radius + quad.point.radius + (d.cluster === quad.point.cluster ? padding : clusterPadding);
+							r = radius + quad.point.radius +padding;//+ (d.cluster === quad.point.cluster ? padding : clusterPadding);
 						if (l < r) {
 							l = (l - r) / l * alpha;
 							d.x -= x *= l;
