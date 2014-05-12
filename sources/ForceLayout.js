@@ -111,6 +111,15 @@ function ForceLayout(element, color_set) {
 	}
 
 
+	this.highlightNodes = function(nodes){
+		console.log("highlight")
+		d3.selectAll(".bubbleFill").style("opacity","0.1");
+		nodes.forEach(function(node){
+			d3.selectAll("#bubbleFill-"+node.id).style("opacity","1");
+			}
+		)
+	}
+
 	var force = d3.layout.force()
 		.size([width, height])
 		.charge(0)
@@ -140,7 +149,7 @@ function ForceLayout(element, color_set) {
 
 		nodeEnter.append("div")
 			.attr("id", function(d, i) {
-				return "bubbleFill-" + i
+				return "bubbleFill-" + d.item.id
 			})
 			.attr("class", function(d, i) {
 				return d.get_class()
@@ -333,7 +342,7 @@ function tick() {
 
 			d3.selectAll(".bubbleFill").style("opacity", 0.5);
 
-			d3.selectAll("#bubble-" + i).select('.tooltip').remove();
+			d3.selectAll("#bubble-" + d.item.id).select('.tooltip').remove();
 
 
 			d3.select(this).transition().duration(250).ease("circle")
@@ -395,7 +404,7 @@ function tick() {
 
 			//	console.log(cat);
 
-				if (overlaps("#bubbleFill-" + i, cat)) {
+				if (overlaps("#bubbleFill-" + d.item.id, cat)) {
 
 					d3.selectAll(cat).attr("class", function(d) {
 						d.ui_dragover = true;
@@ -415,7 +424,6 @@ function tick() {
 		d.py += d3.event.dy;
 		d.x += d3.event.dx;
 		d.y += d3.event.dy;
-		//			tick(); // this is the key to make it work together with updating both px,py,x,y on d !
 	}
 
 	function dragEnd(d, i) {
@@ -427,7 +435,7 @@ function tick() {
 			cat = "#category-" + cat_d.item.id;
 			//console.log(cat)
 
-			if (overlaps("#bubbleFill-" + i, cat)) {
+			if (overlaps("#bubbleFill-" + d.item.id, cat)) {
 				//	cat = "#category-" + i;
 				parent_id = cat_d.item.id;
 
@@ -444,7 +452,7 @@ function tick() {
 
 				Model.updateNodeAssigntoCategory(node_id, parent_id, function(updatednode) {
 
-					d3.select("#bubbleFill-" + i).attr("class", function(d) {
+					d3.select("#bubbleFill-" + d.item.id).attr("class", function(d) {
 						d.center = updatednode.center;
 						d.cat_id = updatednode.cat_id;
 						d.item = updatednode.item;
@@ -453,11 +461,11 @@ function tick() {
 					});
 
 					if (cat_d.ui_click) {
-						d3.selectAll("#bubbleFill-" + i).style("border-color", color_set[d.center]);
+						d3.selectAll("#bubbleFill-" + d.item.id).style("border-color", color_set[d.center]);
 					}
 
 					if (!cat_d.ui_click) {
-						d3.selectAll("#bubbleFill-" + i).style("border-color", "rgb(179,179,179)");
+						d3.selectAll("#bubbleFill-" + d.item.id).style("border-color", "rgb(179,179,179)");
 					}
 
 					update();

@@ -1,9 +1,9 @@
 var Model = BookmarkDataSingleton.getInstance();
 
 var radius = 75;
-var clusterPadding=0;
+var clusterPadding = 0;
 var expanded_radius = 240;
-var padding =  75/5 ;
+var padding = 75 / 5;
 
 
 var bookmarkNavigationLayout;
@@ -15,6 +15,7 @@ $(document).ready(function() {
 
   Model.getUIData(function() {
     initializeUI();
+    searchBookmarks("D3");
   })
 })
 
@@ -43,7 +44,6 @@ function initializeUI() {
   $("#reset").on("click", function(e) {
     bubbleForceLayout.reset();
   });
-
 
 
 
@@ -82,13 +82,18 @@ function initializeUI() {
 }
 
 
+function searchBookmarks(term) {
+  Model.search(term, function(nodes) {
+        console.log(nodes);
+    bubbleForceLayout.highlightNodes(nodes);
+  })
+}
 
 
 function addNewCategory(name) {
   Model.createNewCategory(name, function(newnode) {
     bookmarkNavigationLayout.addNode(newnode)
   });
-
 
 
 

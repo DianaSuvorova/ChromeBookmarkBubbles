@@ -226,6 +226,7 @@ var BookmarkDataSingleton = (function() {
 
 			},
 
+
 			getUIData: function(callBackonBookmarksProcesed) {
 				fetchBookmarkData(callBackonBookmarksProcesed)
 			},
@@ -276,7 +277,17 @@ var BookmarkDataSingleton = (function() {
 				createNewCategoryinBookMarkBar(name, function(result) {
 					callback(result)
 				});
+			},
+
+			search: function(term, callback){
+
+				chrome.bookmarks.search(term, function(result) {
+					callback(result)
+				});
+			
 			}
+
+
 			//end of public methods   
 
 		};
