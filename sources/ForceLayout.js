@@ -1,4 +1,4 @@
-function ForceLayout(element, color_set) {
+function ForceLayout(element) {
 
 	var canvas = this.canvas = d3.select(element);
 	var width = canvas.style("width").slice(0, -2);
@@ -143,7 +143,7 @@ function ForceLayout(element, color_set) {
 		var nodeEnter = node.enter().append("div")
 			.attr("class", "bubble")
 			.attr("id", function(d, i) {
-				return "bubble-" + i
+				return "bubble-" + d.item.id
 			})
 			.call(node_drag);
 
@@ -183,7 +183,7 @@ function tick() {
 
 
 			node.each(cluster(10 * force.alpha() * force.alpha(),centers))
-				.each(collide(0.2))
+				.each(collide(0.01))
 				.style("left", function(d, i) {
 					console.log
 					return d.x + "px";
@@ -255,37 +255,6 @@ function tick() {
 		}
 
 
-		// function tick() {
-
-		// 	//maybe wrong place to update centers
-		// 	var centers = updateCenters();
-
-		// 	var k = 0.15 * force.alpha();
-
-		// 	nodes.forEach(function(o, i) {
-		// 		if (o.center == -1) {
-		// 			o.y += (centers.default_center.y - o.y) * k;
-
-		// 			o.x += (centers.default_center.x - o.x) * k;
-
-		// 		} else {
-		// 			o.y += (centers.cat_centers[o.center + "y"] - o.y) * k;
-		// 			o.x += (centers.cat_centers[o.center + "x"] - o.x) * k;
-		// 		}
-		// 	});
-
-		// 	node
-		// 		.style("left", function(d, i) {
-		// 			//if (d.x < 0) d.x = -d.x;
-		// 			return d.x + "px";
-		// 		})
-		// 		.style("top", function(d, i) {
-		// 			//if (d.y < 0) d.y = -d.y;
-		// 			return d.y + "px";
-		// 		});
-
-		// }
-
 		function visualiseCenters() {
 			console.log(viscenters)
 			canvas.selectAll("div#e").data(viscenters).enter().append("div")
@@ -303,53 +272,59 @@ function tick() {
 
 		function hideDetails(d, i) {
 
-			//this  doesn't fix first circle tick
-			//	d3.select(this).classed("fixed", d.fixed = false);
 
+			if (d.ui_click){
+
+			d.ui_click= false;
 
 			var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
 
 			var category = d3.selectAll("#" + curr_class);
 
-			d3.selectAll(".bubbleFill").transition().duration(50).ease("linear")
+			d3.select(this)
+				.style('top',"auto" )
+			 	.style('left',"auto");
+			
+			d3.select(this).transition().duration(50).ease("circle")
 				.style("opacity", 1)
-				.style('top', (expanded_radius - radius) / 4 + 'px')
-				.style('left', (expanded_radius - radius) / 4 + 'px')
 				.style('width', radius + 'px')
 				.style('height', radius + 'px')
 				.style("z-index", 0);
 
-			d3.selectAll("#bubble-" + i).select('.tooltip').remove();
+			d3.selectAll("#bubble-" + d.item.id).select('.tooltip').remove();
+
+			d3.selectAll(".bubbleFill").style("opacity", 1);
 
 			if (category.data()[0].ui_click) {
 
-				d3.selectAll("#bubble-" + i).selectAll(".bubbleFill").style("border-color", color_set[d.center]);
+				d3.selectAll("#bubble-" + d.item.id).selectAll(".bubbleFill").style("border-color", color_set[d.center]);
 			} else {
 
-				d3.selectAll("#bubble-" + i).selectAll(".bubbleFill").style("border-color", "");
+				d3.selectAll("#bubble-" + d.item.id).selectAll(".bubbleFill").style("border-color", "");
 
 			}
+		
+		}
 		}
 
 		function showDetails(d, i) {
 
+			d.ui_click=true;
+
 			d3.event.preventDefault();
-
-			//this doesn't fix  first circle tick
-			//	d3.select(this).classed("fixed", d.fixed = true);
-
-			// var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
 
 			d3.selectAll(".bubbleFill").style("opacity", 0.5);
 
 			d3.selectAll("#bubble-" + d.item.id).select('.tooltip').remove();
 
+			d3.select(this)
+				.style('width', expanded_radius + 'px')
+				.style('height', expanded_radius + 'px');
+
 
 			d3.select(this).transition().duration(250).ease("circle")
-				.style('width', expanded_radius + 'px')
-				.style('height', expanded_radius + 'px')
-				.style('top', -(expanded_radius - radius) / 4 + 'px')
-				.style('left', -(expanded_radius - radius) / 4 + 'px')
+				.style('top',-(expanded_radius - radius) / 4+"px" )
+			 	.style('left',-(expanded_radius - radius) / 4+"px" )
 				.style("border-color", color_set[d.center])
 				.style("opacity", 1)
 				.style("z-index", 1)

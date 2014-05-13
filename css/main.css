@@ -173,7 +173,7 @@
 
 
    span.option{
-    visibility: hidden;
+    visibility: visible;
     margin: 0 10px;
     color: red;
     display: inline-block; 

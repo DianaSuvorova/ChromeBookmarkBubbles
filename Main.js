@@ -8,6 +8,7 @@ var padding = 75 / 5;
 
 var bookmarkNavigationLayout;
 var bubbleForceLayout;
+var color_set;
 
 
 
@@ -15,7 +16,7 @@ $(document).ready(function() {
 
   Model.getUIData(function() {
     initializeUI();
-    searchBookmarks("D3");
+ //   searchBookmarks("D3");
   })
 })
 
@@ -26,7 +27,7 @@ function initializeUI() {
 
   var nodes = Model.getNodes();
   var categories = Model.getCategories();
-  var color_set = Model.getColorSetforCategories(d3.scale.category10(), categories);
+  color_set = Model.getColorSetforCategories(d3.scale.category10(), categories);
 
 
   bookmarkNavigationLayout = new NavigationLayout("#canvas", color_set);
@@ -76,7 +77,7 @@ function initializeUI() {
     //jQuery("input[name='sum']").val(jQuery(this).val());
     radius = parseInt(jQuery(this).val());
     padding = radius / 5;
-    bubbleForceLayout.changeBubbleSize(jQuery(this).val());
+    bubbleForceLayout.changeBubbleSize(radius);
   });
 
 }
@@ -92,6 +93,9 @@ function searchBookmarks(term) {
 
 function addNewCategory(name) {
   Model.createNewCategory(name, function(newnode) {
+    categories = Model.getCategories();
+    color_set= Model.getColorSetforCategories(d3.scale.category10(), categories);
+    console.log(color_set);
     bookmarkNavigationLayout.addNode(newnode)
   });
 
