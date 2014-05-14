@@ -17,5 +17,3 @@ Supported functionality:
 
 	Bubble resize
 
-Known issues:
-Bubbles are getting misaligned from center for the categories located towards the end of the page.
