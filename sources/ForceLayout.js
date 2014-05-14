@@ -113,14 +113,21 @@ function ForceLayout(element) {
 
 	this.highlightNodes = function(nodes) {
 
-		d3.selectAll(".bubbleFill").style("opacity", "0.1");
+		d3.selectAll(".bubbleFill")
+		.each(function(d){d.ui_dim=true;})
+		.style("opacity", "0.1");
+		
 		nodes.forEach(function(node) {
+			node.ui_dim=false;
+			node.ui_highlight=true;
 			d3.selectAll("#bubbleFill-" + node.id).style("opacity", "1");
 		})
 	}
 
 	this.highlightAllNodes =function(){
-		d3.selectAll(".bubbleFill").style("opacity", "1");
+		d3.selectAll(".bubbleFill")
+		.each(function(d){d.ui_dim=false;})
+		.style("opacity", "1");
 
 	}
 
@@ -279,9 +286,9 @@ function ForceLayout(element) {
 		function hideDetails(d, i) {
 
 
-			if (d.ui_click) {
+			if (d.ui_expandwDetails) {
 
-				d.ui_click = false;
+				d.ui_expandwDetails = false;
 
 				var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
 
@@ -299,7 +306,7 @@ function ForceLayout(element) {
 
 				d3.selectAll("#bubble-" + d.item.id).select('.tooltip').remove();
 
-				d3.selectAll(".bubbleFill").style("opacity", 1);
+				//d3.selectAll(".bubbleFill").style("opacity", 1);
 
 				if (category.data()[0].ui_click) {
 
@@ -315,11 +322,11 @@ function ForceLayout(element) {
 
 		function showDetails(d, i) {
 
-			d.ui_click = true;
+			d.ui_expandwDetails = true;
 
 			d3.event.preventDefault();
 
-			d3.selectAll(".bubbleFill").style("opacity", 0.5);
+			//d3.selectAll(".bubbleFill").style("opacity", 0.5);
 
 			d3.selectAll("#bubble-" + d.item.id).select('.tooltip').remove();
 

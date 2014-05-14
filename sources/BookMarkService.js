@@ -133,8 +133,9 @@ var BookmarkDataSingleton = (function() {
 				radius: null,
 				item: node_item,
 				cat_id: node_item.parent_id, //lookupCategoryID(navigation_items, node_item),
-				ui_click:true,
-				ui_drag: false,
+				ui_dim:false,
+				ui_highlight: true,
+				ui_expandwDetails: false,
 				get_class: function() {
 					var bubblefill_class = 'bubbleFill' + ' ';
 
@@ -163,9 +164,9 @@ var BookmarkDataSingleton = (function() {
 			var rnode = {
 				item: node_item,
 				width: null,
-				ui_click: true,
-				ui_mouseover: false,
-				ui_dragover: false,
+				ui_dim: true,
+				ui_highlight: false,
+				ui_dragover	: false,
 				get_class: function() {
 					var cat_class = 'categories' + ' ';
 					if (this.ui_dragover) {
