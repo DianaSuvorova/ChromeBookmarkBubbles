@@ -157,6 +157,7 @@ function ForceLayout(element) {
 			.style("background-image", function(d, i) {
 				return 'url(http://api.thumbalizr.com/?url=' + d.item.url + '&width=250)'
 			})
+			.style("border-color", function(d ) { return color_set["category-" + d.cat_id]})
 			.style("width", radius + "px")
 			.style("height", radius + "px")
 			.attr("draggable", "true")

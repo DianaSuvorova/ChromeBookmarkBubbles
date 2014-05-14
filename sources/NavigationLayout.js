@@ -230,7 +230,9 @@ function NavigationLayout(element) {
 			.on("click", clicked)
 			.text(function(d) {
 				return d.item.title.toUpperCase();
-			});
+			})
+			.style("color", function(d) {
+				return color_set["category-" + d.item.id]});
 
 
 		node.exit().remove();
