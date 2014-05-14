@@ -10,8 +10,8 @@ function ForceLayout(element) {
 		var jq_categories = document.querySelectorAll('.categories');
 		[].forEach.call(jq_categories, function(cat) {
 			viscenters.push({
-				x: $(cat).offset().left+ $(cat).width() / 2 ,
-				y: $(cat).offset().top + $(cat).height()/2
+				x: $(cat).offset().left + $(cat).width() / 2,
+				y: $(cat).offset().top + $(cat).height() / 2
 			});
 			console.log(viscenters);
 		})
@@ -27,8 +27,8 @@ function ForceLayout(element) {
 		[].forEach.call(jq_categories, function(cat) {
 			//		console.log($(cat).width())
 
-			centers[$(cat).attr('id') + 'x'] = $(cat).offset().left+ $(cat).width() / 2;
-			centers[$(cat).attr('id') + 'y'] = $(cat).offset().top +$(cat).height()/2
+			centers[$(cat).attr('id') + 'x'] = $(cat).offset().left + $(cat).width() / 2;
+			centers[$(cat).attr('id') + 'y'] = $(cat).offset().top + $(cat).height() / 2
 
 		})
 
@@ -111,13 +111,17 @@ function ForceLayout(element) {
 	}
 
 
-	this.highlightNodes = function(nodes){
-		console.log("highlight")
-		d3.selectAll(".bubbleFill").style("opacity","0.1");
-		nodes.forEach(function(node){
-			d3.selectAll("#bubbleFill-"+node.id).style("opacity","1");
-			}
-		)
+	this.highlightNodes = function(nodes) {
+
+		d3.selectAll(".bubbleFill").style("opacity", "0.1");
+		nodes.forEach(function(node) {
+			d3.selectAll("#bubbleFill-" + node.id).style("opacity", "1");
+		})
+	}
+
+	this.highlightAllNodes =function(){
+		d3.selectAll(".bubbleFill").style("opacity", "1");
+
 	}
 
 	var force = d3.layout.force()
@@ -157,14 +161,15 @@ function ForceLayout(element) {
 			.style("background-image", function(d, i) {
 				return 'url(http://api.thumbalizr.com/?url=' + d.item.url + '&width=250)'
 			})
-			.style("border-color", function(d ) { return color_set["category-" + d.cat_id]})
+			.style("border-color", function(d) {
+				return color_set["category-" + d.cat_id]
+			})
 			.style("width", radius + "px")
 			.style("height", radius + "px")
 			.attr("draggable", "true")
 			.on("click", showDetails)
 			.on("mouseout", hideDetails)
 			.on("dblclick", gotoLink);
-
 
 
 
@@ -179,11 +184,11 @@ function ForceLayout(element) {
 	}
 
 
-function tick() {
+		function tick() {
 			var centers = updateCenters();
 
 
-			node.each(cluster(10 * force.alpha() * force.alpha(),centers))
+			node.each(cluster(10 * force.alpha() * force.alpha(), centers))
 				.each(collide(0.01))
 				.style("left", function(d, i) {
 					console.log
@@ -195,22 +200,22 @@ function tick() {
 
 		}
 
-		
+
 		// Move d to be adjacent to the cluster node.
-		function cluster(alpha,centers) {
+		function cluster(alpha, centers) {
 			return function(d) {
-	
+
 				var clusterX = centers.cat_centers[d.center + "x"];
 				var clusterY = centers.cat_centers[d.center + "y"];
 
 
-			if (d.center == -1) {
-				clusterY = centers.default_center.y; 
-				clusterX = centers.default_center.x; 
-			}
+				if (d.center == -1) {
+					clusterY = centers.default_center.y;
+					clusterX = centers.default_center.x;
+				}
 
 
-				k = 10*alpha;
+				k = 10 * alpha;
 
 				var x = d.x - clusterX,
 					y = d.y - clusterY,
@@ -241,7 +246,7 @@ function tick() {
 						var x = d.x - quad.point.x,
 							y = d.y - quad.point.y,
 							l = Math.sqrt(x * x + y * y),
-							r = radius + quad.point.radius +padding;//+ (d.cluster === quad.point.cluster ? padding : clusterPadding);
+							r = radius + quad.point.radius + padding; //+ (d.cluster === quad.point.cluster ? padding : clusterPadding);
 						if (l < r) {
 							l = (l - r) / l * alpha;
 							d.x -= x *= l;
@@ -274,43 +279,43 @@ function tick() {
 		function hideDetails(d, i) {
 
 
-			if (d.ui_click){
+			if (d.ui_click) {
 
-			d.ui_click= false;
+				d.ui_click = false;
 
-			var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
+				var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
 
-			var category = d3.selectAll("#" + curr_class);
+				var category = d3.selectAll("#" + curr_class);
 
-			d3.select(this)
-				.style('top',"auto" )
-			 	.style('left',"auto");
-			
-			d3.select(this).transition().duration(50).ease("circle")
-				.style("opacity", 1)
-				.style('width', radius + 'px')
-				.style('height', radius + 'px')
-				.style("z-index", 0);
+				d3.select(this)
+					.style('top', "auto")
+					.style('left', "auto");
 
-			d3.selectAll("#bubble-" + d.item.id).select('.tooltip').remove();
+				d3.select(this).transition().duration(50).ease("circle")
+					.style("opacity", 1)
+					.style('width', radius + 'px')
+					.style('height', radius + 'px')
+					.style("z-index", 0);
 
-			d3.selectAll(".bubbleFill").style("opacity", 1);
+				d3.selectAll("#bubble-" + d.item.id).select('.tooltip').remove();
 
-			if (category.data()[0].ui_click) {
+				d3.selectAll(".bubbleFill").style("opacity", 1);
 
-				d3.selectAll("#bubble-" + d.item.id).selectAll(".bubbleFill").style("border-color", color_set[d.center]);
-			} else {
+				if (category.data()[0].ui_click) {
 
-				d3.selectAll("#bubble-" + d.item.id).selectAll(".bubbleFill").style("border-color", "");
+					d3.selectAll("#bubble-" + d.item.id).selectAll(".bubbleFill").style("border-color", color_set[d.center]);
+				} else {
+
+					d3.selectAll("#bubble-" + d.item.id).selectAll(".bubbleFill").style("border-color", "");
+
+				}
 
 			}
-		
-		}
 		}
 
 		function showDetails(d, i) {
 
-			d.ui_click=true;
+			d.ui_click = true;
 
 			d3.event.preventDefault();
 
@@ -324,8 +329,8 @@ function tick() {
 
 
 			d3.select(this).transition().duration(250).ease("circle")
-				.style('top',-(expanded_radius - radius) / 4+"px" )
-			 	.style('left',-(expanded_radius - radius) / 4+"px" )
+				.style('top', -(expanded_radius - radius) / 4 + "px")
+				.style('left', -(expanded_radius - radius) / 4 + "px")
 				.style("border-color", color_set[d.center])
 				.style("opacity", 1)
 				.style("z-index", 1)
@@ -378,7 +383,7 @@ function tick() {
 
 				cat = "#category-" + cat_d.item.id;
 
-			//	console.log(cat);
+				//	console.log(cat);
 
 				if (overlaps("#bubbleFill-" + d.item.id, cat)) {
 

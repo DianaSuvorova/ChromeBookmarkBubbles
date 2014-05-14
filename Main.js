@@ -16,7 +16,7 @@ $(document).ready(function() {
 
   Model.getUIData(function() {
     initializeUI();
- //   searchBookmarks("D3");
+    //   searchBookmarks("D3");
   })
 })
 
@@ -68,11 +68,6 @@ function initializeUI() {
   })
 
 
-  // $('.enter').click(function() {
-  //   $('.inputurl').slideToggle()
-  // });
-
-
   jQuery("input[id^='bblsize']").click(function() {
     //jQuery("input[name='sum']").val(jQuery(this).val());
     radius = parseInt(jQuery(this).val());
@@ -82,10 +77,17 @@ function initializeUI() {
 
 }
 
+$(function() {
+  $("input#search").keyup(function(e) {
+    if ($(this).val()>"")
+    searchBookmarks($(this).val());
+    else bubbleForceLayout.highlightAllNodes();
+
+  });
+});
 
 function searchBookmarks(term) {
   Model.search(term, function(nodes) {
-        console.log(nodes);
     bubbleForceLayout.highlightNodes(nodes);
   })
 }
@@ -94,7 +96,7 @@ function searchBookmarks(term) {
 function addNewCategory(name) {
   Model.createNewCategory(name, function(newnode) {
     categories = Model.getCategories();
-    color_set= Model.getColorSetforCategories(d3.scale.category10(), categories);
+    color_set = Model.getColorSetforCategories(d3.scale.category10(), categories);
     console.log(color_set);
     bookmarkNavigationLayout.addNode(newnode)
   });
