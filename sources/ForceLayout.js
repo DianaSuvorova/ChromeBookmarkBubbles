@@ -332,7 +332,6 @@ function ForceLayout(element) {
 		function showDetails(d, i) {
 
 			d.ui_expandwDetails = true;
-			console.log(d);
 
 			d3.event.preventDefault();
 
@@ -457,11 +456,11 @@ function ForceLayout(element) {
 						return d.get_class()
 					});
 
-					if (cat_d.ui_click) {
+					if (cat_d.ui_highlight) {
 						d3.selectAll("#bubbleFill-" + d.item.id).style("border-color", color_set[d.center]);
 					}
 
-					if (!cat_d.ui_click) {
+					if (!cat_d.ui_highlight) {
 						d3.selectAll("#bubbleFill-" + d.item.id).style("border-color", "rgb(179,179,179)");
 					}
 

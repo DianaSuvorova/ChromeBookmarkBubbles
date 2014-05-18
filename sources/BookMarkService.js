@@ -164,15 +164,15 @@ var BookmarkDataSingleton = (function() {
 			var rnode = {
 				item: node_item,
 				width: null,
-				ui_dim: true,
-				ui_highlight: false,
+				ui_dim: false,
+				ui_highlight: true,
 				ui_dragover	: false,
 				get_class: function() {
 					var cat_class = 'categories' + ' ';
 					if (this.ui_dragover) {
 						cat_class += "over ";
 					}
-					if (this.ui_click) {
+					if (this.ui_highlight) {
 						cat_class += "selected ";
 					}
 					return cat_class;

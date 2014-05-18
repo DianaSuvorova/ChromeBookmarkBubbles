@@ -42,24 +42,24 @@ function NavigationLayout(element) {
 
 	function clicked(d, i) {
 
-
-
 		var cur_class = d3.select(this).attr("class");
 
-		if (!d.ui_click) {
-			d.ui_click = true;
+		if (!d.ui_highlight) {
+			d.ui_highlight = true;
 			d3.select(this).attr("class", function(d, i) {
 				return d.get_class()
 			})
 				.style("color", color_set["category-" + d.item.id]);
 //				.style("border-color", color_set["category-" + d.item.id]);
 
-			d3.selectAll(".category-" + d.item.id).style("border-color", color_set["category-" + d.item.id]);
+			d3.selectAll(".category-" + d.item.id)
+			.each(function(d) {d.ui_highlight = true;})
+			.style("border-color", color_set["category-" + d.item.id]);
 
 
 
 		} else {
-			d.ui_click = false;
+			d.ui_highlight = false;
 			d3.select(this).attr("class", function(d, i) {
 				return d.get_class()
 			})
@@ -67,7 +67,9 @@ function NavigationLayout(element) {
 				.style("border-color", "");
 			//.style();
 
-			d3.selectAll(".category-" + d.item.id).style("border-color", "rgb(179,179,179)");
+			d3.selectAll(".category-" + d.item.id)
+			.each(function(d) {d.ui_highlight = false;})
+			.style("border-color", "rgb(179,179,179)");
 
 
 
