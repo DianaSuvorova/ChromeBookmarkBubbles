@@ -71,7 +71,7 @@ var BookmarkDataSingleton = (function() {
 			}
 
 			var isFolderWithChildren = !node.url
-			var isFoldernotdefaulhidden = node.title != "Other Bookmarks" && node.title != "Mobile Bookmarks"
+			var isFoldernotdefaulhidden = node.title != "Other Bookmarks" //&& node.title != "Mobile Bookmarks"
 			//&& node.children.length > 0;
 			var isRoot = node.title.length == 0;
 

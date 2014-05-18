@@ -113,14 +113,20 @@ function ForceLayout(element) {
 
 	this.highlightNodes = function(nodes) {
 
+
 		d3.selectAll(".bubbleFill")
-		.each(function(d){d.ui_dim=true;})
-		.style("opacity", "0.1");
-		
+			.each(function(d) {
+				d.ui_dim = true;
+			})
+			.style("opacity", "0.1");
+
 		nodes.forEach(function(node) {
-			node.ui_dim=false;
-			node.ui_highlight=true;
-			d3.selectAll("#bubbleFill-" + node.id).style("opacity", "1");
+			d3.selectAll("#bubbleFill-" + node.id)
+				.each(function(d) {
+					d.ui_dim = false;
+					d.ui_highlight = true;
+				})
+				.style("opacity", "1");
 		})
 	}
 
@@ -294,12 +300,10 @@ function ForceLayout(element) {
 
 				var category = d3.selectAll("#" + curr_class);
 
-				d3.select(this)
+				d3.select(this).transition().duration(50)
 					.style('top', "auto")
-					.style('left', "auto");
-
-				d3.select(this).transition().duration(50).ease("circle")
-					.style("opacity", 1)
+					.style('left', "auto")
+//					.style("opacity", 1)
 					.style('width', radius + 'px')
 					.style('height', radius + 'px')
 					.style("z-index", 0);
@@ -307,8 +311,8 @@ function ForceLayout(element) {
 				d3.selectAll("#bubble-" + d.item.id).select('.tooltip').remove();
 
 				//d3.selectAll(".bubbleFill").style("opacity", 1);
-
-				if (category.data()[0].ui_click) {
+ 
+				if (d.ui_highlight) {
 
 					d3.selectAll("#bubble-" + d.item.id).selectAll(".bubbleFill").style("border-color", color_set[d.center]);
 				} else {
@@ -317,12 +321,18 @@ function ForceLayout(element) {
 
 				}
 
+
+				if (d.ui_dim){
+					console.log(d)
+					d3.select(this).style("opacity", 0.1);
+				}
 			}
 		}
 
 		function showDetails(d, i) {
 
 			d.ui_expandwDetails = true;
+			console.log(d);
 
 			d3.event.preventDefault();
 
@@ -330,14 +340,12 @@ function ForceLayout(element) {
 
 			d3.selectAll("#bubble-" + d.item.id).select('.tooltip').remove();
 
-			d3.select(this)
-				.style('width', expanded_radius + 'px')
-				.style('height', expanded_radius + 'px');
 
-
-			d3.select(this).transition().duration(250).ease("circle")
-				.style('top', -(expanded_radius - radius) / 4 + "px")
-				.style('left', -(expanded_radius - radius) / 4 + "px")
+			d3.select(this).transition().duration(50)
+				 .style('top', -(expanded_radius - radius) / 2 + "px")
+				 .style('left', -(expanded_radius - radius) / 2 + "px")
+				 .style('width', expanded_radius + 'px')
+				.style('height', expanded_radius + 'px')
 				.style("border-color", color_set[d.center])
 				.style("opacity", 1)
 				.style("z-index", 1)
@@ -415,6 +423,7 @@ function ForceLayout(element) {
 	}
 
 	function dragEnd(d, i) {
+
 
 		var cat;
 		var node_id = d.item.id
