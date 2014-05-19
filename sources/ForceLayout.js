@@ -75,7 +75,7 @@ function ForceLayout(element) {
 		nodes.forEach(function(o, i) {
 			o.center = -1;
 		})
-		//force.resume();
+		force.resume();
 	}
 
 	this.categorize = function() {
@@ -130,10 +130,12 @@ function ForceLayout(element) {
 		})
 	}
 
-	this.highlightAllNodes =function(){
+	this.highlightAllNodes = function() {
 		d3.selectAll(".bubbleFill")
-		.each(function(d){d.ui_dim=false;})
-		.style("opacity", "1");
+			.each(function(d) {
+				d.ui_dim = false;
+			})
+			.style("opacity", "1");
 
 	}
 
@@ -289,10 +291,10 @@ function ForceLayout(element) {
 
 		}
 
-		function hideDetails(d, i) {
-
+		function hideDetails(d) {
 
 			if (d.ui_expandwDetails) {
+
 
 				d.ui_expandwDetails = false;
 
@@ -303,15 +305,15 @@ function ForceLayout(element) {
 				d3.select(this).transition().duration(50)
 					.style('top', "auto")
 					.style('left', "auto")
-//					.style("opacity", 1)
-					.style('width', radius + 'px')
+				//					.style("opacity", 1)
+				.style('width', radius + 'px')
 					.style('height', radius + 'px')
 					.style("z-index", 0);
 
 				d3.selectAll("#bubble-" + d.item.id).select('.tooltip').remove();
 
 				//d3.selectAll(".bubbleFill").style("opacity", 1);
- 
+
 				if (d.ui_highlight) {
 
 					d3.selectAll("#bubble-" + d.item.id).selectAll(".bubbleFill").style("border-color", color_set[d.center]);
@@ -322,7 +324,7 @@ function ForceLayout(element) {
 				}
 
 
-				if (d.ui_dim){
+				if (d.ui_dim) {
 					console.log(d)
 					d3.select(this).style("opacity", 0.1);
 				}
@@ -331,41 +333,40 @@ function ForceLayout(element) {
 
 		function showDetails(d, i) {
 
-			d.ui_expandwDetails = true;
 
-			d3.event.preventDefault();
+			if (d3.event.defaultPrevented) return;
 
-			//d3.selectAll(".bubbleFill").style("opacity", 0.5);
+				d.ui_expandwDetails = true;
 
-			d3.selectAll("#bubble-" + d.item.id).select('.tooltip').remove();
+				d3.selectAll("#bubble-" + d.item.id).select('.tooltip').remove();
 
 
-			d3.select(this).transition().duration(50)
-				 .style('top', -(expanded_radius - radius) / 2 + "px")
-				 .style('left', -(expanded_radius - radius) / 2 + "px")
-				 .style('width', expanded_radius + 'px')
-				.style('height', expanded_radius + 'px')
-				.style("border-color", color_set[d.center])
-				.style("opacity", 1)
-				.style("z-index", 1)
-				.each("end", function(d) {
+				d3.select(this).transition().duration(50)
+					.style('top', -(expanded_radius - radius) / 2 + "px")
+					.style('left', -(expanded_radius - radius) / 2 + "px")
+					.style('width', expanded_radius + 'px')
+					.style('height', expanded_radius + 'px')
+					.style("border-color", color_set[d.center])
+					.style("opacity", 1)
+					.style("z-index", 1)
+					.each("end", function(d) {
 
-					d3.select(this).append('div')
-						.attr('class', 'tooltip')
-						.style("background-color", color_set[d.center])
-						.style("top", expanded_radius / 4 + 3 + "px")
-						.style("left", 3 + "px")
-						.style("opacity", 0.9)
-						.style("z-index", 2)
-						.append("span")
-					// .on ("click", window.open(d.item.url))
-					.text(function(d, i) {
-						return ((d.item.url == "") ? "no link " : d.item.title)
+						d3.select(this).append('div')
+							.attr('class', 'tooltip')
+							.style("background-color", color_set[d.center])
+							.style("top", expanded_radius / 4 + 3 + "px")
+							.style("left", 3 + "px")
+							.style("opacity", 0.9)
+							.style("z-index", 2)
+							.append("span")
+						// .on ("click", window.open(d.item.url))
+						.text(function(d, i) {
+							return ((d.item.url == "") ? "no link " : d.item.title)
+						});
+
 					});
 
-				});
-
-			//	d3.selectAll("#" + curr_class).style('color', color_set[d.center]);
+				//	d3.selectAll("#" + curr_class).style('color', color_set[d.center]);
 
 		}
 
@@ -375,7 +376,6 @@ function ForceLayout(element) {
 
 			d3.selectAll(".bubbleFill").style("opacity", 0.5);
 
-			console.log(d);
 
 			if (d3.event.defaultPrevented) return;
 			return (d.item.url == "") ? "" : window.open(d.item.url);
@@ -384,12 +384,16 @@ function ForceLayout(element) {
 		}
 
 		function dragStart(d) {
+
+
 			d3.event.sourceEvent.stopPropagation();
 			d3.select(this).classed("fixed", d.fixed = true);
 
 		};
 
 	function dragMove(d, i) {
+
+		d.ui_move= true;
 
 		var cat;
 
@@ -419,10 +423,16 @@ function ForceLayout(element) {
 		d.py += d3.event.dy;
 		d.x += d3.event.dx;
 		d.y += d3.event.dy;
+
+		force.tick();
 	}
 
 	function dragEnd(d, i) {
 
+
+		if (!d.ui_move) return;
+
+				d.ui_move= false;
 
 		var cat;
 		var node_id = d.item.id

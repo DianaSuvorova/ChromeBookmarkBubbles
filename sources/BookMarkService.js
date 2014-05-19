@@ -134,6 +134,7 @@ var BookmarkDataSingleton = (function() {
 				item: node_item,
 				cat_id: node_item.parent_id, //lookupCategoryID(navigation_items, node_item),
 				ui_dim:false,
+				ui_move: false ,
 				ui_highlight: true,
 				ui_expandwDetails: false,
 				get_class: function() {
