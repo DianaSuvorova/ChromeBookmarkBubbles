@@ -5,6 +5,7 @@ var clusterPadding = 0;
 var expanded_radius = 240;
 var padding = 75 / 5;
 
+var maxNodesPerCategory=5;
 
 var bookmarkNavigationLayout;
 var bubbleForceLayout;
@@ -25,7 +26,7 @@ $(document).ready(function() {
 function initializeUI() {
 
 
-  var nodes = Model.getNodes();
+  var nodes = Model.getNodesLimitedForEachCategory(maxNodesPerCategory);
   var categories = Model.getCategories();
   color_set = Model.getColorSetforCategories(d3.scale.category10(), categories);
 

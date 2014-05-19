@@ -175,6 +175,8 @@ function ForceLayout(element) {
 			})
 			.style("background-image", function(d, i) {
 				return 'url(http://api.thumbalizr.com/?url=' + d.item.url + '&width=250)'
+				//return "url(http://www.google.com/s2/favicons?domain="+d.item.url+")"
+				//return "url(http://getfavicon.appspot.com/"+d.item.url+")"
 			})
 			.style("border-color", function(d) {
 				return color_set["category-" + d.cat_id]
@@ -325,7 +327,6 @@ function ForceLayout(element) {
 
 
 				if (d.ui_dim) {
-					console.log(d)
 					d3.select(this).style("opacity", 0.1);
 				}
 			}
@@ -347,6 +348,9 @@ function ForceLayout(element) {
 					.style('width', expanded_radius + 'px')
 					.style('height', expanded_radius + 'px')
 					.style("border-color", color_set[d.center])
+					// .style("background-image", function(d, i) {
+					// 	return 'url(http://api.thumbalizr.com/?url=' + d.item.url + '&width=250)'
+					// })
 					.style("opacity", 1)
 					.style("z-index", 1)
 					.each("end", function(d) {

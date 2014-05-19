@@ -33,7 +33,7 @@
   .categories{
     width:300px;
     height: 300px;
-   margin: 50px 0;
+   padding: 50px 0;
    
     overflow:hidden;
     text-overflow:ellipsis;
@@ -107,8 +107,8 @@
     border-radius: 240px;
   /*    background-image: url(CollapsableTreeJS/Images/TimeOfDay.jpeg);
   */    background-position :center;
-  /*    background-repeat: no-repeat;*/
-  background-size: 130%;
+      background-repeat: no-repeat;
+  background-size: 120%;
   draggable: "true";
 
   }

@@ -164,6 +164,7 @@ var BookmarkDataSingleton = (function() {
 
 			var rnode = {
 				item: node_item,
+				totalNodes : 0,
 				width: null,
 				ui_dim: false,
 				ui_highlight: true,
@@ -185,7 +186,7 @@ var BookmarkDataSingleton = (function() {
 
 		function updateCategoryID(nodes) {
 			return nodes.forEach(function(d) {
-				d.center = d.cat_id = lookupCategoryID(navigation_items, d.item)
+				d.center = d.cat_id = lookupNavigationItemID(navigation_items, d.item)
 			});
 		}
 
@@ -203,9 +204,41 @@ var BookmarkDataSingleton = (function() {
 		}
 
 
+		function getNodesWithMaxNumIneachCategory(nodes, maxNodes){
+
+			limited_nodes =[];
+
+			nodes.sort(function(a, b) {
+					if (a.item.date < b.item.date) return -1;
+					if (a.item.date > b.item.date) return 1;
+					return 0;
+				})
 
 
-		function lookupCategoryID(navigation_items, node_item) {
+			nodes.map(function(node,i){
+				categories[lookupCategoryItemID(categories,node.cat_id)].totalNodes++;
+				if (categories[lookupCategoryItemID(categories,node.cat_id)].totalNodes<=maxNodes)
+				{
+					limited_nodes.push(node) 
+				}
+
+
+			})
+		
+			return limited_nodes;
+		}
+
+
+		function lookupCategoryItemID(categories,id){
+			for (var i = 0; i < categories.length; i++) {
+				if (categories[i].item.id === id) {
+					return i;
+				}
+			}
+			return -1;
+		}
+
+		function lookupNavigationItemID(navigation_items, node_item) {
 			for (var i = 0; i < navigation_items.length; i++) {
 				if (navigation_items[i].id === node_item.parent_id) {
 					return i;
@@ -249,7 +282,12 @@ var BookmarkDataSingleton = (function() {
 
 			getNodes: function() {
 				//updateCategoryID(nodes);
+
 				return nodes;
+			},
+
+			getNodesLimitedForEachCategory: function(maxNodesPerCategore){
+				return 	getNodesWithMaxNumIneachCategory(nodes,maxNodesPerCategore)
 			},
 
 			updateNodeAssigntoCategory: function(node_id, cat_id, callback) {
