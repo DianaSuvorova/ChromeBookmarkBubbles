@@ -468,10 +468,12 @@ function ForceLayout(element) {
 
 					if (cat_d.ui_highlight) {
 						d3.selectAll("#bubbleFill-" + d.item.id).style("border-color", color_set[d.center]);
+						d3.selectAll(".tooltip").style("background-color", color_set[d.center]);
 					}
 
 					if (!cat_d.ui_highlight) {
 						d3.selectAll("#bubbleFill-" + d.item.id).style("border-color", "rgb(179,179,179)");
+
 					}
 
 					update();
