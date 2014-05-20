@@ -12,6 +12,16 @@
   }
 
 
+.remitems {
+  color: white;
+display: table; 
+margin: auto ;
+margin-top: 30%;
+vertical-align: center;
+font-size: 18px;
+
+}
+
    #addnewcategory{
     width:300px;
     height: 300px;

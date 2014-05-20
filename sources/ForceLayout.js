@@ -212,10 +212,13 @@ function ForceLayout(element) {
 		if (d.hasOwnProperty("totalNodes")){
 			d3.select(this).attr("id", "bubbleFill-" + d.item.id)
 			.attr("class", "bubbleFill")
-			.style("background-image", "border-color",color_set["category-" + d.cat_id])
+			.style("background",color_set["category-" + d.cat_id])
 			.style("border-color",color_set["category-" + d.cat_id])
 			.style("width", radius + "px")
-			.style("height", radius + "px");
+			.style("height", radius + "px")
+			.append("span")
+			.attr("class","remitems")
+			.text("+"+(d.totalNodes-maxNodesPerCategory).toString());
 //			.attr("draggable", "true")
 			// .on("click", showDetails)
 			// .on("mouseout", hideDetails)
