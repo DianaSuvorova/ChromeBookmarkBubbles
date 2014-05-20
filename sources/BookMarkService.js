@@ -216,13 +216,18 @@ var BookmarkDataSingleton = (function() {
 
 
 			nodes.map(function(node,i){
-				categories[lookupCategoryItemID(categories,node.cat_id)].totalNodes++;
-				if (categories[lookupCategoryItemID(categories,node.cat_id)].totalNodes<=maxNodes)
+				var category_item=categories[lookupCategoryItemID(categories,node.cat_id)];
+				category_item.totalNodes++;
+				if (category_item.totalNodes<=maxNodes)
 				{
 					limited_nodes.push(node) 
 				}
 
-
+				else{
+					category_item.cat_id=node.cat_id;
+					category_item.center=node.center;
+					limited_nodes.splice(maxNodes,0,category_item)
+				}
 			})
 		
 			return limited_nodes;

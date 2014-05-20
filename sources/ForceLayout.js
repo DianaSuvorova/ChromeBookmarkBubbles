@@ -111,6 +111,10 @@ function ForceLayout(element) {
 	}
 
 
+	this.addRemainingItemsNode= function(remainingItemsNode){
+		console.log(remainingItemsNode)
+	}
+
 	this.highlightNodes = function(nodes) {
 
 
@@ -166,28 +170,60 @@ function ForceLayout(element) {
 			})
 			.call(node_drag);
 
+
+			// 			.attr("id", function(d, i) {
+			// 	return "bubbleFill-" + d.item.id
+			// })
+			// .attr("class", function(d, i) {
+			// 	return d.get_class()
+			// })
+			// .style("background-image", function(d, i) {
+			// 	return 'url(http://api.thumbalizr.com/?url=' + d.item.url + '&width=250)'
+			// 	//return "url(http://www.google.com/s2/favicons?domain="+d.item.url+")"
+			// 	//return "url(http://getfavicon.appspot.com/"+d.item.url+")"
+			// })
+			// .style("border-color", function(d) {
+			// 	return color_set["category-" + d.cat_id]
+			// })
+			// .style("width", radius + "px")
+			// .style("height", radius + "px")
+			// .attr("draggable", "true")
+			// .on("click", showDetails)
+			// .on("mouseout", hideDetails)
+			// .on("dblclick", gotoLink)
+
 		nodeEnter.append("div")
-			.attr("id", function(d, i) {
-				return "bubbleFill-" + d.item.id
-			})
-			.attr("class", function(d, i) {
-				return d.get_class()
-			})
-			.style("background-image", function(d, i) {
-				return 'url(http://api.thumbalizr.com/?url=' + d.item.url + '&width=250)'
+		.each(function(d,i){
+			if (!d.hasOwnProperty("totalNodes")){
+			d3.select(this).attr("id", "bubbleFill-" + d.item.id)
+			.attr("class", d.get_class())
+			.style("background-image", 'url(http://api.thumbalizr.com/?url=' + d.item.url + '&width=250)'
 				//return "url(http://www.google.com/s2/favicons?domain="+d.item.url+")"
-				//return "url(http://getfavicon.appspot.com/"+d.item.url+")"
-			})
-			.style("border-color", function(d) {
-				return color_set["category-" + d.cat_id]
-			})
+				// "url(http://getfavicon.appspot.com/"+d.item.url+")"
+			)
+			.style("border-color",color_set["category-" + d.cat_id])
 			.style("width", radius + "px")
 			.style("height", radius + "px")
-			.attr("draggable", "true")
 			.on("click", showDetails)
 			.on("mouseout", hideDetails)
 			.on("dblclick", gotoLink);
+		}
 
+		if (d.hasOwnProperty("totalNodes")){
+			d3.select(this).attr("id", "bubbleFill-" + d.item.id)
+			.attr("class", "bubbleFill")
+			.style("background-image", "border-color",color_set["category-" + d.cat_id])
+			.style("border-color",color_set["category-" + d.cat_id])
+			.style("width", radius + "px")
+			.style("height", radius + "px");
+//			.attr("draggable", "true")
+			// .on("click", showDetails)
+			// .on("mouseout", hideDetails)
+			// .on("dblclick", gotoLink);
+		}
+			});
+
+	
 
 
 		node.exit().remove();

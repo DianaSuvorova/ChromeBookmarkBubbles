@@ -31,11 +31,22 @@ function initializeUI() {
   color_set = Model.getColorSetforCategories(d3.scale.category10(), categories);
 
 
+
+
+
   bookmarkNavigationLayout = new NavigationLayout("#canvas", color_set);
   bookmarkNavigationLayout.initializeLayout(categories);
 
 
   bubbleForceLayout = new ForceLayout("#canvas", color_set);
+
+    // categories.forEach(function(d){
+    //   if (d.totalNodes>maxNodesPerCategory )
+    //     nodes.push(d);
+    //     bubbleForceLayout.addRemainingItemsNode(d);
+    // });
+
+
   bubbleForceLayout.initializeLayout(nodes);
 
 

@@ -163,10 +163,11 @@ function NavigationLayout(element) {
 	var update = function() {
 
 
-
 		var node = canvas.selectAll("div.cat_wrapper").data(nodes, function(d) {
 			return d.item.id
 		});
+
+
 
 
 		var nodeEnter = node.enter().insert("div")
@@ -177,8 +178,6 @@ function NavigationLayout(element) {
 			.on("mouseover", showOptions)
 			.on("mouseout", hideOptions);
 		//.call(drag);
-
-
 
 
 
