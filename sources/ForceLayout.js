@@ -104,12 +104,15 @@ function ForceLayout(element) {
 
 
 	this.addNode = function(node, radius) {
-		node.x = 0;
-		node.y = 0;
+		node.x=0;
+		node.y=0;
+		addNode(node,radius)
+	}
+
+	function addNode (node, radius){
 		nodes.push(node);
 		update();
 	}
-
 
 	this.addRemainingItemsNode= function(remainingItemsNode){
 		console.log(remainingItemsNode)
@@ -171,26 +174,6 @@ function ForceLayout(element) {
 			.call(node_drag);
 
 
-			// 			.attr("id", function(d, i) {
-			// 	return "bubbleFill-" + d.item.id
-			// })
-			// .attr("class", function(d, i) {
-			// 	return d.get_class()
-			// })
-			// .style("background-image", function(d, i) {
-			// 	return 'url(http://api.thumbalizr.com/?url=' + d.item.url + '&width=250)'
-			// 	//return "url(http://www.google.com/s2/favicons?domain="+d.item.url+")"
-			// 	//return "url(http://getfavicon.appspot.com/"+d.item.url+")"
-			// })
-			// .style("border-color", function(d) {
-			// 	return color_set["category-" + d.cat_id]
-			// })
-			// .style("width", radius + "px")
-			// .style("height", radius + "px")
-			// .attr("draggable", "true")
-			// .on("click", showDetails)
-			// .on("mouseout", hideDetails)
-			// .on("dblclick", gotoLink)
 
 		nodeEnter.append("div")
 		.each(function(d,i){
@@ -216,11 +199,11 @@ function ForceLayout(element) {
 			.style("border-color",color_set["category-" + d.cat_id])
 			.style("width", radius + "px")
 			.style("height", radius + "px")
+			.on("click", expandCategory)
 			.append("span")
 			.attr("class","remitems")
 			.text("+"+(d.totalNodes-maxNodesPerCategory).toString());
-//			.attr("draggable", "true")
-			// .on("click", showDetails)
+
 			// .on("mouseout", hideDetails)
 			// .on("dblclick", gotoLink);
 		}
@@ -240,6 +223,25 @@ function ForceLayout(element) {
 	}
 
 
+	function expandCategory(d,i){
+		
+		//this.remove();
+		d.displayNodes=d.totalNodes
+
+		var remainingNodes=Model.getRemainingNodesForCategory(d.cat_id,maxNodesPerCategory);
+	
+		
+		console.log(nodes.length);
+
+		remainingNodes.forEach(function(node){
+			addNode(node,radius)
+
+		});
+//		update();
+		console.log(nodes.length);
+	}
+
+
 		function tick() {
 			var centers = updateCenters();
 
@@ -247,7 +249,6 @@ function ForceLayout(element) {
 			node.each(cluster(10 * force.alpha() * force.alpha(), centers))
 				.each(collide(0.01))
 				.style("left", function(d, i) {
-					console.log
 					return d.x + "px";
 				})
 				.style("top", function(d, i) {

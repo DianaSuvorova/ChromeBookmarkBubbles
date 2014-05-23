@@ -5,7 +5,7 @@ var clusterPadding = 0;
 var expanded_radius = 240;
 var padding = 75 / 5;
 
-var maxNodesPerCategory=5;
+var maxNodesPerCategory=2;
 
 var bookmarkNavigationLayout;
 var bubbleForceLayout;

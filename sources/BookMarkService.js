@@ -164,6 +164,7 @@ var BookmarkDataSingleton = (function() {
 
 			var rnode = {
 				item: node_item,
+				displayNodes:maxNodesPerCategory,  
 				totalNodes : 0,
 				width: null,
 				ui_dim: false,
@@ -215,21 +216,41 @@ var BookmarkDataSingleton = (function() {
 				})
 
 
-			nodes.map(function(node,i){
-				var category_item=categories[lookupCategoryItemID(categories,node.cat_id)];
-				category_item.totalNodes++;
-				if (category_item.totalNodes<=maxNodes)
-				{
-					limited_nodes.push(node) 
-				}
+			categories.forEach(function(category){
+				var nodesforCategory=getAllNodesForCategory(category.item.id)
+				category.totalNodes=nodesforCategory.length;
+				category.cat_id=category.item.id;
+				category.center="category-"+category.item.id;
+				category.default_center= -1;
 
-				else{
-					category_item.cat_id=node.cat_id;
-					category_item.center=node.center;
-					limited_nodes.splice(maxNodes,0,category_item)
+				if 	(category.totalNodes<=maxNodes){
+					nodesforCategory.forEach(function(node){
+						limited_nodes.push(node)});
 				}
+				else {
+					nodesforCategory.slice(0,maxNodes).forEach(function(node){
+						limited_nodes.push(node)
+					});
+					limited_nodes.push(category);
+				}		
 			})
-		
+			
+
+			// nodes.map(function(node,i){
+			// 	var category_item=categories[lookupCategoryItemID(categories,node.cat_id)];
+			// 	category_item.totalNodes++;
+			// 	if (category_item.totalNodes<=maxNodes)
+			// 	{
+			// 		limited_nodes.push(node) 
+			// 	}
+
+			// 	else{
+			// 		category_item.cat_id=node.cat_id;
+			// 		category_item.center=node.center;
+			// 		limited_nodes
+			// 		//limited_nodes.splice(maxNodes,0,category_item)
+			// 	}
+			// })
 			return limited_nodes;
 		}
 
@@ -252,6 +273,18 @@ var BookmarkDataSingleton = (function() {
 			return -1;
 
 		}
+
+		function getAllNodesForCategory(cat_id){
+			var nodesForCategory=[];
+			nodes.forEach(function(node){
+				if (node.cat_id== cat_id){
+					nodesForCategory.push(node);
+				}
+			} )
+		
+			return nodesForCategory;
+		}
+
 
 		//End Private methods and variables
 
@@ -291,8 +324,8 @@ var BookmarkDataSingleton = (function() {
 				return nodes;
 			},
 
-			getNodesLimitedForEachCategory: function(maxNodesPerCategore){
-				return 	getNodesWithMaxNumIneachCategory(nodes,maxNodesPerCategore)
+			getNodesLimitedForEachCategory: function(maxNodesPerCategory){
+				return 	getNodesWithMaxNumIneachCategory(nodes,maxNodesPerCategory)
 			},
 
 			updateNodeAssigntoCategory: function(node_id, cat_id, callback) {
@@ -332,6 +365,18 @@ var BookmarkDataSingleton = (function() {
 					callback(result)
 				});
 			
+			},
+
+			getRemainingNodesForCategory: function(cat_id, startingFrom){
+				var nodesForCategory=getAllNodesForCategory(cat_id);
+
+				nodesForCategory.sort(function(a, b) {
+					if (a.item.date < b.item.date) return -1;
+					if (a.item.date > b.item.date) return 1;
+					return 0;
+				})
+
+				return nodesForCategory.slice(startingFrom,nodesForCategory.length);
 			}
 
 
