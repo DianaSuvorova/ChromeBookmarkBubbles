@@ -229,16 +229,33 @@ function ForceLayout(element) {
 		d.displayNodes=d.totalNodes
 
 		var remainingNodes=Model.getRemainingNodesForCategory(d.cat_id,maxNodesPerCategory);
-	
-		
-		console.log(nodes.length);
 
 		remainingNodes.forEach(function(node){
 			addNode(node,radius)
 
 		});
-//		update();
-		console.log(nodes.length);
+
+		d3.select(this).on("click",collapseCategory)
+		
+		d3.select(this).select("span").text("<..>");
+
+
+	}
+
+	function collapseCategory(d,i){
+
+		d3.select(this).on("click",expandCategory)
+		
+		d3.select(this).select("span").text("+"+(d.totalNodes-maxNodesPerCategory).toString());
+;
+
+		var collapsingNodes=Model.getRemainingNodesForCategory(d.cat_id,maxNodesPerCategory);
+
+		nodes.length=nodes.length-collapsingNodes.length;
+		update();
+
+
+
 	}
 
 
