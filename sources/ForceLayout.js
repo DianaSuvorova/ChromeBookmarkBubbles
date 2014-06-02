@@ -48,6 +48,13 @@ function ForceLayout(element) {
 		};
 	}
 
+	findNodeIndexForID = function(id) {
+		for (var i in nodes) {
+			if (nodes[i].item.id === id) return i
+		};
+	}
+
+
 	function deleteNodesForCategory(cat_id) {
 		while (findNodeIndexForCategory(cat_id)) {
 			nodes.splice(findNodeIndexForCategory(cat_id), 1);
@@ -156,6 +163,10 @@ function ForceLayout(element) {
 
 	var update = function(raduis) {
 
+
+		console.log(nodes);
+		console.log(nodes.length)
+
 		var node_drag = force.drag()
 			.on("dragstart", dragStart)
 			.on("drag", dragMove)
@@ -202,14 +213,13 @@ function ForceLayout(element) {
 			.on("click", expandCategory)
 			.append("span")
 			.attr("class","remitems")
-			.text("+"+(d.totalNodes-maxNodesPerCategory).toString());
+			.text("+"+(d.getTotalNodes()-maxNodesPerCategory).toString());
 
 			// .on("mouseout", hideDetails)
 			// .on("dblclick", gotoLink);
 		}
 			});
 
-	
 
 
 		node.exit().remove();
@@ -219,41 +229,56 @@ function ForceLayout(element) {
 
 		force.start();
 
-
 	}
 
 
 	function expandCategory(d,i){
-		
-		//this.remove();
-		d.displayNodes=d.totalNodes
 
-		var remainingNodes=Model.getRemainingNodesForCategory(d.cat_id,maxNodesPerCategory);
+
+		// if (d.getTotalNodes()-maxNodesPerCategory<1){
+		// this.remove();	
+		// }
+		
+		d.expand_option=true;
+		d3.select(this).on("click",collapseCategory)		
+		d3.select(this).select("span").text("<..>");
+
+		var remainingNodes=Model.getRemainingNodesForCategory(d.item.id,maxNodesPerCategory);
 
 		remainingNodes.forEach(function(node){
-			addNode(node,radius)
+			addNode(node)
+		})
 
-		});
-
-		d3.select(this).on("click",collapseCategory)
-		
-		d3.select(this).select("span").text("<..>");
+		nodes.forEach(function(node){
+			console.log(node.item.id)
+		})
 
 
 	}
 
 	function collapseCategory(d,i){
 
+
+		d.expand_option=true;
+
 		d3.select(this).on("click",expandCategory)
+
+			d.expand_option=false;
 		
-		d3.select(this).select("span").text("+"+(d.totalNodes-maxNodesPerCategory).toString());
-;
+		d3.select(this).select("span").text("+"+(d.getTotalNodes()-maxNodesPerCategory).toString());
 
-		var collapsingNodes=Model.getRemainingNodesForCategory(d.cat_id,maxNodesPerCategory);
+		var remainingNodes=Model.getRemainingNodesForCategory(d.item.id,maxNodesPerCategory);
 
-		nodes.length=nodes.length-collapsingNodes.length;
-		update();
+		remainingNodes.forEach(function(node){
 
+			nodes.splice(findNodeIndexForID(node.item.id), 1);
+			update();
+			
+		})
+
+		// nodes=Model.getNodesLimitedForEachCategory(maxNodesPerCategory);
+
+		// update();
 
 
 	}

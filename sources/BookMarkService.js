@@ -163,6 +163,7 @@ var BookmarkDataSingleton = (function() {
 			navigation_items.push(node_item);
 
 			var rnode = {
+				expand_option : false,
 				item: node_item,
 				displayNodes:maxNodesPerCategory,  
 				totalNodes : 0,
@@ -170,6 +171,9 @@ var BookmarkDataSingleton = (function() {
 				ui_dim: false,
 				ui_highlight: true,
 				ui_dragover	: false,
+				getTotalNodes : function(){
+					return getAllNodesForCategory(node_item.id).length;
+				},
 				get_class: function() {
 					var cat_class = 'categories' + ' ';
 					if (this.ui_dragover) {
@@ -216,42 +220,40 @@ var BookmarkDataSingleton = (function() {
 				})
 
 
+			var i =[];
 			categories.forEach(function(category){
 				var nodesforCategory=getAllNodesForCategory(category.item.id)
 				category.totalNodes=nodesforCategory.length;
 				category.cat_id=category.item.id;
 				category.center="category-"+category.item.id;
 				category.default_center= -1;
+				i[category.item.id]=0;
 
-				if 	(category.totalNodes<=maxNodes){
+
 					nodesforCategory.forEach(function(node){
-						limited_nodes.push(node)});
-				}
-				else {
-					nodesforCategory.slice(0,maxNodes).forEach(function(node){
-						limited_nodes.push(node)
-					});
-					limited_nodes.push(category);
-				}		
-			})
-			
+					if (category.expand_option || i[category.item.id]<maxNodes){
+						limited_nodes.push(node);
+						i[category.item.id]++;
+					}
 
-			// nodes.map(function(node,i){
-			// 	var category_item=categories[lookupCategoryItemID(categories,node.cat_id)];
-			// 	category_item.totalNodes++;
-			// 	if (category_item.totalNodes<=maxNodes)
-			// 	{
-			// 		limited_nodes.push(node) 
-			// 	}
+					})
 
-			// 	else{
-			// 		category_item.cat_id=node.cat_id;
-			// 		category_item.center=node.center;
-			// 		limited_nodes
-			// 		//limited_nodes.splice(maxNodes,0,category_item)
-			// 	}
-			// })
+				if (category.totalNodes>maxNodes || category.expand_option ){
+						limited_nodes.push(category);
+						//i[category.item.id]++;
+					}	
+
+				})	
+
+			limited_nodes.sort(function(a, b) {
+					if (a.item.date < b.item.date) return -1;
+					if (a.item.date > b.item.date) return 1;
+					return 0;
+				})
+
+
 			return limited_nodes;
+
 		}
 
 
