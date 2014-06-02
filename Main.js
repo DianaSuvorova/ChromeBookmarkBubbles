@@ -96,6 +96,15 @@ $(function() {
     else bubbleForceLayout.highlightAllNodes();
 
   });
+
+
+console.log($(".menu-trigger"));
+
+ $(".menu-trigger").on('click', function() {
+      console.log("clicked")
+      document.body.className = ( document.body.className == 'menu-active' )? '' : 'menu-active';
+    });
+
 });
 
 function searchBookmarks(term) {
