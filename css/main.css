@@ -109,7 +109,7 @@ cursor: pointer;
 
   }
 
-  .bubbleFill  {
+  .bubbleFill ,#bblsize75 {
     position: absolute;
     display: block;
     border: solid 3px rgb(179,179,179);

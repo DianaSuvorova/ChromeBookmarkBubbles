@@ -24,10 +24,13 @@ function ForceLayout(element) {
 		var centers = [];
 
 		var jq_categories = document.querySelectorAll('.categories');
+
+		var menu_offset = ( document.body.className == 'menu-active' )? $("#slide-menu").width() : 0 ;
+
 		[].forEach.call(jq_categories, function(cat) {
 			//		console.log($(cat).width())
 
-			centers[$(cat).attr('id') + 'x'] = $(cat).offset().left + $(cat).width() / 2;
+			centers[$(cat).attr('id') + 'x'] = $(cat).offset().left + $(cat).width() / 2 - menu_offset ;
 			centers[$(cat).attr('id') + 'y'] = $(cat).offset().top + $(cat).height() / 2
 
 		})
