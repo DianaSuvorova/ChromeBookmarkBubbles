@@ -54,6 +54,9 @@ cursor: pointer;
     border: solid 2px transparent;
   }
 
+.ontop{
+  z-index: 100;
+}
 
   .categories:hover, .categories.selected  {
     cursor: pointer;
@@ -223,7 +226,10 @@ cursor: pointer;
     
   }
 
-
+.inputnewcat{
+    padding:6px 15px 6px 30px;
+    margin: 2px;
+}
 
   .enter{
     display: block;

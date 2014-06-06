@@ -229,11 +229,12 @@ function NavigationLayout(element) {
 			.on("mouseover", mouseover)
 			.on("mouseout", mouseout)
 			.on("click", clicked)
+			.style("color", function(d) {
+				return color_set["category-" + d.item.id]})
+						.append("div").attr("class", "ontop")
 			.text(function(d) {
 				return d.item.title.toUpperCase();
-			})
-			.style("color", function(d) {
-				return color_set["category-" + d.item.id]});
+			});
 
 
 		node.exit().remove();
