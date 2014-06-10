@@ -35,11 +35,11 @@ input[type=button], input[type=button]:hover {
 .lighter, .light, .dark {
 	width:95%;
 	height:50px;
-	padding:40px 25px;
-}
+/*	padding:40px 25px;
+*/}
 
 .light{
-	background-color:#fcfcfc;
+/*	background-color:#fcfcfc;*/
 	width:100px;
 }
 .light input[type=text]{

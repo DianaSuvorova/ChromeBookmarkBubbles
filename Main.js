@@ -80,12 +80,21 @@ function initializeUI() {
   })
 
 
+
   jQuery("input[id^='bblsize']").click(function() {
     //jQuery("input[name='sum']").val(jQuery(this).val());
     radius = parseInt(jQuery(this).val());
     padding = radius / 5;
     bubbleForceLayout.changeBubbleSize(radius);
   });
+
+
+$('#link').click(function(){
+  console.log($("#content").scrollTop());
+    $("#content").animate({scrollTop:10}, '500', 'swing')
+  console.log($("body").scrollTop());
+  });
+
 
 }
 
@@ -98,12 +107,13 @@ $(function() {
   });
 
 
-console.log($(".menu-trigger"));
-
  $(".menu-trigger").on('click', function() {
       console.log("clicked")
       document.body.className = ( document.body.className == 'menu-active' )? '' : 'menu-active';
     });
+
+
+
 
 });
 

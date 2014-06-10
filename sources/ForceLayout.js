@@ -25,12 +25,12 @@ function ForceLayout(element) {
 
 		var jq_categories = document.querySelectorAll('.categories');
 
-		var menu_offset = ( document.body.className == 'menu-active' )? $("#slide-menu").width() : 0 ;
+		var menu_offset = (document.body.className == 'menu-active') ? $("#slide-menu").width() : 0;
 
 		[].forEach.call(jq_categories, function(cat) {
 			//		console.log($(cat).width())
 
-			centers[$(cat).attr('id') + 'x'] = $(cat).offset().left + $(cat).width() / 2 - menu_offset ;
+			centers[$(cat).attr('id') + 'x'] = $(cat).offset().left + $(cat).width() / 2 - menu_offset;
 			centers[$(cat).attr('id') + 'y'] = $(cat).offset().top + $(cat).height() / 2
 
 		})
@@ -114,17 +114,17 @@ function ForceLayout(element) {
 
 
 	this.addNode = function(node, radius) {
-		node.x=0;
-		node.y=0;
-		addNode(node,radius)
+		node.x = 0;
+		node.y = 0;
+		addNode(node, radius)
 	}
 
-	function addNode (node, radius){
+	function addNode(node, radius) {
 		nodes.push(node);
 		update();
 	}
 
-	this.addRemainingItemsNode= function(remainingItemsNode){
+	this.addRemainingItemsNode = function(remainingItemsNode) {
 		console.log(remainingItemsNode)
 	}
 
@@ -166,10 +166,6 @@ function ForceLayout(element) {
 
 	var update = function(raduis) {
 
-
-		console.log(nodes);
-		console.log(nodes.length)
-
 		var node_drag = force.drag()
 			.on("dragstart", dragStart)
 			.on("drag", dragMove)
@@ -190,37 +186,37 @@ function ForceLayout(element) {
 
 
 		nodeEnter.append("div")
-		.each(function(d,i){
-			if (!d.hasOwnProperty("totalNodes")){
-			d3.select(this).attr("id", "bubbleFill-" + d.item.id)
-			.attr("class", d.get_class())
-			.style("background-image", 'url(http://api.thumbalizr.com/?url=' + d.item.url + '&width=250)'
-				//return "url(http://www.google.com/s2/favicons?domain="+d.item.url+")"
-				// "url(http://getfavicon.appspot.com/"+d.item.url+")"
-			)
-			.style("border-color",color_set["category-" + d.cat_id])
-			.style("width", radius + "px")
-			.style("height", radius + "px")
-			.on("click", showDetails)
-			.on("mouseout", hideDetails)
-			.on("dblclick", gotoLink);
-		}
+			.each(function(d, i) {
+				if (!d.hasOwnProperty("totalNodes")) {
+					d3.select(this).attr("id", "bubbleFill-" + d.item.id)
+						.attr("class", d.get_class())
+						.style("background-image", 'url(http://api.thumbalizr.com/?url=' + d.item.url + '&width=250)'
+							//return "url(http://www.google.com/s2/favicons?domain="+d.item.url+")"
+							// "url(http://getfavicon.appspot.com/"+d.item.url+")"
+					)
+						.style("border-color", color_set["category-" + d.cat_id])
+						.style("width", radius + "px")
+						.style("height", radius + "px")
+						.on("click", showDetails)
+						.on("mouseout", hideDetails)
+						.on("dblclick", gotoLink);
+				}
 
-		if (d.hasOwnProperty("totalNodes")){
-			d3.select(this).attr("id", "bubbleFill-" + d.item.id)
-			.attr("class", "bubbleFill")
-			.style("background",color_set["category-" + d.cat_id])
-			.style("border-color",color_set["category-" + d.cat_id])
-			.style("width", radius + "px")
-			.style("height", radius + "px")
-			.on("click", expandCategory)
-			.append("span")
-			.attr("class","remitems")
-			.text("+"+(d.getTotalNodes()-maxNodesPerCategory).toString());
+				if (d.hasOwnProperty("totalNodes")) {
+					d3.select(this).attr("id", "bubbleFill-" + d.item.id)
+						.attr("class", "bubbleFill")
+						.style("background", color_set["category-" + d.cat_id])
+						.style("border-color", color_set["category-" + d.cat_id])
+						.style("width", radius + "px")
+						.style("height", radius + "px")
+						.on("click", expandCategory)
+						.append("span")
+						.attr("class", "remitems")
+						.text("+" + (d.getTotalNodes() - maxNodesPerCategory).toString());
 
-			// .on("mouseout", hideDetails)
-			// .on("dblclick", gotoLink);
-		}
+					// .on("mouseout", hideDetails)
+					// .on("dblclick", gotoLink);
+				}
 			});
 
 
@@ -235,48 +231,64 @@ function ForceLayout(element) {
 	}
 
 
-	function expandCategory(d,i){
+	function expandCategory(d, i) {
 
 
-		// if (d.getTotalNodes()-maxNodesPerCategory<1){
-		// this.remove();	
-		// }
-		
-		d.expand_option=true;
-		d3.select(this).on("click",collapseCategory)		
+		d3.selectAll("#category-" + d.item.id).style("width", width + "px");
+
+		force.stop();
+
+
+		console.log($("#content").scrollTop());
+		$("#content").animate({
+				scrollTop: $("#category-" + d.item.id).offset().top
+			}, '500', 'swing',
+			function() {
+				force.alpha(0);
+				force.start();
+			}
+		)
+
+
+		d.expand_option = true;
+		d3.select(this).on("click", collapseCategory)
 		d3.select(this).select("span").text("<..>");
 
-		var remainingNodes=Model.getRemainingNodesForCategory(d.item.id,maxNodesPerCategory);
+		var remainingNodes = Model.getRemainingNodesForCategory(d.item.id, maxNodesPerCategory);
 
-		remainingNodes.forEach(function(node){
+		remainingNodes.forEach(function(node) {
 			addNode(node)
-		})
-
-		nodes.forEach(function(node){
-			console.log(node.item.id)
 		})
 
 
 	}
 
-	function collapseCategory(d,i){
+	function collapseCategory(d, i) {
 
 
-		d.expand_option=true;
+		d.expand_option = true;
 
-		d3.select(this).on("click",expandCategory)
+		d3.selectAll("#category-" + d.item.id).style("width", "");
 
-			d.expand_option=false;
-		
-		d3.select(this).select("span").text("+"+(d.getTotalNodes()-maxNodesPerCategory).toString());
+		// $('html, body').animate({
+		// 	scrollTop: $("#category-" + d.item.id).offset().top
+		// }, 2000,"swing", function() { 
+		// 		 alert("Finished animating");
+		// });
 
-		var remainingNodes=Model.getRemainingNodesForCategory(d.item.id,maxNodesPerCategory);
+		d3.select(this).on("click", expandCategory)
 
-		remainingNodes.forEach(function(node){
+		d.expand_option = false;
+
+		d3.select(this).select("span").text("+" + (d.getTotalNodes() - maxNodesPerCategory).toString());
+
+		var remainingNodes = Model.getRemainingNodesForCategory(d.item.id, maxNodesPerCategory);
+
+		remainingNodes.forEach(function(node) {
 
 			nodes.splice(findNodeIndexForID(node.item.id), 1);
 			update();
-			
+
 		})
 
 		// nodes=Model.getNodesLimitedForEachCategory(maxNodesPerCategory);
@@ -287,202 +299,202 @@ function ForceLayout(element) {
 	}
 
 
-		function tick() {
-			var centers = updateCenters();
+	function tick() {
+		var centers = updateCenters();
 
 
-			node.each(cluster(10 * force.alpha() * force.alpha(), centers))
-				.each(collide(0.01))
-				.style("left", function(d, i) {
-					return d.x + "px";
-				})
-				.style("top", function(d, i) {
-					return d.y + "px";
-				});
+		node.each(cluster(10 * force.alpha() * force.alpha(), centers))
+			.each(collide(0.01))
+			.style("left", function(d, i) {
+				return d.x + "px";
+			})
+			.style("top", function(d, i) {
+				return d.y + "px";
+			});
 
-		}
-
-
-		// Move d to be adjacent to the cluster node.
-		function cluster(alpha, centers) {
-			return function(d) {
-
-				var clusterX = centers.cat_centers[d.center + "x"];
-				var clusterY = centers.cat_centers[d.center + "y"];
+	}
 
 
-				if (d.center == -1) {
-					clusterY = centers.default_center.y;
-					clusterX = centers.default_center.x;
-				}
+	// Move d to be adjacent to the cluster node.
+	function cluster(alpha, centers) {
+		return function(d) {
+
+			var clusterX = centers.cat_centers[d.center + "x"];
+			var clusterY = centers.cat_centers[d.center + "y"];
 
 
-				k = 10 * alpha;
-
-				var x = d.x - clusterX,
-					y = d.y - clusterY,
-					l = Math.sqrt(x * x + y * y),
-					r = radius;
-				if (l != r) {
-					l = (l - r) / l * alpha * k;
-					d.x -= x *= l;
-					d.y -= y *= l;
-				}
-			};
-		}
+			if (d.center == -1) {
+				clusterY = centers.default_center.y;
+				clusterX = centers.default_center.x;
+			}
 
 
-		// Resolves collisions between d and all other circles.
-		function collide(alpha) {
-			var quadtree = d3.geom.quadtree(nodes);
+			k = 10 * alpha;
+
+			var x = d.x - clusterX,
+				y = d.y - clusterY,
+				l = Math.sqrt(x * x + y * y),
+				r = radius;
+			if (l != r) {
+				l = (l - r) / l * alpha * k;
+				d.x -= x *= l;
+				d.y -= y *= l;
+			}
+		};
+	}
 
 
-			return function(d) {
-				var r = radius + Math.max(padding, clusterPadding),
-					nx1 = d.x - r,
-					nx2 = d.x + r,
-					ny1 = d.y - r,
-					ny2 = d.y + r;
-				quadtree.visit(function(quad, x1, y1, x2, y2) {
-					if (quad.point && (quad.point !== d)) {
-						var x = d.x - quad.point.x,
-							y = d.y - quad.point.y,
-							l = Math.sqrt(x * x + y * y),
-							r = radius + quad.point.radius + padding; //+ (d.cluster === quad.point.cluster ? padding : clusterPadding);
-						if (l < r) {
-							l = (l - r) / l * alpha;
-							d.x -= x *= l;
-							d.y -= y *= l;
-							quad.point.x += x;
-							quad.point.y += y;
-						}
+	// Resolves collisions between d and all other circles.
+	function collide(alpha) {
+		var quadtree = d3.geom.quadtree(nodes);
+
+
+		return function(d) {
+			var r = radius + Math.max(padding, clusterPadding),
+				nx1 = d.x - r,
+				nx2 = d.x + r,
+				ny1 = d.y - r,
+				ny2 = d.y + r;
+			quadtree.visit(function(quad, x1, y1, x2, y2) {
+				if (quad.point && (quad.point !== d)) {
+					var x = d.x - quad.point.x,
+						y = d.y - quad.point.y,
+						l = Math.sqrt(x * x + y * y),
+						r = radius + quad.point.radius + padding; //+ (d.cluster === quad.point.cluster ? padding : clusterPadding);
+					if (l < r) {
+						l = (l - r) / l * alpha;
+						d.x -= x *= l;
+						d.y -= y *= l;
+						quad.point.x += x;
+						quad.point.y += y;
 					}
-					return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-				});
-			};
-		}
-
-
-		function visualiseCenters() {
-			console.log(viscenters)
-			canvas.selectAll("div#e").data(viscenters).enter().append("div")
-				.attr("id", "e")
-				.attr("class", "bubble")
-				.style("top", function(d) {
-					return d.y + "px"
-				})
-				.style("left", function(d) {
-					return d.x + "px"
-				})
-				.text("X");
-
-		}
-
-		function hideDetails(d) {
-
-			if (d.ui_expandwDetails) {
-
-
-				d.ui_expandwDetails = false;
-
-				var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
-
-				var category = d3.selectAll("#" + curr_class);
-
-				d3.select(this).transition().duration(50)
-					.style('top', "auto")
-					.style('left', "auto")
-				//					.style("opacity", 1)
-				.style('width', radius + 'px')
-					.style('height', radius + 'px')
-					.style("z-index", 0);
-
-				d3.selectAll("#bubble-" + d.item.id).select('.tooltip').remove();
-
-				//d3.selectAll(".bubbleFill").style("opacity", 1);
-
-				if (d.ui_highlight) {
-
-					d3.selectAll("#bubble-" + d.item.id).selectAll(".bubbleFill").style("border-color", color_set[d.center]);
-				} else {
-
-					d3.selectAll("#bubble-" + d.item.id).selectAll(".bubbleFill").style("border-color", "");
-
 				}
+				return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+			});
+		};
+	}
 
 
-				if (d.ui_dim) {
-					d3.select(this).style("opacity", 0.1);
-				}
+	function visualiseCenters() {
+		console.log(viscenters)
+		canvas.selectAll("div#e").data(viscenters).enter().append("div")
+			.attr("id", "e")
+			.attr("class", "bubble")
+			.style("top", function(d) {
+				return d.y + "px"
+			})
+			.style("left", function(d) {
+				return d.x + "px"
+			})
+			.text("X");
+
+	}
+
+	function hideDetails(d) {
+
+		if (d.ui_expandwDetails) {
+
+
+			d.ui_expandwDetails = false;
+
+			var curr_class = d3.select(this).attr("class").replace("bubbleFill ", "");
+
+			var category = d3.selectAll("#" + curr_class);
+
+			d3.select(this).transition().duration(50)
+				.style('top', "auto")
+				.style('left', "auto")
+			//					.style("opacity", 1)
+			.style('width', radius + 'px')
+				.style('height', radius + 'px')
+				.style("z-index", 0);
+
+			d3.selectAll("#bubble-" + d.item.id).select('.tooltip').remove();
+
+			//d3.selectAll(".bubbleFill").style("opacity", 1);
+
+			if (d.ui_highlight) {
+
+				d3.selectAll("#bubble-" + d.item.id).selectAll(".bubbleFill").style("border-color", color_set[d.center]);
+			} else {
+
+				d3.selectAll("#bubble-" + d.item.id).selectAll(".bubbleFill").style("border-color", "");
+
+			}
+
+
+			if (d.ui_dim) {
+				d3.select(this).style("opacity", 0.1);
 			}
 		}
+	}
 
-		function showDetails(d, i) {
-
-
-			if (d3.event.defaultPrevented) return;
-
-				d.ui_expandwDetails = true;
-
-				d3.selectAll("#bubble-" + d.item.id).select('.tooltip').remove();
+	function showDetails(d, i) {
 
 
-				d3.select(this).transition().duration(50)
-					.style('top', -(expanded_radius - radius) / 2 + "px")
-					.style('left', -(expanded_radius - radius) / 2 + "px")
-					.style('width', expanded_radius + 'px')
-					.style('height', expanded_radius + 'px')
-					.style("border-color", color_set[d.center])
-					// .style("background-image", function(d, i) {
-					// 	return 'url(http://api.thumbalizr.com/?url=' + d.item.url + '&width=250)'
-					// })
-					.style("opacity", 1)
-					.style("z-index", 1)
-					.each("end", function(d) {
+		if (d3.event.defaultPrevented) return;
 
-						d3.select(this).append('div')
-							.attr('class', 'tooltip')
-							.style("background-color", color_set[d.center])
-							.style("top", expanded_radius / 4 + 3 + "px")
-							.style("left", 3 + "px")
-							.style("opacity", 0.9)
-							.style("z-index", 2)
-							.append("span")
-						// .on ("click", window.open(d.item.url))
-						.text(function(d, i) {
-							return ((d.item.url == "") ? "no link " : d.item.title)
-						});
+		d.ui_expandwDetails = true;
 
-					});
-
-				//	d3.selectAll("#" + curr_class).style('color', color_set[d.center]);
-
-		}
+		d3.selectAll("#bubble-" + d.item.id).select('.tooltip').remove();
 
 
+		d3.select(this).transition().duration(50)
+			.style('top', -(expanded_radius - radius) / 2 + "px")
+			.style('left', -(expanded_radius - radius) / 2 + "px")
+			.style('width', expanded_radius + 'px')
+			.style('height', expanded_radius + 'px')
+			.style("border-color", color_set[d.center])
+		// .style("background-image", function(d, i) {
+		// 	return 'url(http://api.thumbalizr.com/?url=' + d.item.url + '&width=250)'
+		// })
+		.style("opacity", 1)
+			.style("z-index", 1)
+			.each("end", function(d) {
 
-		function gotoLink(d, i) {
+				d3.select(this).append('div')
+					.attr('class', 'tooltip')
+					.style("background-color", color_set[d.center])
+					.style("top", expanded_radius / 4 + 3 + "px")
+					.style("left", 3 + "px")
+					.style("opacity", 0.9)
+					.style("z-index", 2)
+					.append("span")
+				// .on ("click", window.open(d.item.url))
+				.text(function(d, i) {
+					return ((d.item.url == "") ? "no link " : d.item.title)
+				});
 
-			d3.selectAll(".bubbleFill").style("opacity", 0.5);
+			});
+
+		//	d3.selectAll("#" + curr_class).style('color', color_set[d.center]);
+
+	}
 
 
-			if (d3.event.defaultPrevented) return;
-			return (d.item.url == "") ? "" : window.open(d.item.url);
+
+	function gotoLink(d, i) {
+
+		d3.selectAll(".bubbleFill").style("opacity", 0.5);
 
 
-		}
+		if (d3.event.defaultPrevented) return;
+		return (d.item.url == "") ? "" : window.open(d.item.url);
 
-		function dragStart(d) {
+
+	}
+
+	function dragStart(d) {
 
 
-			d3.event.sourceEvent.stopPropagation();
-			d3.select(this).classed("fixed", d.fixed = true);
+		d3.event.sourceEvent.stopPropagation();
+		d3.select(this).classed("fixed", d.fixed = true);
 
-		};
+	};
 
 	function dragMove(d, i) {
 
-		d.ui_move= true;
+		d.ui_move = true;
 
 		var cat;
 
@@ -521,7 +533,7 @@ function ForceLayout(element) {
 
 		if (!d.ui_move) return;
 
-				d.ui_move= false;
+		d.ui_move = false;
 
 		var cat;
 		var node_id = d.item.id
