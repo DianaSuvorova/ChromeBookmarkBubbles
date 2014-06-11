@@ -2,11 +2,13 @@ function NavigationLayout(element) {
 
 	var canvas = this.canvas = d3.select(element);
 	var width = canvas.style("width").slice(0, -2);
+	var all_nodes =[];
 	var nodes = [];
 
 	this.initializeLayout = function(initNodes) {
 		for (var i = 0; i < initNodes.length; i++) {
 			nodes.push(initNodes[i]);
+			all_nodes.push(initNodes[i]);
 		}
 		update();
 	}
@@ -18,7 +20,27 @@ function NavigationLayout(element) {
 
 	}
 
+	this.displayOnlyCategory = function(cat_id) {
+		console.log(nodes);
+		for (var i = nodes.length-1; i >= 0; i--) {
+		    if (nodes[i].item.id != cat_id) {
+				bubbleForceLayout.removeNodesForCategory(nodes[i].item.id);
+		        nodes.splice(findNodeIndexForCategory(nodes[i].item.id), 1);
 
+		    }
+			update();
+		}
+
+	}
+
+	this.displayAllCAtegories = function(){
+		nodes=[];
+	for (var i = 0; i < all_nodes.length; i++) {
+			nodes.push(all_nodes[i]);
+		}
+		console.log(nodes);
+		update();
+	}
 
 	function mouseover(d, i) {
 
@@ -50,11 +72,13 @@ function NavigationLayout(element) {
 				return d.get_class()
 			})
 				.style("color", color_set["category-" + d.item.id]);
-//				.style("border-color", color_set["category-" + d.item.id]);
+			//				.style("border-color", color_set["category-" + d.item.id]);
 
 			d3.selectAll(".category-" + d.item.id)
-			.each(function(d) {d.ui_highlight = true;})
-			.style("border-color", color_set["category-" + d.item.id]);
+				.each(function(d) {
+					d.ui_highlight = true;
+				})
+				.style("border-color", color_set["category-" + d.item.id]);
 
 
 
@@ -68,8 +92,10 @@ function NavigationLayout(element) {
 			//.style();
 
 			d3.selectAll(".category-" + d.item.id)
-			.each(function(d) {d.ui_highlight = false;})
-			.style("border-color", "rgb(179,179,179)");
+				.each(function(d) {
+					d.ui_highlight = false;
+				})
+				.style("border-color", "rgb(179,179,179)");
 
 
 
@@ -92,12 +118,11 @@ function NavigationLayout(element) {
 	}
 
 
-	function hideCategory(d, i) {
+	function hideCategory(d) {
 
 		nodes.splice(findNodeIndexForCategory(d.item.id), 1);
 		bubbleForceLayout.removeNodesForCategory(d.item.id);
 		update();
-
 
 	}
 
@@ -154,10 +179,10 @@ function NavigationLayout(element) {
 
 
 
-	function addNewURL(url,parent_id) {
-	  Model.createNewBookmarkinFolder(url,parent_id ,function(newnode) {
-	    bubbleForceLayout.addNode(newnode)
-	  });
+	function addNewURL(url, parent_id) {
+		Model.createNewBookmarkinFolder(url, parent_id, function(newnode) {
+			bubbleForceLayout.addNode(newnode)
+		});
 	}
 
 	var update = function() {
@@ -166,7 +191,6 @@ function NavigationLayout(element) {
 		var node = canvas.selectAll("div.cat_wrapper").data(nodes, function(d) {
 			return d.item.id
 		});
-
 
 
 
@@ -192,7 +216,9 @@ function NavigationLayout(element) {
 				return "add-" + d.item.id
 			}).on("click", function(d) {
 				canvas.select("#inputurl-" + d.item.id)
-					.style("visibility", function (){return  (canvas.select("#inputurl-" + d.item.id).style("visibility") =="hidden") ? "visible" :""})
+					.style("visibility", function() {
+						return (canvas.select("#inputurl-" + d.item.id).style("visibility") == "hidden") ? "visible" : ""
+					})
 			});
 
 		nodeEnter.append("div")
@@ -208,16 +234,15 @@ function NavigationLayout(element) {
 			.on("click", "")
 			.on("keyup", function(d) {
 				if (d3.event.keyCode === 13) {
-					addNewURL($("#inputnewurl-"+d.item.id).val(),d.item.id);
-					
+					addNewURL($("#inputnewurl-" + d.item.id).val(), d.item.id);
+
 					$("input.inputnewurl").val("");
 					canvas.select("#inputurl-" + d.item.id)
-					.style("visibility", "");
+						.style("visibility", "");
 
 				}
 			})
 			.attr("name", "URL")
-
 
 
 
@@ -230,8 +255,9 @@ function NavigationLayout(element) {
 			.on("mouseout", mouseout)
 			.on("click", clicked)
 			.style("color", function(d) {
-				return color_set["category-" + d.item.id]})
-						.append("div").attr("class", "ontop")
+				return color_set["category-" + d.item.id]
+			})
+			.append("div").attr("class", "ontop")
 			.text(function(d) {
 				return d.item.title.toUpperCase();
 			});

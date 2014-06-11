@@ -3,14 +3,17 @@ function ForceLayout(element) {
 	var canvas = this.canvas = d3.select(element);
 	var width = canvas.style("width").slice(0, -2);
 	var height = canvas.style("height").slice(0, -2);
+	var all_nodes;
 	var viscenters = [];
 
 
 	updateviscenters = function() {
 		var jq_categories = document.querySelectorAll('.categories');
+		var menu_offset = (document.body.className == 'menu-active') ? $("#slide-menu").width() : 0;
+
 		[].forEach.call(jq_categories, function(cat) {
 			viscenters.push({
-				x: $(cat).offset().left + $(cat).width() / 2,
+				x: $(cat).offset().left + $(cat).width() / 2-menu_offset,
 				y: $(cat).offset().top + $(cat).height() / 2
 			});
 			console.log(viscenters);
@@ -105,10 +108,23 @@ function ForceLayout(element) {
 		update();
 	}
 
+
+	this.showNodesforAllCategories = function(){
+		nodes=[];
+		for (var i = 0; i < all_nodes.length; i++) {
+//			nodes.push(all_nodes[i]);
+			addNode(all_nodes[i])
+		}
+
+	}
+
 	this.initializeLayout = function(initNodes) {
 		for (var i = 0; i < initNodes.length; i++) {
 			nodes.push(initNodes[i]);
+		//	all_nodes.push(initNodes[i]);
 		}
+		all_nodes=nodes.slice();
+
 		update();
 	}
 
@@ -236,19 +252,21 @@ function ForceLayout(element) {
 
 		d3.selectAll("#category-" + d.item.id).style("width", width + "px");
 
-		force.stop();
+		// force.stop();
 
 
-		console.log($("#content").scrollTop());
-		$("#content").animate({
-				scrollTop: $("#category-" + d.item.id).offset().top
-			}, '500', 'swing',
-			function() {
-				force.alpha(0);
-				force.start();
-			}
-		)
-
+		// console.log($("#content").scrollTop());
+		// $("#content").animate({
+		// 		scrollTop: $("#category-" + d.item.id).offset().top
+		// 	}, '500', 'swing',
+		// 	function() {
+		// 		force.alpha(0);
+		// 		force.start();
+		// 	}
+		// )
+		all_nodes=nodes.slice();
+		bookmarkNavigationLayout.displayOnlyCategory(d.item.id);	
+			visualiseCenters()
 
 		d.expand_option = true;
 		d3.select(this).on("click", collapseCategory)
@@ -270,6 +288,9 @@ function ForceLayout(element) {
 
 		d3.selectAll("#category-" + d.item.id).style("width", "");
 
+		bookmarkNavigationLayout.displayAllCAtegories();
+		bubbleForceLayout.showNodesforAllCategories();
+
 		// $('html, body').animate({
 		// 	scrollTop: $("#category-" + d.item.id).offset().top
 		// }, 2000,"swing", function() { 
@@ -281,20 +302,6 @@ function ForceLayout(element) {
 		d.expand_option = false;
 
 		d3.select(this).select("span").text("+" + (d.getTotalNodes() - maxNodesPerCategory).toString());
-
-		var remainingNodes = Model.getRemainingNodesForCategory(d.item.id, maxNodesPerCategory);
-
-		remainingNodes.forEach(function(node) {
-
-			nodes.splice(findNodeIndexForID(node.item.id), 1);
-			update();
-
-		})
-
-		// nodes=Model.getNodesLimitedForEachCategory(maxNodesPerCategory);
-
-		// update();
-
 
 	}
 
