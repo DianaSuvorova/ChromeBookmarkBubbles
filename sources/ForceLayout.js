@@ -13,10 +13,9 @@ function ForceLayout(element) {
 
 		[].forEach.call(jq_categories, function(cat) {
 			viscenters.push({
-				x: $(cat).offset().left + $(cat).width() / 2-menu_offset,
-				y: $(cat).offset().top + $(cat).height() / 2
+				x: $(cat).offset().left + $(cat).width() / 2 - menu_offset - $("#content").scrollLeft(),
+				y: $(cat).offset().top + $(cat).height() / 2 + $("#content").scrollTop()
 			});
-			console.log(viscenters);
 		})
 
 	}
@@ -33,8 +32,8 @@ function ForceLayout(element) {
 		[].forEach.call(jq_categories, function(cat) {
 			//		console.log($(cat).width())
 
-			centers[$(cat).attr('id') + 'x'] = $(cat).offset().left + $(cat).width() / 2 - menu_offset;
-			centers[$(cat).attr('id') + 'y'] = $(cat).offset().top + $(cat).height() / 2
+			centers[$(cat).attr('id') + 'x'] = $(cat).offset().left + $(cat).width() / 2 - menu_offset + $("#content").scrollLeft();
+			centers[$(cat).attr('id') + 'y'] = $(cat).offset().top + $(cat).height() / 2 + $("#content").scrollTop();
 
 		})
 
@@ -244,6 +243,8 @@ function ForceLayout(element) {
 
 		force.start();
 
+
+
 	}
 
 
@@ -252,18 +253,6 @@ function ForceLayout(element) {
 
 		d3.selectAll("#category-" + d.item.id).style("width", width + "px");
 
-		// force.stop();
-
-
-		// console.log($("#content").scrollTop());
-		// $("#content").animate({
-		// 		scrollTop: $("#category-" + d.item.id).offset().top
-		// 	}, '500', 'swing',
-		// 	function() {
-		// 		force.alpha(0);
-		// 		force.start();
-		// 	}
-		// )
 		all_nodes=nodes.slice();
 		bookmarkNavigationLayout.displayOnlyCategory(d.item.id);	
 			visualiseCenters()
@@ -291,11 +280,6 @@ function ForceLayout(element) {
 		bookmarkNavigationLayout.displayAllCAtegories();
 		bubbleForceLayout.showNodesforAllCategories();
 
-		// $('html, body').animate({
-		// 	scrollTop: $("#category-" + d.item.id).offset().top
-		// }, 2000,"swing", function() { 
-		// 		 alert("Finished animating");
-		// });
 
 		d3.select(this).on("click", expandCategory)
 
@@ -307,6 +291,12 @@ function ForceLayout(element) {
 
 
 	function tick() {
+
+
+		// updateviscenters();
+		// visualiseCenters();
+
+
 		var centers = updateCenters();
 
 
@@ -383,7 +373,6 @@ function ForceLayout(element) {
 
 
 	function visualiseCenters() {
-		console.log(viscenters)
 		canvas.selectAll("div#e").data(viscenters).enter().append("div")
 			.attr("id", "e")
 			.attr("class", "bubble")
