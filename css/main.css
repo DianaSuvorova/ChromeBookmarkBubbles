@@ -44,7 +44,7 @@ cursor: pointer;
   .categories{
     width:300px;
     height: 300px;
-   padding: 50px 0;
+   padding: 0 0;
    
     overflow:hidden;
     text-overflow:ellipsis;
@@ -188,10 +188,9 @@ cursor: pointer;
 
    span.option{
     visibility: visible;
-    margin: 0 10px;
+    margin: 0 15px;
     color: red;
     display: inline-block; 
-    float: right;
 
   }
 
@@ -206,30 +205,19 @@ cursor: pointer;
   span.option.delete{
     width:30px;
     height:30px;
-    background:url(/Images/recycle43.png);
+    background:url(/Images/x-mark-256.png);
     background-size: 100% 100%;
   }
 
   span.option.add{
+    margin: 0 30px;
     width:30px;
     height:30px;
-    background:url(/Images/plus16.png);
+    background:url(/Images/plus-64.png);
     background-size: 100% 100%;
   }
 
 
-  .inputurl {
-    margin:0 auto;
-     visibility: hidden;
-     display: block;
-
-    
-  }
-
-.inputnewcat{
-    padding:6px 15px 6px 30px;
-    margin: 2px;
-}
 
   .enter{
     display: block;
@@ -273,3 +261,63 @@ cursor: pointer;
     right: 10px;
     font-size: 16px;
   }
+
+
+  div.options{
+    position: relative;
+    width: 100%;
+    height:50px;
+    top:0px;
+    margin: auto;
+  }
+
+/* Variant : for top positioned triangle
+------------------------------------------ */
+.triangle-border {
+  visibility: hidden; 
+  position:relative;
+  width:50px;
+  height:50px;
+
+}
+
+
+.triangle-border:before {
+  content:"";
+  position:relative;
+  bottom:0px; /* value = - border-top-width - border-bottom-width */
+  left:28px; /* controls horizontal position */
+  border-width: 0 18px 18px ;
+  border-style:solid;
+  border-color:#acb1b7 transparent;
+  /* reduce the damage in FF3.0 */
+  display:block;
+  width:0;
+}
+
+/* creates the smaller  triangle */
+.triangle-border:after {
+  content:"";
+  position:relative;
+  bottom:15px; 
+  border-style:solid;
+  border-color:#fff transparent;
+  /* reduce the damage in FF3.0 */
+  display:block;
+  width:0;
+  left:33px;
+  border-width: 0 13px 13px;
+}
+
+
+
+
+  .inputnewurl {
+      visibility: hidden;
+      position:absolute;
+      float:both;
+      top:10px;
+      border:3px solid #acb1b7;
+      background-color:#fcfcfc;
+  }
+

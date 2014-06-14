@@ -2,7 +2,7 @@ function NavigationLayout(element) {
 
 	var canvas = this.canvas = d3.select(element);
 	var width = canvas.style("width").slice(0, -2);
-	var all_nodes =[];
+	var all_nodes = [];
 	var nodes = [];
 
 	this.initializeLayout = function(initNodes) {
@@ -21,24 +21,22 @@ function NavigationLayout(element) {
 	}
 
 	this.displayOnlyCategory = function(cat_id) {
-		console.log(nodes);
-		for (var i = nodes.length-1; i >= 0; i--) {
-		    if (nodes[i].item.id != cat_id) {
+		for (var i = nodes.length - 1; i >= 0; i--) {
+			if (nodes[i].item.id != cat_id) {
 				bubbleForceLayout.removeNodesForCategory(nodes[i].item.id);
-		        nodes.splice(findNodeIndexForCategory(nodes[i].item.id), 1);
+				nodes.splice(findNodeIndexForCategory(nodes[i].item.id), 1);
 
-		    }
+			}
 			update();
 		}
 
 	}
 
-	this.displayAllCAtegories = function(){
-		nodes=[];
-	for (var i = 0; i < all_nodes.length; i++) {
+	this.displayAllCAtegories = function() {
+		nodes = [];
+		for (var i = 0; i < all_nodes.length; i++) {
 			nodes.push(all_nodes[i]);
 		}
-		console.log(nodes);
 		update();
 	}
 
@@ -104,10 +102,17 @@ function NavigationLayout(element) {
 
 	function showOptions(d, i) {
 		d3.select(this).selectAll("span").style("visibility", "visible");
+		canvas.select("#triangle-border" + d.item.id).style("visibility", "visible");
+		canvas.select("#inputnewurl-" + d.item.id).style("visibility", "visible");
+
+
+
 	}
 
 	function hideOptions(d, i) {
 		d3.select(this).selectAll("span").style("visibility", "hidden");
+		canvas.select("#triangle-border" + d.item.id).style("visibility", "hidden");
+		canvas.select("#inputnewurl-" + d.item.id).style("visibility", "hidden");
 
 	}
 
@@ -156,28 +161,6 @@ function NavigationLayout(element) {
 	}
 
 
-	// var drag = d3.behavior.drag()
-	// 	.origin(function(d) {
-	// 		return d;
-	// 	})
-	// 	.on("drag", dragmove);
-
-
-	// function dragmove(d, i) {
-	// 	console.log(this);
-
-	// 	d3.selectAll("div.categories").each(function(cat_d, cat_i) {
-
-	// 			cat = "#category-" + cat_d.item.id;
-
-	// 			if (overlaps("#category-" + i, cat)) {
-	// 				console.log("overlaps");
-
-	// 			}
-	// 		});
-	// 	}
-
-
 
 	function addNewURL(url, parent_id) {
 		Model.createNewBookmarkinFolder(url, parent_id, function(newnode) {
@@ -200,34 +183,45 @@ function NavigationLayout(element) {
 				return "cat_wrapper-" + d.item.id
 			})
 			.on("mouseover", showOptions)
-			.on("mouseout", hideOptions);
+			.on("mouseout", hideOptions)
+			.append("div")
+			.attr("class", "options");
 		//.call(drag);
 
 
 
-		nodeEnter.append("span").attr('class', 'option delete')
-			.on("click", emptyCategory);
-
-		nodeEnter.append("span").attr('class', 'option hide')
-			.on("click", hideCategory);
+		// nodeEnter.append("span").attr('class', 'option hide')
+		// 	.on("click", hideCategory);
 
 		nodeEnter.append("span").attr('class', 'option add')
 			.attr("id", function(d, i) {
 				return "add-" + d.item.id
 			}).on("click", function(d) {
-				canvas.select("#inputurl-" + d.item.id)
+				canvas.select("#inputnewurl-" + d.item.id)
 					.style("visibility", function() {
-						return (canvas.select("#inputurl-" + d.item.id).style("visibility") == "hidden") ? "visible" : ""
+						return (canvas.select("#inputnewurl-" + d.item.id).style("visibility") == "hidden") ? "visible" : ""
 					})
+
+				canvas.select("#triangle-border" + d.item.id)
+					.style("visibility", function() {
+						return (canvas.select("#triangle-border" + d.item.id)
+							.style("visibility") == "hidden") ? "visible" : ""
+					})
+
 			});
 
+
+		nodeEnter.append("span").attr('class', 'option delete')
+			.on("click", emptyCategory);
+
+
 		nodeEnter.append("div")
-			.attr("class", "inputurl")
+			.attr("class", "triangle-border")
 			.attr("id", function(d) {
-				return "inputurl-" + d.item.id
+				return "triangle-border" + d.item.id
 			})
 			.append("input")
-			.attr("class", "inputnewurl")
+			.attr("class", "inputnewurl rounded")
 			.attr("id", function(d) {
 				return "inputnewurl-" + d.item.id
 			})
@@ -237,8 +231,15 @@ function NavigationLayout(element) {
 					addNewURL($("#inputnewurl-" + d.item.id).val(), d.item.id);
 
 					$("input.inputnewurl").val("");
-					canvas.select("#inputurl-" + d.item.id)
+					canvas.select("#inputnewurl-" + d.item.id)
 						.style("visibility", "");
+
+					canvas.select("#triangle-border" + d.item.id)
+						.style("visibility", function() {
+							return (canvas.select("#triangle-border" + d.item.id)
+								.style("visibility") == "hidden") ? "visible" : ""
+						})
+
 
 				}
 			})
