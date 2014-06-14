@@ -255,7 +255,6 @@ function ForceLayout(element) {
 
 		all_nodes=nodes.slice();
 		bookmarkNavigationLayout.displayOnlyCategory(d.item.id);	
-			visualiseCenters()
 
 		d.expand_option = true;
 		d3.select(this).on("click", collapseCategory)
